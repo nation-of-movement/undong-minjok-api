@@ -50,11 +50,6 @@ spring:
 #      host: localhost
 #      port: 6379
 
-logging:
-  level:
-    org.hibernate.SQL: debug       # SQL ?? ???
-    org.hibernate.type: trace      # ??? ???? ??? ??
-
 #security:
 #  jwt:
 #    issuer: adhd

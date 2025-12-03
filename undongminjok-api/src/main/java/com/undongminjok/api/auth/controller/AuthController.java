@@ -7,6 +7,7 @@ import com.undongminjok.api.global.dto.ApiResponse;
 import com.undongminjok.api.auth.dto.LoginRequest;
 import com.undongminjok.api.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
@@ -33,7 +35,7 @@ public class AuthController {
       @RequestBody LoginRequest request
   ) {
     TokenResponse response = authService.login(request);
-
+    log.info("TEST LOGBACK");
     ResponseCookie refreshCookie = ResponseCookie.from(COOKIE_NAME, response.getRefreshToken())
                                                  .httpOnly(true)
                                                  .secure(false)   // 개발 환경에서는 false, 운영에서는 true
