@@ -61,7 +61,7 @@ public class DailyRecordQueryService {
     return DailyRecordResponse.builder()
         .recordId(record.getId())
         .date(record.getDate())
-        .workoutImg(record.getImg())
+        .workoutImg(record.getImgPath())
         .exercises(exerciseResponses)
         .build();
   }

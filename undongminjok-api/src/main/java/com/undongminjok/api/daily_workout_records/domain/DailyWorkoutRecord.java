@@ -28,12 +28,16 @@ public class DailyWorkoutRecord extends BaseTimeEntity {
     private LocalDate date;
 
     //운동사진
-    @Column(name = "workout_img")
-    private String img;
+    @Column(name = "img_path")
+    private String imgPath;
 
     //회원 ID
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     private User user;
+
+  public void updateImg(String imgPath) {
+    this.imgPath = imgPath;
+  }
 
 }

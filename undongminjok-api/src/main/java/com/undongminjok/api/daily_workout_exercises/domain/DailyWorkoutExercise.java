@@ -4,6 +4,7 @@ import com.undongminjok.api.daily_workout_records.domain.DailyWorkoutRecord;
 import com.undongminjok.api.equipments.domain.Equipment;
 import com.undongminjok.api.global.dto.BaseTimeEntity;
 import com.undongminjok.api.template_storage.TemplateStorage;
+import com.undongminjok.api.templates.domain.Template;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,8 +58,8 @@ public class DailyWorkoutExercise extends BaseTimeEntity {
     private DailyWorkoutRecord workoutRecord;
 
     //템플릿 ID
-    /*@ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "template_id")
-    private Template template;*/
+    private Template template;
 
 }
