@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
         .body(new ErrorResponse("DATA_INTEGRITY_ERROR", ex.getMessage()));
   }
 
-  // 나머지 예외 처리(최후 방어)
+  // 나머지 예외 처리
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleException(Exception ex) {
 
