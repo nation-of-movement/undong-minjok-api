@@ -61,8 +61,4 @@ public class DailyWorkoutExercise extends BaseTimeEntity {
     @JoinColumn(name = "template_id")
     private Template template;*/
 
-    //보관함 ID
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storage_id")
-    private TemplateStorage storage;*/
 }
