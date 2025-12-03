@@ -1,0 +1,37 @@
+package com.undongminjok.api.user;
+
+import com.undongminjok.api.global.exception.ErrorCode;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+
+public enum UserErrorCode implements ErrorCode {
+  USER_NOT_FOUND("USER_001", "User not found", HttpStatus.NOT_FOUND),
+  USER_DUPLICATED("USER_002", "User duplicated", HttpStatus.BAD_REQUEST),
+  USER_INVALID_PASSWORD("USER_003", "User invalid password", HttpStatus.BAD_REQUEST),
+  USER_CANCELED("USER_004", "User canceled", HttpStatus.NOT_ACCEPTABLE);
+
+  private final String errorCode;
+  private final String message;
+  private final HttpStatusCode httpStatusCode;
+
+  UserErrorCode(String errorCode, String message, HttpStatusCode httpStatusCode) {
+    this.errorCode = errorCode;
+    this.message = message;
+    this.httpStatusCode = httpStatusCode;
+  }
+
+  @Override
+  public String getErrorCode() {
+    return errorCode;
+  }
+
+  @Override
+  public String getMessage() {
+    return message;
+  }
+
+  @Override
+  public HttpStatusCode getHttpStatusCode() {
+    return httpStatusCode;
+  }
+}
