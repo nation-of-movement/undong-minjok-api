@@ -1,6 +1,6 @@
 spring:
   application:
-    name: ad-hell-core-service
+    name: undong-minjok
   config:
     import: optional:file:.env[.properties]
   data:
