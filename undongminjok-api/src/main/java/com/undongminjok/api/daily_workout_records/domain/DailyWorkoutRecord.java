@@ -1,6 +1,7 @@
 package com.undongminjok.api.daily_workout_records.domain;
 
 import com.undongminjok.api.global.dto.BaseTimeEntity;
+import com.undongminjok.api.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,8 +32,8 @@ public class DailyWorkoutRecord extends BaseTimeEntity {
     private String img;
 
     //회원 ID
-    /*@ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
-    private User user;*/
+    private User user;
 
 }
