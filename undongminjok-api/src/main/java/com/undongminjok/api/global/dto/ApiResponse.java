@@ -1,5 +1,6 @@
 package com.undongminjok.api.global.dto;
 
+import com.undongminjok.api.global.exception.ErrorCode;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
