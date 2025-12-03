@@ -1,14 +1,21 @@
 package com.undongminjok.api.auth.controller;
 
+import com.undongminjok.api.auth.dto.AccessTokenResponse;
 import com.undongminjok.api.auth.dto.TokenResponse;
 import com.undongminjok.api.auth.service.AuthService;
 import com.undongminjok.api.global.dto.ApiResponse;
 import com.undongminjok.api.auth.dto.LoginRequest;
+import com.undongminjok.api.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,15 +25,73 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
   private final AuthService authService;
+  private final JwtTokenProvider jwtTokenProvider;
+  private static final String COOKIE_NAME = "refreshToken";
 
   @PostMapping("/login")
-  public ResponseEntity<ApiResponse<TokenResponse>> login(
+  public ResponseEntity<ApiResponse<AccessTokenResponse>> login(
       @RequestBody LoginRequest request
   ) {
     TokenResponse response = authService.login(request);
 
-    return ResponseEntity
-        .status(HttpStatus.OK)
-        .body(ApiResponse.success(response));
+    ResponseCookie refreshCookie = ResponseCookie.from(COOKIE_NAME, response.getRefreshToken())
+                                                 .httpOnly(true)
+                                                 .secure(false)   // 개발 환경에서는 false, 운영에서는 true
+                                                 .path("/")
+                                                 .maxAge(
+                                                     jwtTokenProvider.getRefreshExpiration() / 1000)
+                                                 .sameSite("Lax")
+                                                 .build();
+
+    AccessTokenResponse accessTokenResponse = AccessTokenResponse.builder()
+                                                                 .accessToken(
+                                                                     response.getAccessToken())
+                                                                 .build();
+    return ResponseEntity.ok()
+                         .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                         .body(ApiResponse.success(accessTokenResponse));
+  }
+
+  @PostMapping("/logout")
+  public ResponseEntity<ApiResponse<Void>> logout(
+      @RequestHeader("Authorization") String authorizationHeader
+  ) {
+    authService.logout(authorizationHeader);
+
+    ResponseCookie deleteCookie = ResponseCookie.from(COOKIE_NAME, "")
+                                                .httpOnly(true)
+                                                .secure(false)
+                                                .path("/")
+                                                .maxAge(0)     // 즉시 만료
+                                                .sameSite("Lax")
+                                                .build();
+
+    return ResponseEntity.ok()
+                         .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                         .body(ApiResponse.success(null));
+  }
+
+  @PostMapping("/token-reissue")
+  public ResponseEntity<ApiResponse<AccessTokenResponse>> tokenReissue(
+      @RequestHeader("Authorization") String authorizationHeader,
+      @CookieValue(name = COOKIE_NAME, required = false) String refreshToken
+  ) {
+
+    AccessTokenResponse newAccessToken = authService.tokenReissue(
+        authorizationHeader,
+        refreshToken
+    );
+
+    ResponseCookie refreshCookie = ResponseCookie.from(COOKIE_NAME, refreshToken)
+                                                 .httpOnly(true)
+                                                 .secure(false)
+                                                 .path("/")
+                                                 .maxAge(jwtTokenProvider.getRefreshExpiration() / 1000)
+                                                 .sameSite("Lax")
+                                                 .build();
+
+    return ResponseEntity.ok()
+                         .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                         .body(ApiResponse.success(newAccessToken));
   }
 }

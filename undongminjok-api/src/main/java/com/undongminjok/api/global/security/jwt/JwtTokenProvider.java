@@ -1,4 +1,4 @@
-package com.undongminjok.api.global.security;
+package com.undongminjok.api.global.security.jwt;
 
 import com.undongminjok.api.user.domain.UserRole;
 import io.jsonwebtoken.Claims;
@@ -8,9 +8,11 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 
@@ -21,10 +23,17 @@ public class JwtTokenProvider {
   private final JwtProperties jwtProperties; // JWT 관련 DTO class
   private SecretKey secretKey;
 
+  @Value("${jwt.expiration}")
+  private long jwtExpiration;
+
+  @Value("${jwt.refresh-expiration}")
+  private long jwtRefreshExpiration;
+
   @PostConstruct
   public void init() {
     // 시크릿 키 초기화
-    secretKey = Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes());
+    secretKey = Keys.hmacShaKeyFor(jwtProperties.getSecretKey()
+                                                .getBytes());
   }
 
   /**
@@ -41,7 +50,7 @@ public class JwtTokenProvider {
                .claim("role", UserRole.valueOf(role.name()))
                .issuedAt(now)
                .expiration(expriyDate)
-               .signWith(secretKey,Jwts.SIG.HS512)
+               .signWith(secretKey, Jwts.SIG.HS512)
                .compact();
   }
 
@@ -60,7 +69,7 @@ public class JwtTokenProvider {
                .claim("role", UserRole.valueOf(role.name()))
                .issuedAt(now)
                .expiration(expriyDate)
-               .signWith(secretKey,Jwts.SIG.HS512 )
+               .signWith(secretKey, Jwts.SIG.HS512)
                .compact();
   }
 
@@ -69,9 +78,12 @@ public class JwtTokenProvider {
    * @param token
    * @return
    */
-  public boolean vaildateToken(String token) {
+  public boolean validateToken(String token) {
     try {
-      Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+      Jwts.parser()
+          .verifyWith(secretKey)
+          .build()
+          .parseSignedClaims(token);
       return true;
     } catch (SecurityException | MalformedJwtException e) {
       throw new BadCredentialsException("Invalid JWT Token", e);
@@ -91,8 +103,39 @@ public class JwtTokenProvider {
                         .parseSignedClaims(token)
                         .getPayload();
 
-    return claims.getSubject();   // sub 를 가져옴
+    return claims.getSubject();
   }
 
+  public long getRefreshExpiration() {
+    return jwtRefreshExpiration;
+  }
 
+  public long getRemainingTime(String token) {
+    Claims claims = Jwts.parser()
+                        .verifyWith(secretKey) //문자열 key 반환
+                        .build()
+                        .parseClaimsJws(token)
+                        .getBody();
+
+    Date expiration = claims.getExpiration();
+    long now = System.currentTimeMillis();
+    return expiration.getTime() - now;
+  }
+
+  public String resolveToken(String authorizationHeader) {
+    if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+      return authorizationHeader.substring(7);
+    }
+    return null;
+  }
+
+  public UserRole getUserRoleFromJWT(String token) {
+    Claims claims = Jwts.parser()
+                        .verifyWith(secretKey)
+                        .build()
+                        .parseSignedClaims(token)
+                        .getPayload();
+
+    return UserRole.valueOf(claims.get("role", String.class));
+  }
 }

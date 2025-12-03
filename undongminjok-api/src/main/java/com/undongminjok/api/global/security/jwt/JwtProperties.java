@@ -1,4 +1,4 @@
-package com.undongminjok.api.global.security;
+package com.undongminjok.api.global.security.jwt;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "jwt")
 public class JwtProperties {
 
-    private String secretKey;
-    private long expiration;
-    private long refreshExpiration;
+  private String secretKey;
+  private long expiration;
+  private long refreshExpiration;
 }

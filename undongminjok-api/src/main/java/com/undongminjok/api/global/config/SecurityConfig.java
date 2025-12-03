@@ -1,16 +1,15 @@
 package com.undongminjok.api.global.config;
 
 import com.undongminjok.api.global.security.CustomUserDetailsService;
-import com.undongminjok.api.global.security.JwtAuthentiationFilter;
-import com.undongminjok.api.global.security.JwtTokenProvider;
+import com.undongminjok.api.global.security.jwt.JwtAuthentiationFilter;
+import com.undongminjok.api.global.security.jwt.JwtTokenProvider;
 import com.undongminjok.api.global.security.RestAccessDeniedHandler;
 import com.undongminjok.api.global.security.RestAuthenticationEntryPoint;
-import java.util.List;
+import com.undongminjok.api.global.util.AuthRedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,9 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Slf4j
 @Configuration
@@ -35,6 +31,7 @@ public class SecurityConfig {
   private final CustomUserDetailsService userDetailsService;          // 사용자 정보 로드
   private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
   private final RestAccessDeniedHandler restAccessDeniedHandler;
+  private final AuthRedisService authRedisService;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -62,26 +59,29 @@ public class SecurityConfig {
 
           /* Swagger 문서 공개 */
           auth.requestMatchers(
-              "/api/v1/**",
-              "/v3/api-docs/**",
-              "/swagger-ui/**",
-              "/swagger-ui.html"
-          ).permitAll();
+                  "/api/v1/**",
+                  "/v3/api-docs/**",
+                  "/swagger-ui/**",
+                  "/swagger-ui.html"
+              )
+              .permitAll();
 
           /* 정적 리소스 & SSE 테스트 페이지 */
           auth.requestMatchers(
-              "/",              // 루트
-              "/index.html",
-              "/sse-test.html", // SSE 테스트용 HTML
-              "/static/**",
-              "/css/**",
-              "/js/**",
-              "/images/**",
-              "/favicon.ico"
-          ).permitAll();
+                  "/",              // 루트
+                  "/index.html",
+                  "/sse-test.html", // SSE 테스트용 HTML
+                  "/static/**",
+                  "/css/**",
+                  "/js/**",
+                  "/images/**",
+                  "/favicon.ico"
+              )
+              .permitAll();
 
           /* 위에서 명시하지 않은 모든 요청은 인증 필요 */
-          auth.anyRequest().authenticated();
+          auth.anyRequest()
+              .authenticated();
         })
 
         // JWT 인증 필터 추가
@@ -99,7 +99,7 @@ public class SecurityConfig {
 
   @Bean
   public JwtAuthentiationFilter jwtAuthentiationFilter() {
-    return new JwtAuthentiationFilter(jwtTokenProvider, userDetailsService);
+    return new JwtAuthentiationFilter(jwtTokenProvider, userDetailsService, authRedisService);
   }
 
 //  @Bean
