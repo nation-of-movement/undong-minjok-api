@@ -5,6 +5,7 @@ import com.undongminjok.api.daily_workout_records.service.DailyRecordQueryServic
 import com.undongminjok.api.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +22,10 @@ public class DailyRecordQueryController {
   private final DailyRecordQueryService dailyRecordQueryService;
 
   @GetMapping
+  @PreAuthorize("isAuthenticated()")
   public DailyRecordResponse getWorkoutByDate(
-      @AuthenticationPrincipal CustomUserDetails user,
       @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
   ) {
-    return dailyRecordQueryService.getWorkoutByDate(user.getUserId(), date);
+    return dailyRecordQueryService.getWorkoutByDate(date);
   }
 }

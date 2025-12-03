@@ -8,7 +8,9 @@ import com.undongminjok.api.daily_workout_records.domain.DailyWorkoutRecord;
 import com.undongminjok.api.daily_workout_records.dto.response.DailyRecordResponse;
 import com.undongminjok.api.daily_workout_records.repository.DailyWorkoutRecordRepository;
 import com.undongminjok.api.global.exception.BusinessException;
+import com.undongminjok.api.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,7 +25,13 @@ public class DailyRecordQueryService {
   private final DailyWorkoutRecordRepository recordRepo;
   private final DailyWorkoutExerciseRepository exerciseRepo;
 
-  public DailyRecordResponse getWorkoutByDate(Long userId, LocalDate date) {
+  public DailyRecordResponse getWorkoutByDate(LocalDate date) {
+
+    //userid 가져오기 수정
+    CustomUserDetails user =
+        (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    Long userId = user.getUserId();
 
     //기록 조회
     DailyWorkoutRecord record = recordRepo.findByUserUserIdAndDate(userId, date)
