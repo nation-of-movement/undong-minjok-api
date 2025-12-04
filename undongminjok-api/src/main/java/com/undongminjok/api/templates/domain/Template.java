@@ -1,5 +1,6 @@
 package com.undongminjok.api.templates.domain;
 
+import com.undongminjok.api.daily_workout_exercises.domain.DailyWorkoutExercise;
 import com.undongminjok.api.global.dto.BaseTimeEntity;
 import com.undongminjok.api.user.domain.User;
 import jakarta.persistence.*;
@@ -46,8 +47,12 @@ public class Template extends BaseTimeEntity {
 
 // 작성자(회원) ID — FK(회원 테이블과 매핑될 값)
  @ManyToOne(fetch = FetchType.LAZY)
- @JoinColumn(name ="Users")
+ @JoinColumn(name ="user_id")
  private User user;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name ="exercise_id", nullable = false)
+  private DailyWorkoutExercise dailyWorkoutExercise;
 
   @Builder
   public Template(String picture,
@@ -91,4 +96,7 @@ public class Template extends BaseTimeEntity {
     this.salesCount++;
   }
 
+  public void decreaseRecommend() {
+    this.recommendCount--;
+  }
 }
