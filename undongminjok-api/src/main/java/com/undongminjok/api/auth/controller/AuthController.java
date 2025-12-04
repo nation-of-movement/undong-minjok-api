@@ -1,7 +1,11 @@
 package com.undongminjok.api.auth.controller;
 
 import com.undongminjok.api.auth.dto.AccessTokenResponse;
+import com.undongminjok.api.auth.dto.EmailRequest;
+import com.undongminjok.api.auth.dto.ResetPasswordRequest;
 import com.undongminjok.api.auth.dto.TokenResponse;
+import com.undongminjok.api.auth.dto.VerificationCodeRequest;
+import com.undongminjok.api.auth.dto.VerificationCodeResponse;
 import com.undongminjok.api.auth.service.AuthService;
 import com.undongminjok.api.global.dto.ApiResponse;
 import com.undongminjok.api.auth.dto.LoginRequest;
@@ -11,8 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,12 +77,10 @@ public class AuthController {
 
   @PostMapping("/token-reissue")
   public ResponseEntity<ApiResponse<AccessTokenResponse>> tokenReissue(
-      @RequestHeader("Authorization") String authorizationHeader,
       @CookieValue(name = COOKIE_NAME, required = false) String refreshToken
   ) {
 
     AccessTokenResponse newAccessToken = authService.tokenReissue(
-        authorizationHeader,
         refreshToken
     );
 
@@ -88,12 +88,47 @@ public class AuthController {
                                                  .httpOnly(true)
                                                  .secure(false)
                                                  .path("/")
-                                                 .maxAge(jwtTokenProvider.getRefreshExpiration() / 1000)
+                                                 .maxAge(
+                                                     jwtTokenProvider.getRefreshExpiration() / 1000)
                                                  .sameSite("Lax")
                                                  .build();
 
     return ResponseEntity.ok()
                          .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                          .body(ApiResponse.success(newAccessToken));
+  }
+
+  /**
+   * 본인인증 - 이메일로 인증번호 보내기
+   * @param request
+   * @return
+   */
+  @PostMapping("/email")
+  public ResponseEntity<ApiResponse<?>> sendVerificationCode(
+      @RequestBody EmailRequest request) {
+    authService.sendVerificationCode(request);
+    return ResponseEntity.ok(ApiResponse.success(null));
+  }
+
+  /**
+   * 인증번호가 같은지 확인
+   * @param request
+   * @return
+   */
+  @PostMapping("/code")
+  public ResponseEntity<ApiResponse<VerificationCodeResponse>> existVerificationCode(
+      @RequestBody VerificationCodeRequest request) {
+
+    VerificationCodeResponse response = authService.existVerificationCode(request);
+
+    return ResponseEntity.ok(ApiResponse.success(response));
+  }
+
+  @PostMapping("/reset-password")
+  public ResponseEntity<ApiResponse<?>> resetPassword(
+      @RequestBody ResetPasswordRequest request
+  ) {
+    authService.resetPassword(request);
+    return ResponseEntity.ok(ApiResponse.success(null));
   }
 }

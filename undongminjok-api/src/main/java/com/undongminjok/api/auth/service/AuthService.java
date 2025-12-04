@@ -1,18 +1,27 @@
 package com.undongminjok.api.auth.service;
 
 import com.undongminjok.api.auth.AuthErrorCode;
+import com.undongminjok.api.auth.domain.VerificationPurpose;
 import com.undongminjok.api.auth.dto.AccessTokenResponse;
+import com.undongminjok.api.auth.dto.EmailRequest;
 import com.undongminjok.api.auth.dto.LoginRequest;
+import com.undongminjok.api.auth.dto.ResetPasswordRequest;
 import com.undongminjok.api.auth.dto.TokenResponse;
+import com.undongminjok.api.auth.dto.VerificationCodeRequest;
+import com.undongminjok.api.auth.dto.VerificationCodeResponse;
+import com.undongminjok.api.global.domain.MailType;
 import com.undongminjok.api.global.dto.LoginUserInfo;
 import com.undongminjok.api.global.exception.BusinessException;
 import com.undongminjok.api.global.security.jwt.JwtTokenProvider;
 import com.undongminjok.api.global.util.AuthRedisService;
+import com.undongminjok.api.global.util.MailService;
 import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.user.UserErrorCode;
 import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.user.domain.UserStatus;
 import com.undongminjok.api.user.repository.UserRepository;
+import java.util.Optional;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +37,7 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenProvider jwtTokenProvider;
   private final AuthRedisService authRedisService;
+  private final MailService mailService;
 
   @Transactional
   public TokenResponse login(LoginRequest request) {
@@ -78,45 +88,98 @@ public class AuthService {
     authRedisService.addBlackListAccessToken(accessToken, remainingTime);
   }
 
-  public AccessTokenResponse tokenReissue(String authorizationHeader, String refreshToken) {
+  @Transactional
+  public AccessTokenResponse tokenReissue(String refreshToken) {
 
     if (refreshToken == null) {
       throw new BusinessException(AuthErrorCode.INVALID_REFRESH_TOKEN);
     }
 
-    // AccessToken 추출
-    String accessToken = jwtTokenProvider.resolveToken(authorizationHeader);
-
-    // AccessToken 만료 여부 확인 (만료 상태여도 재발급 자체는 가능)
-    if (jwtTokenProvider.getRemainingTime(accessToken) <= 0) {
-      throw new BusinessException(AuthErrorCode.ACCESS_TOKEN_NOT_EXPIRED);
-    }
-
-    // 3. RefreshToken 검증
+    // RefreshToken 검증
     jwtTokenProvider.validateToken(refreshToken);
 
-    // 4. RefreshToken이 Redis에 존재하는지 확인
+    // RefreshToken이 Redis에 존재하는지 확인
     String loginId = jwtTokenProvider.getLoginIdFromJWT(refreshToken);
+
     Boolean exists = authRedisService.existRefreshTokenByLoginId(loginId);
     if (Boolean.FALSE.equals(exists)) {
       throw new BusinessException(AuthErrorCode.INVALID_REFRESH_TOKEN);
     }
 
-    // 5. AccessToken 블랙리스트 여부 체크
-    if (authRedisService.isBlacklisted(accessToken)) {
-      throw new BusinessException(AuthErrorCode.INVALID_ACCESS_TOKEN);
-    }
-
-    // 6. 새 AccessToken 생성 (RefreshToken은 재사용)
+    // 새 AccessToken 생성 (RefreshToken은 재사용)
     String newAccessToken =
         jwtTokenProvider.createAccessToken(
             loginId,
             jwtTokenProvider.getUserRoleFromJWT(refreshToken)
         );
 
-    // 7. Body에는 AccessToken만 내려줌
+    // Body에는 AccessToken만 내려줌
     return AccessTokenResponse.builder()
                               .accessToken(newAccessToken)
                               .build();
+  }
+
+  @Transactional
+  public void sendVerificationCode(EmailRequest request) {
+
+    if (request.getPurpose() == VerificationPurpose.PASSWORD_RESET) {
+      userRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+    }
+
+    MailType mailType = MailType.VERIFICATION;
+
+    String code = EmailVerificationCode.getCode();
+
+    authRedisService.saveVerificationCode(request, code);
+
+    mailService.sendMail(request, mailType, code);
+
+  }
+
+  @Transactional
+  public VerificationCodeResponse existVerificationCode(VerificationCodeRequest request) {
+
+    Boolean exist = authRedisService.existVerificationCode(
+        request);
+
+    if (Boolean.FALSE.equals(exist)) {
+      throw new BusinessException(AuthErrorCode.INVALID_VERIFICATION_TOKEN);
+    }
+
+    authRedisService.deleteKeyEmail(request);
+
+    return switch (request.getPurpose()) {
+      case SIGNUP -> VerificationCodeResponse.builder()
+                                             .success(true)
+                                             .resetToken(null)
+                                             .build();
+      case PASSWORD_RESET -> {
+        String resetToken = authRedisService.createAndSaveResetToken(request.getEmail());
+        yield VerificationCodeResponse.builder()
+                                      .success(true)
+                                      .resetToken(resetToken)
+                                      .build();
+      }
+    };
+
+
+  }
+
+  @Transactional
+  public void resetPassword(ResetPasswordRequest request) {
+    // resetToken 으로 이메일 조회 + 유효성 검증
+    String email = authRedisService.getEmailByResetToken(request.getResetToken());
+
+    // 이메일로 유저 조회
+    User user = userRepository.findByEmail(email)
+                              .orElseThrow(
+                                  () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+
+    // 비밀번호 변경
+    user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
+
+    // 토큰 1회용 처리 (삭제)
+    authRedisService.deleteResetToken(request.getResetToken());
   }
 }
