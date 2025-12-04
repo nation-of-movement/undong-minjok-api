@@ -3,7 +3,6 @@ package com.undongminjok.api.daily_workout_exercises.domain;
 import com.undongminjok.api.daily_workout_records.domain.DailyWorkoutRecord;
 import com.undongminjok.api.equipments.domain.Equipment;
 import com.undongminjok.api.global.dto.BaseTimeEntity;
-import com.undongminjok.api.template_storage.TemplateStorage;
 import com.undongminjok.api.templates.domain.Template;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
