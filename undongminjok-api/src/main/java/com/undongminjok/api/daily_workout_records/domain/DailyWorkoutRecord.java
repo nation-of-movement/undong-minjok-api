@@ -36,8 +36,8 @@ public class DailyWorkoutRecord extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-  public void updateImg(String imgPath) {
-    this.imgPath = imgPath;
-  }
+    public void updateImg(String imgPath) {
+      this.imgPath = imgPath;
+    }
 
 }
