@@ -10,6 +10,7 @@ import com.undongminjok.api.equipments.domain.Equipment;
 import com.undongminjok.api.equipments.repository.EquipmentRepository;
 import com.undongminjok.api.global.exception.BusinessException;
 import com.undongminjok.api.global.security.CustomUserDetails;
+import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,10 +32,7 @@ public class DailyRecordCommandService {
   public void createRecord(CreateDailyRecordCommand request) {
 
     //로그인한 유저 가져오기
-    CustomUserDetails user =
-        (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-    Long userId = user.getUserId();
+    Long userId = SecurityUtil.getLoginUserInfo().getUserId();
 
     //빈 리스트이면 에러 및 저장 안함
     if (request.getExercises() == null || request.getExercises().isEmpty()) {
