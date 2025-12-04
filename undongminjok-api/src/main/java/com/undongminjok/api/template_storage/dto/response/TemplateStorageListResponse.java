@@ -14,6 +14,6 @@ public class TemplateStorageListResponse {
   private String templateName;
   private String templateContent;
   private String imgPath;
-  private String creatorName;
+  private String creatorNickname;
 
 }

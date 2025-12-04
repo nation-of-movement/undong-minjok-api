@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/records")
 @RequiredArgsConstructor
 public class DailyWorkoutRecordController {
-  private final DailyWorkoutRecordService dailyRecordCommandService;
+  private final DailyWorkoutRecordService dailyWorkoutRecordService;
 
   //날짜 선택 시 빈 기록 자동 생성
   @PostMapping("/{date}/init")
@@ -28,14 +28,14 @@ public class DailyWorkoutRecordController {
   public InitRecordResponse initDailyRecord(
       @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
   ) {
-    return dailyRecordCommandService.initRecord(date);
+    return dailyWorkoutRecordService.initRecord(date);
   }
 
   //운동일지 등록
   @PostMapping
   @PreAuthorize("isAuthenticated()")
   public void creatOrUpdateRecord(@RequestBody CreateDailyRecordRequest command){
-    dailyRecordCommandService.createRecord(command);
+    dailyWorkoutRecordService.createRecord(command);
   }
 
 
@@ -45,6 +45,6 @@ public class DailyWorkoutRecordController {
   public DailyRecordResponse getWorkoutByDate(
       @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
   ) {
-    return dailyRecordCommandService.getWorkoutByDate(date);
+    return dailyWorkoutRecordService.getWorkoutByDate(date);
   }
 }
