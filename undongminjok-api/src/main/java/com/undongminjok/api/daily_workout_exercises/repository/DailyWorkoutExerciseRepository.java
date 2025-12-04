@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface DailyWorkoutExerciseRepository extends JpaRepository<DailyWorkoutExercise, Long> {
 
-    List<DailyWorkoutExercise> findByWorkoutRecordOrderByOrderIndexAsc(DailyWorkoutRecord record);
+  List<DailyWorkoutExercise> findByWorkoutRecordOrderByOrderIndexAsc(DailyWorkoutRecord record);
+
+  void deleteByWorkoutRecord(DailyWorkoutRecord record);
 }
