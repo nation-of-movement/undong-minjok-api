@@ -1,5 +1,6 @@
 package com.undongminjok.api.user.controller;
 
+import com.undongminjok.api.auth.dto.ResetPasswordRequest;
 import com.undongminjok.api.global.dto.ApiResponse;
 import com.undongminjok.api.global.storage.FileStorage;
 import com.undongminjok.api.global.storage.ImageCategory;
@@ -39,5 +40,13 @@ public class UserController {
   ) {
     userService.updateProfileImage(file);
     return ApiResponse.success(null);
+  }
+
+  @PostMapping("/reset-password")
+  public ResponseEntity<ApiResponse<?>> resetPassword(
+      @RequestBody ResetPasswordRequest request
+  ) {
+    userService.resetPassword(request);
+    return ResponseEntity.ok(ApiResponse.success(null));
   }
 }

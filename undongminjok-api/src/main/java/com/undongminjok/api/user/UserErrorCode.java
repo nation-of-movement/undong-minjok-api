@@ -8,7 +8,10 @@ public enum UserErrorCode implements ErrorCode {
   USER_NOT_FOUND("USER_001", "User not found", HttpStatus.NOT_FOUND),
   USER_DUPLICATED("USER_002", "User duplicated", HttpStatus.BAD_REQUEST),
   USER_INVALID_PASSWORD("USER_003", "User invalid password", HttpStatus.BAD_REQUEST),
-  USER_CANCELED("USER_004", "User canceled", HttpStatus.NOT_ACCEPTABLE);
+  USER_CANCELED("USER_004", "User canceled", HttpStatus.NOT_ACCEPTABLE),
+  EMAIL_REQUIRED("EMAIL_001", "Email required" , HttpStatus.BAD_REQUEST),
+  INVALID_PURPOSE("EMAIL_002", "Purpose required" , HttpStatus.BAD_REQUEST),
+  EMAIL_ALREADY_EXISTS("EMAIL_003", "Email already exists", HttpStatus.BAD_REQUEST),;
 
   private final String errorCode;
   private final String message;

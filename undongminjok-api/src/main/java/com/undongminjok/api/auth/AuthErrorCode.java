@@ -11,7 +11,7 @@ public enum AuthErrorCode implements ErrorCode {
   ACCESS_TOKEN_NOT_EXPIRED("AUTH_004", "Access token not expired" , HttpStatus.UNAUTHORIZED ),
   UNAUTHORIZED_USER("AUTH_005", "Unauthorized user" , HttpStatus.UNAUTHORIZED ),
   INVALID_VERIFICATION_CODE("AUTH_006", "Invalid verification code" , HttpStatus.BAD_REQUEST),
-  INVALID_RESET_TOKEN("AUTH_007", "Invalid reset token" , HttpStatus.UNAUTHORIZED);
+  INVALID_RESET_TOKEN("AUTH_007", "Invalid reset token" , HttpStatus.UNAUTHORIZED),;
 
   private final String errorCode;
   private final String message;
