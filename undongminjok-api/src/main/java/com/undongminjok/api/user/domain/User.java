@@ -51,7 +51,7 @@ public class User extends BaseTimeEntity {
   private String profileImagePath;
 
   @Builder(access = AccessLevel.PRIVATE)
-  public User(UserRole role,
+  private User(UserRole role,
       String loginId,
       String password,
       String nickname,
