@@ -34,8 +34,8 @@ public class DailyWorkoutRecordController {
   //운동일지 등록
   @PostMapping
   @PreAuthorize("isAuthenticated()")
-  public void creatOrUpdateRecord(@RequestBody CreateDailyRecordRequest command){
-    dailyWorkoutRecordService.createRecord(command);
+  public void creatOrUpdateRecord(@RequestBody CreateDailyRecordRequest request){
+    dailyWorkoutRecordService.createRecord(request);
   }
 
 
