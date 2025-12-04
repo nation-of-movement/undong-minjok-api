@@ -1,5 +1,6 @@
 package com.undongminjok.api.user.domain;
 
+import com.undongminjok.api.global.dto.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
-public class User {
+public class User extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -78,5 +79,9 @@ public class User {
                .status(UserStatus.ACTIVE)
                .amount(0)
                .build();
+  }
+
+  public void updatePassword(String encode) {
+    this.password = encode;
   }
 }
