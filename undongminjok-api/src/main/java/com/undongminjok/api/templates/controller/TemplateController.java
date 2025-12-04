@@ -23,16 +23,18 @@ public class TemplateController {
 
   private final TemplateService templateService;
 
-  //  1. 조회 (READ)
-  //  템플릿 이름으로 리스트 조회
   @GetMapping
-  public List<TemplateResponseDTO> getTemplatesByName(@RequestParam String name) {
+  public List<TemplateListDTO> getTemplatesByName(@RequestParam String name) {
     return templateService.findByTemplateName(name);
   }
 
-  //  2. 등록 (CREATE)
+  @GetMapping("/{id}")
+  public TemplateDetailDTO getTemplateDetail(@PathVariable Long id) {
+    return templateService.getTemplateDetail(id);
+  }
+
   @PostMapping
-  public TemplateResponseDTO createTemplate(@RequestBody TemplateCreateRequestDTO req) {
+  public TemplateDetailDTO createTemplate(@RequestBody TemplateCreateRequestDTO req) {
     return templateService.createTemplate(
         req.getPicture(),
         req.getName(),
@@ -41,9 +43,8 @@ public class TemplateController {
     );
   }
 
-  //  3. 수정 (UPDATE)
   @PatchMapping("/{id}")
-  public TemplateResponseDTO updateTemplate(
+  public TemplateDetailDTO updateTemplate(
       @PathVariable Long id,
       @RequestBody TemplateUpdateRequestDTO req
   ) {
@@ -55,10 +56,8 @@ public class TemplateController {
     );
   }
 
-  //  4. 삭제 (DELETE)
   @DeleteMapping("/{id}")
   public void deleteTemplate(@PathVariable Long id) {
     templateService.deleteTemplate(id);
   }
-
 }

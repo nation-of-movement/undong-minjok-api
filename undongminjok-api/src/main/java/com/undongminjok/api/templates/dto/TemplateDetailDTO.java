@@ -1,5 +1,7 @@
 package com.undongminjok.api.templates.dto;
 
+import com.undongminjok.api.workoutplan.WorkoutPlanExerciseDTO;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,5 +23,9 @@ public class TemplateDetailDTO {
 
   private String createdAt;
   private String updatedAt;
+
+  private List<WorkoutPlanExerciseDTO> exercises;
+
+
 }
 

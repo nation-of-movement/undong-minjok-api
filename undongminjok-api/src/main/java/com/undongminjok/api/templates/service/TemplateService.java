@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class TemplateService {
 
@@ -26,9 +26,7 @@ public class TemplateService {
   private final UserRepository userRepository;
   private final SecurityUtil securityUtil;
 
-  // ================================
-  // 1. 템플릿 리스트 조회 (최소 데이터)
-  // ================================
+  // 1) 리스트 조회
   public List<TemplateListDTO> findByTemplateName(String keyword) {
     return templateRepository.findByNameContaining(keyword)
         .stream()
@@ -36,9 +34,7 @@ public class TemplateService {
         .toList();
   }
 
-  // ================================
-  // 2. 템플릿 상세 조회
-  // ================================
+  // 2) 상세 조회
   public TemplateDetailDTO getTemplateDetail(Long templateId) {
 
     Long loginUserId = securityUtil.getLoginUserInfo().getUserId();
@@ -52,6 +48,13 @@ public class TemplateService {
         .findByUserAndTemplate(loginUser, template)
         .isPresent();
 
+    List<WorkoutPlanExerciseDTO> exercises =
+        template.getWorkoutPlan()
+            .getExercises()
+            .stream()
+            .map(WorkoutPlanExerciseDTO::from)
+            .toList();
+
     return TemplateDetailDTO.builder()
         .id(template.getId())
         .name(template.getName())
@@ -62,18 +65,15 @@ public class TemplateService {
         .recommendCount(template.getRecommendCount())
         .recommended(recommended)
         .writerNickname(template.getUser().getNickname())
-        .exerciseName(template.getDailyWorkoutExercise() != null ?
-            template.getDailyWorkoutExercise().getExerciseName() : null)
+        .exercises(exercises)
         .createdAt(template.getCreatedAt().toString())
         .updatedAt(template.getUpdatedAt().toString())
         .build();
   }
 
-  // ================================
-  // 3. 템플릿 생성
-  // ================================
+  // 3) 템플릿 생성
   @Transactional
-  public Template createTemplate(String picture, String name, String content, Long price) {
+  public TemplateDetailDTO createTemplate(String picture, String name, String content, Long price) {
 
     Long userId = securityUtil.getLoginUserInfo().getUserId();
     User user = userRepository.findById(userId)
@@ -87,25 +87,36 @@ public class TemplateService {
         .user(user)
         .build();
 
-    return templateRepository.save(template);
+    templateRepository.save(template);
+
+    return TemplateDetailDTO.builder()
+        .id(template.getId())
+        .name(template.getName())
+        .picture(template.getPicture())
+        .price(template.getPrice())
+        .content(template.getContent())
+        .build();
   }
 
-  // ================================
-  // 4. 템플릿 수정
-  // ================================
+  // 4) 수정
   @Transactional
-  public Template updateTemplate(Long id, String picture, String content, Long price) {
+  public TemplateDetailDTO updateTemplate(Long id, String picture, String content, Long price) {
 
     Template template = templateRepository.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("템플릿 없음"));
 
     template.update(picture, content, price);
-    return template;
+
+    return TemplateDetailDTO.builder()
+        .id(template.getId())
+        .name(template.getName())
+        .picture(template.getPicture())
+        .price(template.getPrice())
+        .content(template.getContent())
+        .build();
   }
 
-  // ================================
-  // 5. 템플릿 삭제
-  // ================================
+  // 5) 삭제
   @Transactional
   public void deleteTemplate(Long id) {
 
