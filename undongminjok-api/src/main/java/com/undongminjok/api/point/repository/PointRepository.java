@@ -1,6 +1,5 @@
 package com.undongminjok.api.point.repository;
 
-import com.undongminjok.api.point.domain.PageType;
 import com.undongminjok.api.point.domain.Point;
 import com.undongminjok.api.point.domain.PointType;
 import com.undongminjok.api.point.dto.PointDTO;
@@ -13,8 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PointRepository extends JpaRepository<Point, Long> {
 
-
-  // AND (:pointType IS NULL OR p.type = :pointType)
+  /* MY POINT 조회 페이지 - 전체 조회 */
   @Query("""
     SELECT new com.undongminjok.api.point.dto.PointDTO(
            p.id as pointId,
@@ -22,22 +20,63 @@ public interface PointRepository extends JpaRepository<Point, Long> {
            t.name as templateName,
            p.type as pointType,
            p.method as paymentMethod,
-           u.amount as totalPoint
+           u.amount as totalPoint,
+           p.createdAt as createdDt
         )
     FROM Point p
     JOIN p.user u
     JOIN p.template t
     WHERE u.userId = :userId
-      AND (
-            (:pageType = 'MY' AND p.type IS NULL AND p.type IN ('RECHARGE', 'PURCHASE', 'REFUND')) OR
-            (:pageType = 'MY' AND p.type IS NOT NULL AND p.type = :pointType) OR
-            (:pageType = 'SELLING' AND p.type IS NULL AND p.type IN ('SALE', 'WITHDRAW')) OR
-            (:pageType = 'SELLING' AND p.type IS NOT NULL AND p.type = :pointType)
-      )
+      AND p.type IN ('RECHARGE', 'PURCHASE', 'REFUND')
+    ORDER BY p.createdAt DESC
 """)
-  List<PointDTO> findPointDTOByUserIdAndPointType(
-      @Param("userId") Long userId,
-      @Param("pointType") PointType pointType,
-      @Param("pageType") PageType pageType
+  List<PointDTO> findMyPointAll(
+      @Param("userId") Long userId
   );
+
+  /* MY POINT/SELLING POINT 조회 페이지 - 조건 조회 */
+  @Query("""
+    SELECT new com.undongminjok.api.point.dto.PointDTO(
+           p.id as pointId,
+           t.id as templateId,
+           t.name as templateName,
+           p.type as pointType,
+           p.method as paymentMethod,
+           u.amount as totalPoint,
+           p.createdAt as createdDt
+        )
+    FROM Point p
+    JOIN p.user u
+    JOIN p.template t
+    WHERE u.userId = :userId
+      AND (:pointType IS NULL OR p.type = :pointType)
+    ORDER BY p.createdAt DESC
+""")
+  List<PointDTO> findPointByPointType (
+      @Param("userId") Long userId,
+      @Param("pointType") PointType pointType
+  );
+
+  /* SELLING POINT 조회 페이지 - 전체 조회 */
+  @Query("""
+    SELECT new com.undongminjok.api.point.dto.PointDTO(
+           p.id as pointId,
+           t.id as templateId,
+           t.name as templateName,
+           p.type as pointType,
+           p.method as paymentMethod,
+           u.amount as totalPoint,
+           p.createdAt as createdDt
+        )
+    FROM Point p
+    JOIN p.user u
+    JOIN p.template t
+    WHERE u.userId = :userId
+      AND p.type IN ('SALE', 'WITHDRAW')
+    ORDER BY p.createdAt DESC
+""")
+  List<PointDTO> findSellingPointAll(
+      @Param("userId") Long userId
+  );
+
 }

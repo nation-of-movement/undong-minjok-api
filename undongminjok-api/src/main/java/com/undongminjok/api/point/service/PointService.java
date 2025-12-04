@@ -1,40 +1,51 @@
 package com.undongminjok.api.point.service;
 
-import com.undongminjok.api.global.dto.LoginUserInfo;
 import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.point.domain.PageType;
-import com.undongminjok.api.point.domain.Point;
 import com.undongminjok.api.point.domain.PointType;
 import com.undongminjok.api.point.dto.PointDTO;
 import com.undongminjok.api.point.dto.request.PointRequest;
 import com.undongminjok.api.point.repository.PointRepository;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PointService {
 
-  private PointRepository pointRepository;
+  private final PointRepository pointRepository;
 
   /**
    * 포인트 목록 조회
-   * @param pointRequest (point type)
+   * @param  pointType, pageType
    * @return
    */
-  public List<PointDTO> getPoints(PointRequest pointRequest) {
-
+  public List<PointDTO> getPoints(PointType pointType, PageType pageType) {
     // 로그인 user
-    Long userId = SecurityUtil.getLoginUserInfo().getUserId();
+    //Long userId = SecurityUtil.getLoginUserInfo().getUserId();
+    Long userId = 1L;
 
 
-    PointType pointType = PointType.valueOf(pointRequest.getPointType());
-    PageType  pageType = PageType.valueOf(pointRequest.getPageType());
+    return Optional.ofNullable(pointType)
+        .map(type -> pointRepository.findPointByPointType(userId,type))
+        .orElseGet(() -> {
+          if (pageType == null) {
+            return Collections.emptyList();
+          }
 
-    return pointRepository.findPointDTOByUserIdAndPointType(userId, pointType, pageType);
-
-//    return null;
+          switch (pageType) {
+            case PageType.MY :
+              return pointRepository.findMyPointAll(userId);
+            case PageType.SELLING:
+              return  pointRepository.findSellingPointAll(userId);
+            default:
+              return Collections.emptyList();
+          }
+        });
   }
 
 }

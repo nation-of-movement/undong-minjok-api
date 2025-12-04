@@ -2,8 +2,14 @@ package com.undongminjok.api.point.dto;
 
 import com.undongminjok.api.point.domain.PointType;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
-
+@Builder
+@AllArgsConstructor
+@Getter
 public class PointDTO {
 
   private Long pointId;
@@ -13,7 +19,7 @@ public class PointDTO {
   private String paymentMethod;
   private Integer totalPoint;
 
-  @DateTimeFormat(pattern ="yyyy년MM월dd일")
-  private LocalDate createdDt;
+  @DateTimeFormat(pattern ="yyyy-MM-dd HH:mm:ss")
+  private LocalDateTime createdDt;
 
 }
