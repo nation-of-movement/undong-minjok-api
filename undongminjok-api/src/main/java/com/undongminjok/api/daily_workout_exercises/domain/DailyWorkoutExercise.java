@@ -53,7 +53,7 @@ public class DailyWorkoutExercise extends BaseTimeEntity {
 
     //로그 아이디
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workout_record_id", nullable = false)
+    @JoinColumn(name = "workout_record_id")
     private DailyWorkoutRecord workoutRecord;
 
     //템플릿 ID

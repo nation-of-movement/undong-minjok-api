@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table
+@Table(name = "templates")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -50,6 +50,9 @@ public class Template extends BaseTimeEntity {
  @JoinColumn(name ="user_id")
  private User user;
 
+/*  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name ="exercise_id", nullable = false)
+  private DailyWorkoutExercise dailyWorkoutExercise;*/
 
   @Builder
   public Template(String picture,
