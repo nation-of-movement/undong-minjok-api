@@ -48,7 +48,7 @@ public class User extends BaseTimeEntity {
   private Integer amount;
 
   @Builder(access = AccessLevel.PRIVATE)
-  private User(UserRole role,
+  public User(UserRole role,
       String loginId,
       String password,
       String nickname,
