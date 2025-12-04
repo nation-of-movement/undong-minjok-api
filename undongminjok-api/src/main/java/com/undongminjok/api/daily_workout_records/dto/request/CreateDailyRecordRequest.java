@@ -1,6 +1,6 @@
-package com.undongminjok.api.daily_workout_records.dto.command;
+package com.undongminjok.api.daily_workout_records.dto.request;
 
-import com.undongminjok.api.daily_workout_exercises.dto.command.CreateExerciseCommand;
+import com.undongminjok.api.daily_workout_exercises.dto.request.CreateExerciseRequest;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateDailyRecordCommand {
+public class CreateDailyRecordRequest {
   private LocalDate date;
-  private List<CreateExerciseCommand> exercises;
+  private List<CreateExerciseRequest> exercises;
   private String workoutImgPath;
 }
