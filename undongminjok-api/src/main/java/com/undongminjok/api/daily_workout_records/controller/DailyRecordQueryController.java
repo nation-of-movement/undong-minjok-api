@@ -26,12 +26,6 @@ public class DailyRecordQueryController {
   private final DailyRecordQueryService dailyRecordQueryService;
   private final DailyRecordCommandService dailyRecordCommandService;
 
-  //운동일지 등록
-  @PostMapping
-  @PreAuthorize("isAuthenticated()")
-  public void creatOrUpdateRecord(@RequestBody CreateDailyRecordCommand command){
-    dailyRecordCommandService.createRecord(command);
-  }
 
   //운동일지 조회
   @GetMapping

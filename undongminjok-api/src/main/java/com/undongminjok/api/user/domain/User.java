@@ -47,6 +47,9 @@ public class User extends BaseTimeEntity {
   @Column(nullable = false)
   private Integer amount;
 
+  @Column(length = 255)
+  private String profileImagePath;
+
   @Builder(access = AccessLevel.PRIVATE)
   public User(UserRole role,
       String loginId,
@@ -83,5 +86,9 @@ public class User extends BaseTimeEntity {
 
   public void updatePassword(String encode) {
     this.password = encode;
+  }
+
+  public void updateProfileImage(String path) {
+    this.profileImagePath = path;
   }
 }

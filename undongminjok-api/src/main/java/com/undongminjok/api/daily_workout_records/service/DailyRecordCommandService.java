@@ -39,9 +39,9 @@ public class DailyRecordCommandService {
       throw new BusinessException(DailyRecordErrorCode.EMPTY_EXERCISE_LIST);
     }
 
-    //기존 기록 조회
+    //기존 기록 조회 //없으면 error (이미 init을 거치고 오기 때문에 새로운 기록은 만들어지기 때문)
     DailyWorkoutRecord record = recordRepo.findByUserUserIdAndDate(userId, request.getDate())
-        .orElseGet(() -> saveNewRecord(userId, request.getDate()));
+        .orElseThrow(() -> new BusinessException(DailyRecordErrorCode.RECORD_NOT_FOUND));
 
     //새로운 이미지가 있으면 업데이트
     if (request.getWorkoutImgPath() != null && !request.getWorkoutImgPath().isBlank()) {
@@ -83,15 +83,5 @@ public class DailyRecordCommandService {
     return equipmentRepo.findById(equipmentId)
         .orElseThrow(() ->
             new BusinessException(DailyRecordErrorCode.INVALID_EQUIPMENT_ID));
-  }
-
-  //해당날짜에 아무 일지 기록도 없으면 새로운 운동일지를 만듦
-  private DailyWorkoutRecord saveNewRecord(Long userId, LocalDate date) {
-    return recordRepo.save(
-        DailyWorkoutRecord.builder()
-            .date(date)
-            .user(userRepo.getReferenceById(userId))
-            .build()
-    );
   }
 }
