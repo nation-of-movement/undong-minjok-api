@@ -1,4 +1,4 @@
-package com.undongminjok.api.daily_workout_exercises.dto.command;
+package com.undongminjok.api.daily_workout_exercises.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateExerciseCommand {
+public class CreateExerciseRequest {
   private String exerciseName;
   private String part;
   private Integer reps;
