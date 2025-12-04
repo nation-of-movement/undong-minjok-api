@@ -24,12 +24,14 @@ public class CustomUserDetailsService implements UserDetailsService {
   @Override
   public CustomUserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
     User user = userRepository.findByLoginId(loginId)
-                                     .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+                              .orElseThrow(
+                                  () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
     return new CustomUserDetails(
         user.getUserId()
         , user.getLoginId()
         , user.getPassword()
         , user.getRole()
-    );  }
+    );
+  }
 }

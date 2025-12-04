@@ -1,8 +1,10 @@
 package com.undongminjok.api.templates.domain;
 
 import com.undongminjok.api.global.dto.BaseTimeEntity;
+import com.undongminjok.api.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +22,7 @@ public class Template extends BaseTimeEntity {
 
   // 대표 이미지 URL or 파일 경로
   @Column(name = "template_picture", nullable = false)
-  private String Picture;
+  private String picture;
 
   // 추천(좋아요) 수 — 기본 0, 증가 로직에서 사용
   @Column(name = "recommend_count")
@@ -32,19 +34,61 @@ public class Template extends BaseTimeEntity {
 
   // 템플릿 이름(제목)
   @Column(name = "template_name", length = 50, nullable = false)
-  private String Name;
+  private String name;
 
   // 템플릿 내용(설명)
   @Column(name = "template_content", length = 255, nullable = false)
-  private String Content;
+  private String content;
 
   // 판매 가격
   @Column(name = "template_price", nullable = false)
-  private Long Price;
+  private Long price;
 
 // 작성자(회원) ID — FK(회원 테이블과 매핑될 값)
-// @ManyToOne(fetch = FetchType.LAZY)
-// @JoinColumn(name ="key")
-// private Long key;
+ @ManyToOne(fetch = FetchType.LAZY)
+ @JoinColumn(name ="Users")
+ private User user;
+
+  @Builder
+  public Template(String picture,
+      String name,
+      String content,
+      Long price,
+      User user) {
+
+    this.picture = picture;
+    this.name = name;
+    this.content = content;
+    this.price = price;
+    this.user = user;
+
+    // ⭐ 기본값 자동 설정
+    this.recommendCount = 0L;
+    this.salesCount = 0L;
+
+  }
+
+  // ===============================
+  // ⭐ 수정 도메인 메서드 (Setter 대신)
+  // ===============================
+  public void update(String picture,
+      String content,
+      Long price) {
+
+    this.picture = picture;
+    this.content = content;
+    this.price = price;
+
+  }
+
+  // ⭐ 추천 증가 로직
+  public void increaseRecommend() {
+    this.recommendCount++;
+  }
+
+  // ⭐ 판매 증가 로직
+  public void increaseSales() {
+    this.salesCount++;
+  }
 
 }

@@ -13,25 +13,25 @@ import org.springframework.security.core.userdetails.UserDetails;
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final Long userId;
-    private final String loginId;
-    private final String password;
-    private final UserRole role;
+  private final Long userId;
+  private final String loginId;
+  private final String password;
+  private final UserRole role;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
-    }
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+  }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
+  @Override
+  public String getPassword() {
+    return password;
+  }
 
-    @Override
-    public String getUsername() {
-        return loginId;
-    }
+  @Override
+  public String getUsername() {
+    return loginId;
+  }
 
 
 }
