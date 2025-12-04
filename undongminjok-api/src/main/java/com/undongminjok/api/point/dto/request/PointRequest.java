@@ -7,7 +7,6 @@ import lombok.Getter;
 @Getter
 public class PointRequest {
 
-  private PointType pointType;
-  private PageType pageType;
+
 
 }
