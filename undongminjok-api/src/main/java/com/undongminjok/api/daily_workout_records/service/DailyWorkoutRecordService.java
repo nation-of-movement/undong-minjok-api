@@ -22,11 +22,13 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class DailyWorkoutRecordService {
   private final DailyWorkoutRecordRepository recordRepository;
   private final DailyWorkoutExerciseRepository exerciseRepository;
@@ -35,6 +37,7 @@ public class DailyWorkoutRecordService {
   private final FileStorage fileStorage;
 
   /*기록 초기 등록*/
+  @Transactional
   public InitRecordResponse initRecord(LocalDate date) {
     //로그인한 유저 가져오기
     Long userId = SecurityUtil.getLoginUserInfo().getUserId();
@@ -67,6 +70,7 @@ public class DailyWorkoutRecordService {
   }
 
   /*기록 등록*/
+  @Transactional
   public void createRecord(CreateDailyRecordRequest request) {
 
     //로그인한 유저 가져오기
@@ -162,6 +166,7 @@ public class DailyWorkoutRecordService {
         .build();
   }
 
+  @Transactional
   public void updateWorkoutImage( LocalDate date, MultipartFile file) {
 
     Long userId = SecurityUtil.getLoginUserInfo()
@@ -171,13 +176,31 @@ public class DailyWorkoutRecordService {
         .orElseThrow(() ->
             new BusinessException(DailyRecordErrorCode.WORKOUT_RECORD_NOT_FOUND)
         );
-    //기존 이미지 삭제
-    if (record.getImgPath() != null){
-      fileStorage.deleteQuietly(record.getImgPath());
-    }
+
+    String oldPath = record.getImgPath();
+
     //새로운 파일 경로
-    String path = fileStorage.store(file, ImageCategory.WORKOUT);
+    String newPath = fileStorage.store(file, ImageCategory.WORKOUT);
+
+    //트랜잭션 보상 로직
+    TransactionSynchronizationManager.registerSynchronization(
+        new TransactionSynchronization() {
+          @Override
+          public void afterCompletion(int status) {
+            if (status != STATUS_COMMITTED) {
+              //새파일 삭제
+              fileStorage.deleteQuietly(newPath);
+            } else {
+              //기존 파일 삭제
+              if (oldPath != null) {
+                fileStorage.deleteQuietly(oldPath);
+              }
+            }
+          }
+        }
+    );
+
     //파일 경로 저장
-    record.updateImg(path);
+    record.updateImg(newPath);
   }
 }

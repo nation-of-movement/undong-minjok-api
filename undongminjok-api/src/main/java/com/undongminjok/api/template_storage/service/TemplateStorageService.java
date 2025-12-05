@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class TemplateStorageService {
 
   private final TemplateStorageRepository storageRepository;
@@ -24,6 +23,7 @@ public class TemplateStorageService {
   private final UserRepository userRepository;
 
   //템플릿 저장
+  @Transactional
   public void saveTemplateToStorage(Long templateId) {
     //로그인한 유저 가져오기
     Long userId = SecurityUtil.getLoginUserInfo().getUserId();
@@ -45,12 +45,14 @@ public class TemplateStorageService {
   }
 
   //삭제
+  @Transactional
   public void deleteTemplateFromStorage(Long templateId) {
     Long userId  = SecurityUtil.getLoginUserInfo().getUserId();
     storageRepository.deleteByUserUserIdAndTemplateId(userId, templateId);
   }
 
   //조회
+  @Transactional(readOnly = true)
   public List<TemplateStorageListResponse> getMyTemplateStorageList(){
 
     //로그인한 유저 가져오기
