@@ -13,10 +13,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE Users SET status = 'WITHDRAW' where user_id = ?")
 @Table(name = "users")
 public class User extends BaseTimeEntity {
 
@@ -49,6 +51,9 @@ public class User extends BaseTimeEntity {
 
   @Column(length = 255)
   private String profileImagePath;
+
+  @Column(length = 500)
+  private String bio;
 
   @Builder(access = AccessLevel.PRIVATE)
   private User(UserRole role,
@@ -90,5 +95,13 @@ public class User extends BaseTimeEntity {
 
   public void updateProfileImage(String path) {
     this.profileImagePath = path;
+  }
+
+  public void updateBio(String bio) {
+    this.bio = bio;
+  }
+
+  public void updateNickname(String nickname) {
+    this.nickname = nickname;
   }
 }
