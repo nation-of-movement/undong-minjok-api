@@ -15,6 +15,8 @@ public class PointResponse {
 
   private List<PointDTO> points;
   private List<PointStatusDTO> pointStatuses;
+  private Integer totalPoint;
+  private Integer sellingPoint;
 
 
 }

@@ -12,6 +12,8 @@ import com.undongminjok.api.daily_workout_records.repository.DailyWorkoutRecordR
 import com.undongminjok.api.equipments.domain.Equipment;
 import com.undongminjok.api.equipments.repository.EquipmentRepository;
 import com.undongminjok.api.global.exception.BusinessException;
+import com.undongminjok.api.global.storage.FileStorage;
+import com.undongminjok.api.global.storage.ImageCategory;
 import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.user.repository.UserRepository;
 import java.time.LocalDate;
@@ -20,17 +22,22 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class DailyWorkoutRecordService {
   private final DailyWorkoutRecordRepository recordRepository;
   private final DailyWorkoutExerciseRepository exerciseRepository;
   private final EquipmentRepository equipmentRepository;
   private final UserRepository userRepository;
+  private final FileStorage fileStorage;
 
-  //기록 초기 등록
+  /*기록 초기 등록*/
+  @Transactional
   public InitRecordResponse initRecord(LocalDate date) {
     //로그인한 유저 가져오기
     Long userId = SecurityUtil.getLoginUserInfo().getUserId();
@@ -62,7 +69,8 @@ public class DailyWorkoutRecordService {
         .build();
   }
 
-  //기록 등록
+  /*기록 등록*/
+  @Transactional
   public void createRecord(CreateDailyRecordRequest request) {
 
     //로그인한 유저 가져오기
@@ -119,7 +127,7 @@ public class DailyWorkoutRecordService {
             new BusinessException(DailyRecordErrorCode.INVALID_EQUIPMENT_ID));
   }
 
-
+  /*기록 조회*/
   public DailyRecordResponse getWorkoutByDate(LocalDate date) {
 
     //userid 가져오기 수정
@@ -156,5 +164,43 @@ public class DailyWorkoutRecordService {
         .workoutImg(record.getImgPath())
         .exercises(exerciseResponses)
         .build();
+  }
+
+  @Transactional
+  public void updateWorkoutImage( LocalDate date, MultipartFile file) {
+
+    Long userId = SecurityUtil.getLoginUserInfo()
+        .getUserId();
+
+    DailyWorkoutRecord record = recordRepository.findByUserUserIdAndDate(userId, date)
+        .orElseThrow(() ->
+            new BusinessException(DailyRecordErrorCode.WORKOUT_RECORD_NOT_FOUND)
+        );
+
+    String oldPath = record.getImgPath();
+
+    //새로운 파일 경로
+    String newPath = fileStorage.store(file, ImageCategory.WORKOUT);
+
+    //트랜잭션 보상 로직
+    TransactionSynchronizationManager.registerSynchronization(
+        new TransactionSynchronization() {
+          @Override
+          public void afterCompletion(int status) {
+            if (status != STATUS_COMMITTED) {
+              //새파일 삭제
+              fileStorage.deleteQuietly(newPath);
+            } else {
+              //기존 파일 삭제
+              if (oldPath != null) {
+                fileStorage.deleteQuietly(oldPath);
+              }
+            }
+          }
+        }
+    );
+
+    //파일 경로 저장
+    record.updateImg(newPath);
   }
 }
