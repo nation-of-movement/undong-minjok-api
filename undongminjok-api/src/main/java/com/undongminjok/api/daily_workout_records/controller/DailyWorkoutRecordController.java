@@ -39,13 +39,14 @@ public class DailyWorkoutRecordController {
   }
 
   //사진 등록
-  @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/{date}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @PreAuthorize("isAuthenticated()")
   public ApiResponse<?> uploadWorkoutImage(
-      @RequestParam("file") MultipartFile file
+      @RequestParam("file") MultipartFile file,
+      @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
   ) {
-    String storedPath = fileStorage.store(file, ImageCategory.WORKOUT);
-    return ApiResponse.success(storedPath);
+    dailyWorkoutRecordService.updateWorkoutImage(date, file);
+    return ApiResponse.success(null);
   }
 
   //운동일지 등록
