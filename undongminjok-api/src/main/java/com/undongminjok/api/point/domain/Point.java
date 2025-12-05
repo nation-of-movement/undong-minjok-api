@@ -1,5 +1,6 @@
 package com.undongminjok.api.point.domain;
 
+
 import com.undongminjok.api.global.dto.BaseTimeEntity;
 import com.undongminjok.api.templates.domain.Template;
 import com.undongminjok.api.user.domain.User;
@@ -14,8 +15,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.DateTimeException;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,9 +39,9 @@ public class Point extends BaseTimeEntity {
   @JoinColumn(name="template_id")
   private Template template;
 
-  @Column(nullable = false, name="point_type")
+  @Column(nullable = false, name="point_status")
   @Enumerated(EnumType.STRING)
-  private PointType type;
+  private PointStatus status;
 
   @Column(nullable = false, name="point_amount")
   private Long amount;
@@ -50,5 +49,8 @@ public class Point extends BaseTimeEntity {
   @Column(length = 30, name="payment_method")
   private String method;
 
+  private String bank;
+
+  private String accountNumber;
 
 }
