@@ -35,9 +35,7 @@ public class TemplateService {
   private final SecurityUtil securityUtil;
   private final FileStorage fileStorage; // ⭐ 글로벌 파일 스토리지 사용
 
-  // ---------------------------
   // 1) 템플릿 리스트 조회
-  // ---------------------------
   public List<TemplateListDTO> findByTemplateName(String keyword) {
     return templateRepository.findByNameContaining(keyword)
         .stream()
@@ -45,9 +43,7 @@ public class TemplateService {
         .toList();
   }
 
-  // ---------------------------
   // 2) 상세 조회
-  // ---------------------------
   public TemplateDetailDTO getTemplateDetail(Long templateId) {
 
     Long loginUserId = securityUtil.getLoginUserInfo().getUserId();
@@ -71,11 +67,8 @@ public class TemplateService {
     return TemplateDetailDTO.from(template, recommended, exercises);
   }
 
-  // ---------------------------
-  // 3) 템플릿 생성
-  // ---------------------------
   @Transactional
-  public TemplateDetailDTO createTemplate(TemplateCreateRequestDTO req) {
+  public void createTemplate(TemplateCreateRequestDTO req) {
 
     Long userId = securityUtil.getLoginUserInfo().getUserId();
 
@@ -83,7 +76,7 @@ public class TemplateService {
         .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
 
     Template template = Template.builder()
-        .picture(req.getPicture())  // 기본 대표 이미지
+        .picture(req.getPicture())
         .name(req.getName())
         .content(req.getContent())
         .price(req.getPrice())
@@ -91,22 +84,16 @@ public class TemplateService {
         .build();
 
     templateRepository.save(template);
-
-    return TemplateDetailDTO.from(template);
   }
 
-  // ---------------------------
   // 4) 템플릿 수정
-  // ---------------------------
   @Transactional
-  public TemplateDetailDTO updateTemplate(Long id, TemplateUpdateRequestDTO req) {
+  public void updateTemplate(Long id, TemplateUpdateRequestDTO req) {
 
     Template template = templateRepository.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("템플릿 없음"));
 
     template.update(req.getPicture(), req.getContent(), req.getPrice());
-
-    return TemplateDetailDTO.from(template);
   }
 
   // ---------------------------
@@ -129,9 +116,7 @@ public class TemplateService {
     template.updateThumbnail(path);
   }
 
-  // ---------------------------
   // 6) 템플릿 상세 이미지 업로드
-  // ---------------------------
   @Transactional
   public void updateTemplateImage(Long templateId, MultipartFile file) {
 
@@ -149,9 +134,7 @@ public class TemplateService {
     template.updateTemplateImage(path);
   }
 
-  // ---------------------------
   // 7) 템플릿 삭제
-  // ---------------------------
   @Transactional
   public void deleteTemplate(Long id) {
 

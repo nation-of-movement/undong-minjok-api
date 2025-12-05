@@ -19,7 +19,7 @@ public class TemplateController {
 
   private final TemplateService templateService;
 
-  // 🔍 템플릿 목록 조회 (이름 검색)
+  // 템플릿 목록 조회 (이름 검색)
   @GetMapping
   public ResponseEntity<ApiResponse<List<TemplateListDTO>>> getTemplatesByName(
       @RequestParam String name
@@ -28,7 +28,7 @@ public class TemplateController {
     return ResponseEntity.ok(ApiResponse.success(templates));
   }
 
-  // 🔍 템플릿 상세 조회
+  // 템플릿 상세 조회
   @GetMapping("/{id}")
   public ResponseEntity<ApiResponse<TemplateDetailDTO>> getTemplateDetail(
       @PathVariable Long id
@@ -37,26 +37,26 @@ public class TemplateController {
     return ResponseEntity.ok(ApiResponse.success(detail));
   }
 
-  // ➕ 템플릿 생성
+  // 템플릿 생성
   @PostMapping
   public ResponseEntity<ApiResponse<TemplateDetailDTO>> createTemplate(
       @RequestBody TemplateCreateRequestDTO req
   ) {
-    TemplateDetailDTO created = templateService.createTemplate(req);
-    return ResponseEntity.ok(ApiResponse.success(created));
+    templateService.createTemplate(req);
+    return ResponseEntity.ok(ApiResponse.success(null));
   }
 
-  // ✏ 템플릿 수정
+  // 템플릿 수정
   @PatchMapping("/{id}")
   public ResponseEntity<ApiResponse<TemplateDetailDTO>> updateTemplate(
       @PathVariable Long id,
       @RequestBody TemplateUpdateRequestDTO req
   ) {
-    TemplateDetailDTO updated = templateService.updateTemplate(id, req);
-    return ResponseEntity.ok(ApiResponse.success(updated));
+    templateService.updateTemplate(id, req);
+    return ResponseEntity.ok(ApiResponse.success(null));
   }
 
-  // ❌ 템플릿 삭제
+  // 템플릿 삭제
   @DeleteMapping("/{id}")
   public ResponseEntity<ApiResponse<Void>> deleteTemplate(
       @PathVariable Long id
@@ -65,7 +65,7 @@ public class TemplateController {
     return ResponseEntity.ok(ApiResponse.success(null));
   }
 
-  // ⭐ 템플릿 썸네일 업로드 (리스트용 이미지)
+  // 템플릿 썸네일 업로드 (리스트용 이미지)
   @PostMapping("/{id}/thumbnail")
   public ResponseEntity<ApiResponse<Void>> uploadThumbnail(
       @PathVariable Long id,
@@ -75,7 +75,7 @@ public class TemplateController {
     return ResponseEntity.ok(ApiResponse.success(null));
   }
 
-  // ⭐ 템플릿 상세 이미지 업로드 (미리보기 이미지)
+  // 템플릿 상세 이미지 업로드 (미리보기 이미지)
   @PostMapping("/{id}/image")
   public ResponseEntity<ApiResponse<Void>> uploadTemplateImage(
       @PathVariable Long id,

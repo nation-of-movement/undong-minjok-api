@@ -25,7 +25,7 @@ public class Template extends BaseTimeEntity {
   @Column(name = "template_picture", nullable = false)
   private String picture;
 
-  // ⭐ 추가된 필드들
+  // 추가된 필드들
   private String thumbnailImage;   // 템플릿 리스트용 이미지(썸네일)
   private String templateImage;    // 상세 템플릿 미리보기 이미지
 
@@ -101,7 +101,7 @@ public class Template extends BaseTimeEntity {
       this.recommendCount--;
     }
 
-  // ⭐ 이미지 업데이트 메서드 2개 추가
+  // 이미지 업데이트 메서드 2개 추가
   public void updateThumbnail(String path) {
     this.thumbnailImage = path;
   }
@@ -110,7 +110,7 @@ public class Template extends BaseTimeEntity {
     this.templateImage = path;
   }
 
-  // ⭐ Getter 메서드 추가 (서비스에서 필요)
+  //  Getter 메서드 추가 (서비스에서 필요)
   public String getThumbnailImage() {
     return this.thumbnailImage;
   }

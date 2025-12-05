@@ -28,7 +28,7 @@ public class TemplateDetailDTO {
   private List<WorkoutPlanExerciseDTO> exercises;
 
 
-  public static TemplateDetailDTO from(Template t) {
+  public static TemplateDetailDTO from(Template t, boolean recommended, List<WorkoutPlanExerciseDTO> exercises) {
     return TemplateDetailDTO.builder()
         .id(t.getId())
         .name(t.getName())
@@ -38,6 +38,8 @@ public class TemplateDetailDTO {
         .salesCount(t.getSalesCount())
         .recommendCount(t.getRecommendCount())
         .writerNickname(t.getUser().getNickname())
+        .recommended(recommended)
+        .exercises(exercises)
         .build();
   }
 }
