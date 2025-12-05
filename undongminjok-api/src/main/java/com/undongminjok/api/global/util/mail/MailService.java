@@ -1,4 +1,4 @@
-package com.undongminjok.api.global.util;
+package com.undongminjok.api.global.util.mail;
 //
 import com.undongminjok.api.auth.dto.EmailRequest;
 import com.undongminjok.api.global.domain.MailType;
