@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UserProviderServiceImp implements UserProviderService{
+public class UserProviderServiceImpl implements UserProviderService{
 
   private final UserRepository userRepository;
 
