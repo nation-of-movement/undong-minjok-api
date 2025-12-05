@@ -8,7 +8,11 @@ import com.undongminjok.api.global.util.AuthRedisService;
 import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.user.UserErrorCode;
 import com.undongminjok.api.user.domain.User;
+import com.undongminjok.api.user.dto.UpdateBioRequest;
+import com.undongminjok.api.user.dto.UpdateNicknameRequest;
 import com.undongminjok.api.user.dto.UserCreateRequest;
+import com.undongminjok.api.user.dto.UserInfoResponse;
+import com.undongminjok.api.user.dto.UserProfileResponse;
 import com.undongminjok.api.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -82,5 +86,58 @@ public class UserService {
 
     // 토큰 1회용 처리 (삭제)
     authRedisService.deleteResetToken(request.getResetToken());
+  }
+
+  public UserInfoResponse getMyInfo() {
+    Long userId = SecurityUtil.getLoginUserInfo()
+                              .getUserId();
+
+    User user = userRepository.findById(userId)
+                              .orElseThrow(
+                                  () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+
+    return UserInfoResponse.from(user);
+  }
+
+  public UserProfileResponse getUserProfile(String loginId) {
+
+    User user = userRepository.findByLoginId(loginId)
+                              .orElseThrow(
+                                  () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+
+    return UserProfileResponse.from(user);
+  }
+
+  @Transactional
+  public void deleteUser() {
+    Long userId = SecurityUtil.getLoginUserInfo()
+                              .getUserId();
+
+    userRepository.deleteById(userId);
+  }
+
+  @Transactional
+  public void updateBio(UpdateBioRequest request) {
+    Long userId = SecurityUtil.getLoginUserInfo()
+                              .getUserId();
+
+    User user = userRepository.findById(userId)
+                              .orElseThrow(
+                                  () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+
+    user.updateBio(request.getBio());
+  }
+
+  @Transactional
+  public void updateNickname(UpdateNicknameRequest request) {
+
+    Long userId = SecurityUtil.getLoginUserInfo()
+                              .getUserId();
+
+    User user = userRepository.findById(userId)
+                              .orElseThrow(
+                                  () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+
+    user.updateNickname(request.getNickname());
   }
 }
