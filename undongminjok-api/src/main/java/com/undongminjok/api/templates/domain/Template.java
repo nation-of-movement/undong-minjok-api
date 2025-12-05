@@ -11,7 +11,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Template {
+public class Template extends BaseTimeEntity{
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,9 +66,4 @@ public class Template {
   public void decreaseRecommend() { if (this.recommendCount > 0) this.recommendCount--; }
   public void increaseSales() { this.salesCount++; }
 
-  public Object getCreatedAt() {
-  }
-
-  public Object getUpdatedAt() {
-  }
 }

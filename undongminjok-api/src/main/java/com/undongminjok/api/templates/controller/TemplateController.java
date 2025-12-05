@@ -9,15 +9,7 @@ import com.undongminjok.api.templates.service.TemplateService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,36 +18,49 @@ public class TemplateController {
 
   private final TemplateService templateService;
 
+   //  템플릿 목록 조회 (이름 검색)
   @GetMapping
-  public ResponseEntity<ApiResponse<List<TemplateListDTO>>> getTemplatesByName(@RequestParam String name) {
-    List<TemplateListDTO> result = templateService.findByTemplateName(name);
-    return ResponseEntity.ok(ApiResponse.success("템플릿 목록 조회 성공", result));
+  public ResponseEntity<ApiResponse<List<TemplateListDTO>>> getTemplatesByName(
+      @RequestParam String name
+  ) {
+    List<TemplateListDTO> templates = templateService.findByTemplateName(name);
+    return ResponseEntity.ok(ApiResponse.success(templates));
   }
 
+   // 템플릿 상세 조회
   @GetMapping("/{id}")
-  public ResponseEntity<ApiResponse<TemplateDetailDTO>> getTemplateDetail(@PathVariable Long id) {
+  public ResponseEntity<ApiResponse<TemplateDetailDTO>> getTemplateDetail(
+      @PathVariable Long id
+  ) {
     TemplateDetailDTO detail = templateService.getTemplateDetail(id);
-    return ResponseEntity.ok(ApiResponse.success("템플릿 상세 조회 성공", detail));
+    return ResponseEntity.ok(ApiResponse.success(detail));
   }
 
+   //  템플릿 생성
   @PostMapping
-  public ResponseEntity<ApiResponse<TemplateDetailDTO>> createTemplate(@RequestBody TemplateCreateRequestDTO req) {
-    TemplateDetailDTO result = templateService.createTemplate(req);
-    return ResponseEntity.ok(ApiResponse.success("템플릿 생성 성공", result));
+  public ResponseEntity<ApiResponse<TemplateDetailDTO>> createTemplate(
+      @RequestBody TemplateCreateRequestDTO req
+  ) {
+    TemplateDetailDTO created = templateService.createTemplate(req);
+    return ResponseEntity.ok(ApiResponse.success(created));
   }
 
+   //  템플릿 수정
   @PatchMapping("/{id}")
   public ResponseEntity<ApiResponse<TemplateDetailDTO>> updateTemplate(
       @PathVariable Long id,
       @RequestBody TemplateUpdateRequestDTO req
   ) {
-    TemplateDetailDTO result = templateService.updateTemplate(id, req);
-    return ResponseEntity.ok(ApiResponse.success("템플릿 수정 성공", result));
+    TemplateDetailDTO updated = templateService.updateTemplate(id, req);
+    return ResponseEntity.ok(ApiResponse.success(updated));
   }
 
+   // 템플릿 삭제
   @DeleteMapping("/{id}")
-  public ResponseEntity<ApiResponse<Void>> deleteTemplate(@PathVariable Long id) {
+  public ResponseEntity<ApiResponse<Void>> deleteTemplate(
+      @PathVariable Long id
+  ) {
     templateService.deleteTemplate(id);
-    return ResponseEntity.ok(ApiResponse.success("템플릿 삭제 성공"));
+    return ResponseEntity.ok(ApiResponse.success(null));
   }
 }
