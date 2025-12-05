@@ -42,6 +42,9 @@ public class PointController {
     // 포인트 구분 목록
     List<PointStatusDTO> pointStatuses = pointService.getPointStatuses();
 
+    // 총 포인트
+
+
     // 빌드
     PointResponse pointResponse = PointResponse.builder()
                   .points(points)
