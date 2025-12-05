@@ -5,6 +5,7 @@ import com.undongminjok.api.global.dto.ApiResponse;
 import com.undongminjok.api.point.domain.PageType;
 import com.undongminjok.api.point.domain.PointStatus;
 import com.undongminjok.api.point.dto.PointDTO;
+import com.undongminjok.api.point.dto.PointStatusDTO;
 import com.undongminjok.api.point.dto.response.PointDetailResponse;
 import com.undongminjok.api.point.dto.response.PointResponse;
 import com.undongminjok.api.point.service.PointService;
@@ -35,8 +36,17 @@ public class PointController {
       @RequestParam(required = false) PointStatus pointStatus,
       @RequestParam PageType pageType) {
 
-    List<PointDTO> response = pointService.getPoints(pointStatus, pageType);
-    PointResponse pointResponse = PointResponse.builder().points(response).build();
+    // 포인트 조회 목록
+    List<PointDTO> points = pointService.getPoints(pointStatus, pageType);
+
+    // 포인트 구분 목록
+    List<PointStatusDTO> pointStatuses = pointService.getPointStatuses();
+
+    // 빌드
+    PointResponse pointResponse = PointResponse.builder()
+                  .points(points)
+                  .pointStatuses(pointStatuses)
+                  .build();
 
     return ResponseEntity.ok(ApiResponse.success(pointResponse));
   }

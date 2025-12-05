@@ -16,7 +16,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
   //  /* MY POINT 조회 페이지 - 전체 조회 */
   @Query("""
     SELECT new com.undongminjok.api.point.dto.PointDTO(
-           p.id as pointId,
+          p.id as pointId,
            t.name as templateName,
            p.status as pointStatus,
            t.price,
@@ -59,16 +59,16 @@ public interface PointRepository extends JpaRepository<Point, Long> {
   /* SELLING POINT 조회 페이지 - 전체 조회 */
   @Query("""
     SELECT new com.undongminjok.api.point.dto.PointDTO(
-         p.id as pointId,
+          p.id as pointId,
            t.name as templateName,
            p.status as pointStatus,
            t.price,
            u.amount as totalPoint,
            p.createdAt as createdDt
         )
-     FROM Point p
-     JOIN p.user u
-     JOIN p.template t
+    FROM Point p
+    JOIN p.user u
+    JOIN p.template t
     WHERE u.userId = :userId
       AND p.status IN ('SALE', 'WITHDRAW', 'WITHDRAW_WAIT')
     ORDER BY p.createdAt DESC

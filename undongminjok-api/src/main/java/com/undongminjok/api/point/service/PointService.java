@@ -6,9 +6,12 @@ import com.undongminjok.api.point.PointErrorCode;
 import com.undongminjok.api.point.domain.PageType;
 import com.undongminjok.api.point.domain.PointStatus;
 import com.undongminjok.api.point.dto.PointDTO;
+import com.undongminjok.api.point.dto.PointStatusDTO;
 import com.undongminjok.api.point.dto.response.PointDetailResponse;
 import com.undongminjok.api.point.repository.PointRepository;
 import com.undongminjok.api.user.UserErrorCode;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +35,7 @@ public class PointService {
 //    Long userId = Optional.ofNullable(SecurityUtil.getLoginUserInfo().getUserId())
 //                        .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
     Long userId = 1L;
-    return Optional.ofNullable(pointStatus)
+    List<PointDTO> response = Optional.ofNullable(pointStatus)
         .map(type -> pointRepository.findPointByPointStatus(userId, pointStatus.getStatus()))
         .orElseGet(() -> {
           if (pageType == null) {
@@ -48,6 +51,7 @@ public class PointService {
               return Collections.emptyList();
           }
         });
+    return response;
   }
 
 
@@ -65,5 +69,17 @@ public class PointService {
     return Optional.ofNullable(pointRepository.findMyPointByPointId(userId,pointId))
         .orElseThrow(() -> new BusinessException(PointErrorCode.POINT_HISTORY_NOT_FOUND));
 
+  }
+
+  /**
+   *
+   * PointStatus enum class로 리스트 가져오기
+   * @return
+   */
+  public List<PointStatusDTO> getPointStatuses () {
+
+    return Arrays.stream(PointStatus.values())
+        .map(status -> new PointStatusDTO(status.getStatus(), status.getStatusName()))
+        .toList();
   }
 }
