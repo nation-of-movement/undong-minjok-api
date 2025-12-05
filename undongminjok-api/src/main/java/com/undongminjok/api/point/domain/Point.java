@@ -44,7 +44,7 @@ public class Point extends BaseTimeEntity {
   private PointStatus status;
 
   @Column(nullable = false, name="point_amount")
-  private Long amount;
+  private Integer amount;
 
   @Column(length = 30, name="payment_method")
   private String method;

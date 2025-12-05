@@ -11,6 +11,7 @@ import com.undongminjok.api.point.dto.response.PointResponse;
 import com.undongminjok.api.point.service.PointService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-
+@Slf4j
 @RequestMapping("/api/v1/points")
 public class PointController {
 
@@ -33,25 +34,10 @@ public class PointController {
    */
   @GetMapping("")
   public ResponseEntity<ApiResponse<PointResponse>> points(
-      @RequestParam(required = false) PointStatus pointStatus,
-      @RequestParam PageType pageType) {
+      @RequestParam(required = false) PointStatus pointStatus) {
 
-    // 포인트 조회 목록
-    List<PointDTO> points = pointService.getPoints(pointStatus, pageType);
-
-    // 포인트 구분 목록
-    List<PointStatusDTO> pointStatuses = pointService.getPointStatuses();
-
-    // 총 포인트
-
-
-    // 빌드
-    PointResponse pointResponse = PointResponse.builder()
-                  .points(points)
-                  .pointStatuses(pointStatuses)
-                  .build();
-
-    return ResponseEntity.ok(ApiResponse.success(pointResponse));
+    PointResponse response = pointService.getPointResponse(pointStatus);
+    return ResponseEntity.ok(ApiResponse.success(response));
   }
 
   /**
