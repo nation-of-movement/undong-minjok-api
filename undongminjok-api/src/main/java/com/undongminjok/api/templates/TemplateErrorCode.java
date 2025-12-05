@@ -5,7 +5,8 @@ import com.undongminjok.api.templates.domain.Template;
 import org.springframework.http.HttpStatus;
 
 public enum TemplateErrorCode implements ErrorCode{
-  TEMPLATE_NOT_FOUND("TEMPLATE_001", "해당 템플릿을 찾을 수 없습니다.", HttpStatus.NOT_FOUND) ;
+  TEMPLATE_NOT_FOUND("TEMPLATE_001", "해당 템플릿을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+  TEMPLATE_HAS_NO_EXERCISES("TEMPLATE_002", "해당 템플릿에 운동 내용이 없습니다", HttpStatus.NOT_FOUND);
 
   private final String errorCode;
   private final String message;
