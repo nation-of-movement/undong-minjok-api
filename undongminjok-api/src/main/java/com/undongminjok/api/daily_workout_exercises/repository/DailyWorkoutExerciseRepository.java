@@ -11,4 +11,8 @@ public interface DailyWorkoutExerciseRepository extends JpaRepository<DailyWorko
   List<DailyWorkoutExercise> findByWorkoutRecordOrderByOrderIndexAsc(DailyWorkoutRecord record);
 
   void deleteByWorkoutRecord(DailyWorkoutRecord record);
+
+  List<DailyWorkoutExercise> findByTemplateIdOrderByOrderIndexAsc(Long templateId);
+
+  int countByWorkoutRecord(DailyWorkoutRecord record);
 }
