@@ -1,4 +1,4 @@
-package com.undongminjok.api.auth.service;
+package com.undongminjok.api.global.util.mail;
 
 import java.util.Random;
 

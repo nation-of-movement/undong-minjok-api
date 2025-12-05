@@ -1,11 +1,9 @@
 package com.undongminjok.api.auth.service;
 
 import com.undongminjok.api.auth.AuthErrorCode;
-import com.undongminjok.api.auth.domain.VerificationPurpose;
 import com.undongminjok.api.auth.dto.AccessTokenResponse;
 import com.undongminjok.api.auth.dto.EmailRequest;
 import com.undongminjok.api.auth.dto.LoginRequest;
-import com.undongminjok.api.auth.dto.ResetPasswordRequest;
 import com.undongminjok.api.auth.dto.TokenResponse;
 import com.undongminjok.api.auth.dto.VerificationCodeRequest;
 import com.undongminjok.api.auth.dto.VerificationCodeResponse;
@@ -14,19 +12,17 @@ import com.undongminjok.api.global.dto.LoginUserInfo;
 import com.undongminjok.api.global.exception.BusinessException;
 import com.undongminjok.api.global.security.jwt.JwtTokenProvider;
 import com.undongminjok.api.global.util.AuthRedisService;
-import com.undongminjok.api.global.util.MailService;
+import com.undongminjok.api.global.util.mail.EmailVerificationCode;
+import com.undongminjok.api.global.util.mail.MailService;
 import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.user.UserErrorCode;
 import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.user.domain.UserStatus;
 import com.undongminjok.api.user.repository.UserRepository;
-import java.util.Optional;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 @RequiredArgsConstructor
 @Service
@@ -119,34 +115,41 @@ public class AuthService {
                               .build();
   }
 
-  @Transactional
   public void sendVerificationCode(EmailRequest request) {
 
-    if (request.getPurpose() == VerificationPurpose.PASSWORD_RESET) {
-      userRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
-    }
+    validateEmailRequest(request);
 
-    MailType mailType = MailType.VERIFICATION;
+    switch (request.getPurpose()) {
+      case SIGNUP -> validateForSignup(request.getEmail());
+
+      case PASSWORD_SEARCH -> validateForPasswordSearch(request.getEmail());
+
+      case PASSWORD_RESET -> validateForPasswordReset(request.getEmail());
+    }
 
     String code = EmailVerificationCode.getCode();
 
     authRedisService.saveVerificationCode(request, code);
 
-    mailService.sendMail(request, mailType, code);
-
+    mailService.sendMail(request, MailType.VERIFICATION, code);
   }
 
-  @Transactional
+  private void validateForSignup(String email) {
+    boolean exists = userRepository.existsByEmail(email);
+    if (exists) {
+      throw new BusinessException(UserErrorCode.EMAIL_ALREADY_EXISTS);
+    }
+  }
+
   public VerificationCodeResponse existVerificationCode(VerificationCodeRequest request) {
 
-    Boolean exist = authRedisService.existVerificationCode(
-        request);
+    Boolean exist = authRedisService.existVerificationCode(request);
 
     if (Boolean.FALSE.equals(exist)) {
       throw new BusinessException(AuthErrorCode.INVALID_VERIFICATION_TOKEN);
     }
 
+    // 인증코드 1회용 → 즉시 삭제
     authRedisService.deleteKeyEmail(request);
 
     return switch (request.getPurpose()) {
@@ -154,6 +157,7 @@ public class AuthService {
                                              .success(true)
                                              .resetToken(null)
                                              .build();
+
       case PASSWORD_RESET -> {
         String resetToken = authRedisService.createAndSaveResetToken(request.getEmail());
         yield VerificationCodeResponse.builder()
@@ -161,25 +165,33 @@ public class AuthService {
                                       .resetToken(resetToken)
                                       .build();
       }
+
+      default -> throw new BusinessException(UserErrorCode.INVALID_PURPOSE);
     };
-
-
   }
 
-  @Transactional
-  public void resetPassword(ResetPasswordRequest request) {
-    // resetToken 으로 이메일 조회 + 유효성 검증
-    String email = authRedisService.getEmailByResetToken(request.getResetToken());
+  private void validateEmailRequest(EmailRequest request) {
+    if (request.getEmail() == null || request.getEmail().isBlank()) {
+      throw new BusinessException(UserErrorCode.EMAIL_REQUIRED);
+    }
+    if (request.getPurpose() == null) {
+      throw new BusinessException(UserErrorCode.INVALID_PURPOSE);
+    }
+  }
 
-    // 이메일로 유저 조회
-    User user = userRepository.findByEmail(email)
-                              .orElseThrow(
-                                  () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+  private void validateForPasswordSearch(String email) {
+    userRepository.findByEmail(email)
+                  .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+  }
 
-    // 비밀번호 변경
-    user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
+  private void validateForPasswordReset(String email) {
 
-    // 토큰 1회용 처리 (삭제)
-    authRedisService.deleteResetToken(request.getResetToken());
+    Long userId = SecurityUtil.getLoginUserInfo().getUserId();
+    if (userId == null) {
+      throw new BusinessException(AuthErrorCode.UNAUTHORIZED_USER);
+    }
+
+    userRepository.findByEmail(email)
+                  .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
   }
 }
