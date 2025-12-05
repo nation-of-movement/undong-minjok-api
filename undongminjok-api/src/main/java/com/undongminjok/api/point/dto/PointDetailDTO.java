@@ -16,6 +16,7 @@ public class PointDetailDTO {
   private String templateName;
   private PointStatus pointStatus;
   private Long price;
+  private Integer amount;
   private String paymentMethod;
   private String bank;
   private String accountNumber;

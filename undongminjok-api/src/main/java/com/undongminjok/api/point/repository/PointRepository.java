@@ -61,6 +61,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
            t.name as templateName,
            p.status as pointStatus,
            t.price,
+           p.amount,
            p.method as paymentMethod,
            p.bank,
            p.accountNumber,

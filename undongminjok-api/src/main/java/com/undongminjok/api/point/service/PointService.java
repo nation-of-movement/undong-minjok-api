@@ -86,7 +86,6 @@ public class PointService {
 
     return PointDetailResponse.builder()
         .pointDetailDTO(point)
-        .sellingPoint(getSellingPoints(userId))
         .totalPoint(userProviderService.getUserAccount(userId))
         .build();
 
