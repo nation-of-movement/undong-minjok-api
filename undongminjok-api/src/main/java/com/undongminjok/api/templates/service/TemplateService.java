@@ -2,14 +2,17 @@ package com.undongminjok.api.templates.service;
 
 import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.templates.domain.Template;
+import com.undongminjok.api.templates.dto.TemplateCreateRequestDTO;
 import com.undongminjok.api.templates.dto.TemplateDetailDTO;
 import com.undongminjok.api.templates.dto.TemplateListDTO;
+import com.undongminjok.api.templates.dto.TemplateUpdateRequestDTO;
 import com.undongminjok.api.templates.repository.TemplateRecommendRepository;
 import com.undongminjok.api.templates.repository.TemplateRepository;
 
 import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.user.repository.UserRepository;
 
+import com.undongminjok.api.workoutplan.WorkoutPlanExerciseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,47 +76,35 @@ public class TemplateService {
 
   // 3) 템플릿 생성
   @Transactional
-  public TemplateDetailDTO createTemplate(String picture, String name, String content, Long price) {
+  public TemplateDetailDTO createTemplate(TemplateCreateRequestDTO req) {
 
     Long userId = securityUtil.getLoginUserInfo().getUserId();
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
 
     Template template = Template.builder()
-        .picture(picture)
-        .name(name)
-        .content(content)
-        .price(price)
+        .picture(req.getPicture())
+        .name(req.getName())
+        .content(req.getContent())
+        .price(req.getPrice())
         .user(user)
         .build();
 
     templateRepository.save(template);
 
-    return TemplateDetailDTO.builder()
-        .id(template.getId())
-        .name(template.getName())
-        .picture(template.getPicture())
-        .price(template.getPrice())
-        .content(template.getContent())
-        .build();
+    return TemplateDetailDTO.from(template);
   }
 
   // 4) 수정
   @Transactional
-  public TemplateDetailDTO updateTemplate(Long id, String picture, String content, Long price) {
+  public TemplateDetailDTO updateTemplate(Long id, TemplateUpdateRequestDTO req) {
 
     Template template = templateRepository.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("템플릿 없음"));
 
-    template.update(picture, content, price);
+    template.update(req.getPicture(), req.getContent(), req.getPrice());
 
-    return TemplateDetailDTO.builder()
-        .id(template.getId())
-        .name(template.getName())
-        .picture(template.getPicture())
-        .price(template.getPrice())
-        .content(template.getContent())
-        .build();
+    return TemplateDetailDTO.from(template);
   }
 
   // 5) 삭제

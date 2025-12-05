@@ -1,5 +1,6 @@
 package com.undongminjok.api.templates.dto;
 
+import com.undongminjok.api.templates.domain.Template;
 import com.undongminjok.api.workoutplan.WorkoutPlanExerciseDTO;
 import java.util.List;
 import lombok.Builder;
@@ -27,5 +28,17 @@ public class TemplateDetailDTO {
   private List<WorkoutPlanExerciseDTO> exercises;
 
 
+  public static TemplateDetailDTO from(Template t) {
+    return TemplateDetailDTO.builder()
+        .id(t.getId())
+        .name(t.getName())
+        .content(t.getContent())
+        .picture(t.getPicture())
+        .price(t.getPrice())
+        .salesCount(t.getSalesCount())
+        .recommendCount(t.getRecommendCount())
+        .writerNickname(t.getUser().getNickname())
+        .build();
+  }
 }
 

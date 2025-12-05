@@ -65,4 +65,10 @@ public class Template {
   public void increaseRecommend() { this.recommendCount++; }
   public void decreaseRecommend() { if (this.recommendCount > 0) this.recommendCount--; }
   public void increaseSales() { this.salesCount++; }
+
+  public Object getCreatedAt() {
+  }
+
+  public Object getUpdatedAt() {
+  }
 }

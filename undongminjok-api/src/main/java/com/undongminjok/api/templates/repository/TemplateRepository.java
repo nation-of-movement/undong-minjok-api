@@ -2,7 +2,9 @@ package com.undongminjok.api.templates.repository;
 
 import com.undongminjok.api.templates.domain.Template;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface TemplateRepository extends JpaRepository<Template, Long> {
 
@@ -17,6 +19,4 @@ public interface TemplateRepository extends JpaRepository<Template, Long> {
         where t.id = :id
     """)
   Optional<Template> findDetailById(Long id);
-}
-
 }
