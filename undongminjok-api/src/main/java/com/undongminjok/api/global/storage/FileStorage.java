@@ -1,6 +1,5 @@
 package com.undongminjok.api.global.storage;
 
-import com.undongminjok.api.templates.image.TemplateImageCategory;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileStorage {
@@ -14,5 +13,4 @@ public interface FileStorage {
   /* 트랜잭션 보상 처리 */
   void deleteQuietly(String fileName);
 
-  String store(MultipartFile file, TemplateImageCategory category);
 }

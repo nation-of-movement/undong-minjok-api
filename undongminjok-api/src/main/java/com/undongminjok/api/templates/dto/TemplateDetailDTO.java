@@ -13,32 +13,36 @@ public class TemplateDetailDTO {
   private Long id;
   private String name;
   private String content;
-  private String picture;
   private Long price;
+
+  private String thumbnailImage;   // 추가
+  private String templateImage;    // 추가
+
   private Long salesCount;
   private Long recommendCount;
 
-  private boolean recommended; // 현재 유저가 이 템플릿 추천했는지 여부
+  private boolean recommended;
   private String writerNickname;
-  private String exerciseName;
 
   private String createdAt;
   private String updatedAt;
 
   private List<WorkoutPlanExerciseDTO> exercises;
 
-
   public static TemplateDetailDTO from(Template t, boolean recommended, List<WorkoutPlanExerciseDTO> exercises) {
     return TemplateDetailDTO.builder()
         .id(t.getId())
         .name(t.getName())
         .content(t.getContent())
-        .picture(t.getPicture())
         .price(t.getPrice())
+        .thumbnailImage(t.getThumbnailImage())
+        .templateImage(t.getTemplateImage())
         .salesCount(t.getSalesCount())
         .recommendCount(t.getRecommendCount())
         .writerNickname(t.getUser().getNickname())
         .recommended(recommended)
+        .createdAt(t.getCreatedAt().toString())
+        .updatedAt(t.getUpdatedAt().toString())
         .exercises(exercises)
         .build();
   }

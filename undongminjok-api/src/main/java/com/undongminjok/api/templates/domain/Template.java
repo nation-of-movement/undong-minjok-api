@@ -22,12 +22,15 @@ public class Template extends BaseTimeEntity {
   private Long id;
 
   // 대표 이미지 URL or 파일 경로
-  @Column(name = "template_picture", nullable = false)
-  private String picture;
+  // @Column(name = "template_picture", nullable = false)
+  // private String picture;
 
   // 추가된 필드들
-  private String thumbnailImage;   // 템플릿 리스트용 이미지(썸네일)
-  private String templateImage;    // 상세 템플릿 미리보기 이미지
+  @Column(name = "thumbnail_image")
+  private String thumbnailImage;
+
+  @Column(name = "template_image")
+  private String templateImage;
 
   // 추천(좋아요) 수 — 기본 0, 증가 로직에서 사용
   @Column(name = "recommend_count")
@@ -61,13 +64,16 @@ public class Template extends BaseTimeEntity {
 
 
   @Builder
-  public Template(String picture,
+  public Template(String thumbnailImage,
+      String templateImage,
       String name,
       String content,
       Long price,
       User user) {
 
-    this.picture = picture;
+    // this.picture = picture;
+    this.templateImage = templateImage;
+    this.thumbnailImage = thumbnailImage;
     this.name = name;
     this.content = content;
     this.price = price;
@@ -79,11 +85,12 @@ public class Template extends BaseTimeEntity {
   }
 
   // 수정 도메인 메서드 (Setter 대신)
-  public void update(String picture,
+  public void update(String templateImage,
       String content,
       Long price) {
 
-    this.picture = picture;
+    // this.picture = picture;
+    this.templateImage = templateImage;
     this.content = content;
     this.price = price;
 

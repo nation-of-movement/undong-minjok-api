@@ -1,7 +1,6 @@
 package com.undongminjok.api.global.storage;
 
 import com.undongminjok.api.global.exception.BusinessException;
-import com.undongminjok.api.templates.image.TemplateImageCategory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -43,13 +42,6 @@ public class LocalFileStorageService implements FileStorage {
     return saveFile(file, category.getDir());
   }
 
-  // ===========================================================
-  // ⭐ TemplateImageCategory 저장 (Template 도메인 전용)
-  // ===========================================================
-  @Override
-  public String store(MultipartFile file, TemplateImageCategory category) {
-    return saveFile(file, category.getDir());
-  }
 
   // ===========================================================
   // ⭐ 공통 파일 저장 로직 — Global/Template 모두 이 메서드를 사용

@@ -10,14 +10,14 @@ public class TemplateListDTO {
 
   private Long id;
   private String name;
-  private String picture;
+  private String thumbnailImage;
   private Long price;
 
   public static TemplateListDTO from(Template t) {
     return TemplateListDTO.builder()
         .id(t.getId())
         .name(t.getName())
-        .picture(t.getPicture())
+        .thumbnailImage(t.getThumbnailImage())
         .price(t.getPrice())
         .build();
   }}

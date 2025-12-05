@@ -15,7 +15,6 @@ public class TemplateCreateRequestDTO {
 
   private String name;
   private String content;
-  private String picture;
   private Long price;
 
   private List<WorkoutPlanExerciseDTO> exercises;

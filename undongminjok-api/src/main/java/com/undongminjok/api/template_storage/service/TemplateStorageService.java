@@ -68,7 +68,7 @@ public class TemplateStorageService {
               .templateId(tpl.getId())
               .templateName(tpl.getName())
               .templateContent(tpl.getContent())
-              .imgPath(tpl.getPicture())
+              .imgPath(tpl.getThumbnailImage())
               .creatorNickname(
                   tpl.getUser() != null
                       ? tpl.getUser().getNickname()  // User 엔티티 필드명 맞게 수정
