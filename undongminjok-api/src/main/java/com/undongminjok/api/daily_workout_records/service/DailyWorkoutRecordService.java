@@ -30,7 +30,7 @@ public class DailyWorkoutRecordService {
   private final EquipmentRepository equipmentRepository;
   private final UserRepository userRepository;
 
-  //기록 초기 등록
+  /*기록 초기 등록*/
   public InitRecordResponse initRecord(LocalDate date) {
     //로그인한 유저 가져오기
     Long userId = SecurityUtil.getLoginUserInfo().getUserId();
@@ -62,7 +62,7 @@ public class DailyWorkoutRecordService {
         .build();
   }
 
-  //기록 등록
+  /*기록 등록*/
   public void createRecord(CreateDailyRecordRequest request) {
 
     //로그인한 유저 가져오기
@@ -119,7 +119,7 @@ public class DailyWorkoutRecordService {
             new BusinessException(DailyRecordErrorCode.INVALID_EQUIPMENT_ID));
   }
 
-
+  /*기록 조회*/
   public DailyRecordResponse getWorkoutByDate(LocalDate date) {
 
     //userid 가져오기 수정
