@@ -32,9 +32,8 @@ public class PointService {
    */
   public List<PointDTO> getPoints(PointStatus pointStatus, PageType pageType) {
     // 로그인 user
-//    Long userId = Optional.ofNullable(SecurityUtil.getLoginUserInfo().getUserId())
-//                        .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
-    Long userId = 1L;
+    Long userId = Optional.ofNullable(SecurityUtil.getLoginUserInfo().getUserId())
+                        .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
     List<PointDTO> response = Optional.ofNullable(pointStatus)
         .map(type -> pointRepository.findPointByPointStatus(userId, pointStatus.getStatus()))
         .orElseGet(() -> {
@@ -81,5 +80,15 @@ public class PointService {
     return Arrays.stream(PointStatus.values())
         .map(status -> new PointStatusDTO(status.getStatus(), status.getStatusName()))
         .toList();
+  }
+
+  /**
+   * My/Selling 포인트 총합
+   * @param userId
+   * @param pageType
+   * @return
+   */
+  public Integer getTotalPoints (Long userId, PageType pageType) {
+    return null;
   }
 }
