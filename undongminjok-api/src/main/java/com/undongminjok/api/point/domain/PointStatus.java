@@ -10,8 +10,6 @@ public enum PointStatus {
 
   RECHARGE("RECHARGE" , "충전완료")
   ,PURCHASE("PURCHASE" ,  "구매완료")
-  ,REFUND_WAIT("REFUND_WAIT" ,  "환불 대기중")
-  ,REFUND("REFUND" , "환불 완료")
 
   ,EARN("EARN" , "적립 완료")
   ,WITHDRAW_WAIT("WITHDRAW_WAIT" ,  "출금 대기중")
