@@ -1,5 +1,6 @@
 package com.undongminjok.api.workoutplan;
 
+import com.undongminjok.api.equipments.domain.Equipment;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,6 @@ public class WorkoutPlanExercise {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  // 1~7일
   @Column(nullable = false)
   private Integer day;
 
@@ -25,6 +25,10 @@ public class WorkoutPlanExercise {
   private Integer weight;
   private Integer duration;
   private Integer orderIndex;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "equipment_id")
+  private Equipment equipment;  // ⭐ 추가됨
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "plan_id")

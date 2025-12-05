@@ -1,8 +1,8 @@
 package com.undongminjok.api.templates.domain;
 
-import com.undongminjok.api.daily_workout_exercises.domain.DailyWorkoutExercise;
 import com.undongminjok.api.global.dto.BaseTimeEntity;
 import com.undongminjok.api.user.domain.User;
+import com.undongminjok.api.workoutplan.WorkoutPlan;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +25,10 @@ public class Template extends BaseTimeEntity {
   @Column(name = "template_picture", nullable = false)
   private String picture;
 
+  // ⭐ 추가된 필드들
+  private String thumbnailImage;   // 템플릿 리스트용 이미지(썸네일)
+  private String templateImage;    // 상세 템플릿 미리보기 이미지
+
   // 추천(좋아요) 수 — 기본 0, 증가 로직에서 사용
   @Column(name = "recommend_count")
   private Long recommendCount;
@@ -45,14 +49,16 @@ public class Template extends BaseTimeEntity {
   @Column(name = "template_price", nullable = false)
   private Long price;
 
-// 작성자(회원) ID — FK(회원 테이블과 매핑될 값)
- @ManyToOne(fetch = FetchType.LAZY)
- @JoinColumn(name ="user_id")
- private User user;
+  // 작성자(회원) ID — FK(회원 테이블과 매핑될 값)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
 
-/*  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name ="exercise_id", nullable = false)
-  private DailyWorkoutExercise dailyWorkoutExercise;*/
+  // ⭐ 템플릿이 사용하는 운동 계획 저장
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "plan_id")
+  private WorkoutPlan workoutPlan;
+
 
   @Builder
   public Template(String picture,
@@ -66,16 +72,13 @@ public class Template extends BaseTimeEntity {
     this.content = content;
     this.price = price;
     this.user = user;
-
-    // ⭐ 기본값 자동 설정
+    // 기본값 자동 설정
     this.recommendCount = 0L;
     this.salesCount = 0L;
 
   }
 
-  // ===============================
-  // ⭐ 수정 도메인 메서드 (Setter 대신)
-  // ===============================
+  // 수정 도메인 메서드 (Setter 대신)
   public void update(String picture,
       String content,
       Long price) {
@@ -86,17 +89,34 @@ public class Template extends BaseTimeEntity {
 
   }
 
-  // ⭐ 추천 증가 로직
-  public void increaseRecommend() {
-    this.recommendCount++;
+    //  추천 증가 로직
+    public void increaseRecommend() {
+      this.recommendCount++;
+    }
+    //  판매 증가 로직
+    public void increaseSales() {
+      this.salesCount++;
+    }
+    public void decreaseRecommend() {
+      this.recommendCount--;
+    }
+
+  // ⭐ 이미지 업데이트 메서드 2개 추가
+  public void updateThumbnail(String path) {
+    this.thumbnailImage = path;
   }
 
-  // ⭐ 판매 증가 로직
-  public void increaseSales() {
-    this.salesCount++;
+  public void updateTemplateImage(String path) {
+    this.templateImage = path;
   }
 
-  public void decreaseRecommend() {
-    this.recommendCount--;
+  // ⭐ Getter 메서드 추가 (서비스에서 필요)
+  public String getThumbnailImage() {
+    return this.thumbnailImage;
   }
-}
+
+  public String getTemplateImage() {
+    return this.templateImage;
+  }
+  }
+
