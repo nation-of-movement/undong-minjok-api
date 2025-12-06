@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class DailyWorkoutRecordService {
+public class  DailyWorkoutRecordService {
   private final DailyWorkoutRecordRepository recordRepository;
   private final DailyWorkoutExerciseRepository exerciseRepository;
   private final EquipmentRepository equipmentRepository;
