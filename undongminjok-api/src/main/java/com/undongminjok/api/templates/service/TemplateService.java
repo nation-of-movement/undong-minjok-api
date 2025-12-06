@@ -12,7 +12,7 @@ import com.undongminjok.api.templates.repository.TemplateRecommendRepository;
 import com.undongminjok.api.templates.repository.TemplateRepository;
 import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.user.repository.UserRepository;
-import com.undongminjok.api.workoutplan.WorkoutPlanExerciseDTO;
+import com.undongminjok.api.workoutplan.workoutPlanExercise.WorkoutPlanExerciseDTO;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

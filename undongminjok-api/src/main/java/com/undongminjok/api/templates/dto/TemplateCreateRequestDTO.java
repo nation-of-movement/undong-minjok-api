@@ -1,6 +1,6 @@
 package com.undongminjok.api.templates.dto;
 
-import com.undongminjok.api.workoutplan.WorkoutPlanExerciseDTO;
+import com.undongminjok.api.workoutplan.workoutPlanExercise.WorkoutPlanExerciseDTO;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

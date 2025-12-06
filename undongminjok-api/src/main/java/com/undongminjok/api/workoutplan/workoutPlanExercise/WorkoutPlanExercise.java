@@ -1,6 +1,7 @@
-package com.undongminjok.api.workoutplan;
+package com.undongminjok.api.workoutplan.workoutPlanExercise;
 
 import com.undongminjok.api.equipments.domain.Equipment;
+import com.undongminjok.api.workoutplan.workoutPlan.WorkoutPlan;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,7 +29,7 @@ public class WorkoutPlanExercise {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "equipment_id")
-  private Equipment equipment;  // ⭐ 추가됨
+  private Equipment equipment;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "plan_id")

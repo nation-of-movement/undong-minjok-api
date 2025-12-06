@@ -1,4 +1,4 @@
-package com.undongminjok.api.workoutplan;
+package com.undongminjok.api.workoutplan.workoutPlanExercise;
 
 import lombok.Builder;
 import lombok.Getter;

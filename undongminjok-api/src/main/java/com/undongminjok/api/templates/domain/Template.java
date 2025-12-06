@@ -2,7 +2,7 @@ package com.undongminjok.api.templates.domain;
 
 import com.undongminjok.api.global.dto.BaseTimeEntity;
 import com.undongminjok.api.user.domain.User;
-import com.undongminjok.api.workoutplan.WorkoutPlan;
+import com.undongminjok.api.workoutplan.workoutPlan.WorkoutPlan;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
