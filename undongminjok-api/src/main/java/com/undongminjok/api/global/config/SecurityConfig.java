@@ -6,6 +6,7 @@ import com.undongminjok.api.global.security.jwt.JwtTokenProvider;
 import com.undongminjok.api.global.security.RestAccessDeniedHandler;
 import com.undongminjok.api.global.security.RestAuthenticationEntryPoint;
 import com.undongminjok.api.global.util.AuthRedisService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Slf4j
 @Configuration
@@ -44,7 +48,7 @@ public class SecurityConfig {
     http
 
         // CORS 설정 활성화
-//        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
         // CSRF 비활성화 (JWT 사용)
         .csrf(AbstractHttpConfigurer::disable)
@@ -104,18 +108,18 @@ public class SecurityConfig {
     return new JwtAuthentiationFilter(jwtTokenProvider, userDetailsService, authRedisService);
   }
 
-//  @Bean
-//  public CorsConfigurationSource corsConfigurationSource() {
-//    CorsConfiguration config = new CorsConfiguration();
-//
-//    config.setAllowedOrigins(List.of("http://localhost:5173"));
-//    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-//    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-//    config.setAllowCredentials(true);
-//    config.setMaxAge(3600L);
-//
-//    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//    source.registerCorsConfiguration("/**", config);
-//    return source;
-//  }
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+
+    config.setAllowedOrigins(List.of("http://localhost:5173"));
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+    config.setAllowCredentials(true);
+    config.setMaxAge(3600L);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
+  }
 }
