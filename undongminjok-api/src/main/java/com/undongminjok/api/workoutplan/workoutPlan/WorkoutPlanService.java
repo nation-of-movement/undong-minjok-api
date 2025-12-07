@@ -53,12 +53,13 @@ public class WorkoutPlanService {
           null,
           dto.getDay(),
           dto.getName(),
+          dto.getPart(),
           dto.getReps(),
           dto.getWeight(),
           dto.getDuration(),
           dto.getOrderIndex(),
-          equipment,
-          null // addExercise 에서 workoutPlan 세팅
+          equipment,                       // addExercise 에서 workoutPlan 세팅
+          null
       );
 
       plan.addExercise(exercise);
