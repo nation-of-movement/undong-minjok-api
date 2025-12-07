@@ -22,10 +22,14 @@ public class WorkoutPlanExercise {
   @Column(nullable = false)
   private String name;
 
+  @Column(nullable = false)
+  private String part;
+
   private Integer reps;
   private Integer weight;
   private Integer duration;
   private Integer orderIndex;
+
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "equipment_id")
