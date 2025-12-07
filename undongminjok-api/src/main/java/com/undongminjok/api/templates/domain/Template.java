@@ -1,5 +1,7 @@
 package com.undongminjok.api.templates.domain;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 import com.undongminjok.api.global.dto.BaseTimeEntity;
 import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.workoutplan.workoutPlan.WorkoutPlan;
@@ -20,10 +22,6 @@ public class Template extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "template_id")
   private Long id;
-
-  // 대표 이미지 URL or 파일 경로
-  // @Column(name = "template_picture", nullable = false)
-  // private String picture;
 
   // 추가된 필드들
   @Column(name = "thumbnail_image")
@@ -53,15 +51,14 @@ public class Template extends BaseTimeEntity {
   private Long price;
 
   // 작성자(회원) ID — FK(회원 테이블과 매핑될 값)
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "user_id")
   private User user;
 
-  // ⭐ 템플릿이 사용하는 운동 계획 저장
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  //  템플릿이 사용하는 운동 계획 저장
+  @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "plan_id")
   private WorkoutPlan workoutPlan;
-
 
   @Builder
   public Template(String thumbnailImage,
