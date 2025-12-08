@@ -1,5 +1,6 @@
 package com.undongminjok.api.user.service;
 
+import com.undongminjok.api.auth.AuthErrorCode;
 import com.undongminjok.api.auth.dto.ResetPasswordRequest;
 import com.undongminjok.api.global.exception.BusinessException;
 import com.undongminjok.api.global.storage.FileStorage;
@@ -39,6 +40,10 @@ public class UserService {
       throw new BusinessException(UserErrorCode.USER_DUPLICATED);
     }
 
+    if (!authRedisService.isSignupVerified(request.getEmail())) {
+      throw new BusinessException(AuthErrorCode.EMAIL_NOT_VERIFIED);
+    }
+
     User user = User.createUser(
         request.getLoginId(),
         passwordEncoder.encode(request.getPassword()),
@@ -47,6 +52,8 @@ public class UserService {
     );
 
     userRepository.save(user);
+
+    authRedisService.consumeSignupVerification(request.getEmail());
   }
 
   @Transactional
@@ -139,5 +146,13 @@ public class UserService {
                                   () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
     user.updateNickname(request.getNickname());
+  }
+
+  public boolean isLoginIdExists(String loginId) {
+    return userRepository.existsByLoginId(loginId);
+  }
+
+  public boolean isNicknameExists(String nickname) {
+    return userRepository.existsByNickname(nickname);
   }
 }

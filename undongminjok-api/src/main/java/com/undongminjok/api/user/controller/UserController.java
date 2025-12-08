@@ -10,6 +10,7 @@ import com.undongminjok.api.user.dto.UserCreateRequest;
 import com.undongminjok.api.user.dto.UserInfoResponse;
 import com.undongminjok.api.user.dto.UserProfileResponse;
 import com.undongminjok.api.user.service.UserService;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -87,4 +88,17 @@ public class UserController {
     userService.updateBio(request);
     return ApiResponse.success(null);
   }
+
+  @GetMapping("/exists/login-id")
+  public ApiResponse<?> checkLoginIdDuplicate(@RequestParam String loginId) {
+    boolean exists = userService.isLoginIdExists(loginId);
+    return ApiResponse.success(Map.of("exists", exists));
+  }
+
+  @GetMapping("/exists/nickname")
+  public ApiResponse<?> checkNicknameDuplicate(@RequestParam String nickname) {
+    boolean exists = userService.isNicknameExists(nickname);
+    return ApiResponse.success(Map.of("exists", exists));
+  }
+
 }
