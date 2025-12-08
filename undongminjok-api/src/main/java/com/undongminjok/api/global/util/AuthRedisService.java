@@ -133,4 +133,18 @@ public class AuthRedisService {
       redisTemplate.delete(key);
     }
   }
+
+  /* ========== Signup validation ========== */
+  public void markSignupVerified(String email) {
+    String key = "signupVerified:" + email;
+    redisTemplate.opsForValue().set(key, "true", 10, TimeUnit.MINUTES);
+  }
+
+  public boolean isSignupVerified(String email) {
+    return redisTemplate.hasKey("signupVerified:" + email);
+  }
+
+  public void consumeSignupVerification(String email) {
+    redisTemplate.delete("signupVerified:" + email);
+  }
 }

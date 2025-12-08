@@ -153,12 +153,15 @@ public class AuthService {
     authRedisService.deleteKeyEmail(request);
 
     return switch (request.getPurpose()) {
-      case SIGNUP -> VerificationCodeResponse.builder()
+      case SIGNUP -> {
+        authRedisService.markSignupVerified(request.getEmail());
+        yield VerificationCodeResponse.builder()
                                              .success(true)
                                              .resetToken(null)
                                              .build();
+      }
 
-      case PASSWORD_RESET -> {
+      case PASSWORD_RESET, PASSWORD_SEARCH -> {
         String resetToken = authRedisService.createAndSaveResetToken(request.getEmail());
         yield VerificationCodeResponse.builder()
                                       .success(true)
@@ -194,4 +197,6 @@ public class AuthService {
     userRepository.findByEmail(email)
                   .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
   }
+
+
 }
