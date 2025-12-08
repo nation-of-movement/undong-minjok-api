@@ -3,11 +3,13 @@ package com.undongminjok.api.templates.dto;
 import com.undongminjok.api.templates.domain.Template;
 import com.undongminjok.api.workoutplan.workoutPlanExercise.WorkoutPlanExerciseDTO;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@AllArgsConstructor
 public class TemplateDetailDTO {
 
   private Long id;
@@ -15,8 +17,8 @@ public class TemplateDetailDTO {
   private String content;
   private Long price;
 
-  private String thumbnailImage;   // 추가
-  private String templateImage;    // 추가
+  private String thumbnailImage;
+  private String templateImage;
 
   private Long salesCount;
   private Long recommendCount;
@@ -24,12 +26,20 @@ public class TemplateDetailDTO {
   private boolean recommended;
   private String writerNickname;
 
-  private String createdAt;
-  private String updatedAt;
+  private List<TemplateDayDTO> days;
 
-  private List<WorkoutPlanExerciseDTO> exercises;
+  @Getter
+  @Builder
+  @AllArgsConstructor
+  public static class TemplateDayDTO {
+    private Integer day;
+    private List<WorkoutPlanExerciseDTO> exercises;
+  }
 
-  public static TemplateDetailDTO from(Template t, boolean recommended, List<WorkoutPlanExerciseDTO> exercises) {
+  public static TemplateDetailDTO of(Template t,
+      boolean recommended,
+      List<TemplateDayDTO> days) {
+
     return TemplateDetailDTO.builder()
         .id(t.getId())
         .name(t.getName())
@@ -41,10 +51,7 @@ public class TemplateDetailDTO {
         .recommendCount(t.getRecommendCount())
         .writerNickname(t.getUser().getNickname())
         .recommended(recommended)
-        .createdAt(t.getCreatedAt().toString())
-        .updatedAt(t.getUpdatedAt().toString())
-        .exercises(exercises)
+        .days(days)
         .build();
   }
 }
-

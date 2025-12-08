@@ -9,7 +9,7 @@ public class WorkoutPlanExerciseDTO {
 
   private Integer day;
   private String name;
-
+  private String part;
   private Integer reps;
   private Integer weight;
   private Integer duration;
@@ -19,6 +19,7 @@ public class WorkoutPlanExerciseDTO {
     return WorkoutPlanExerciseDTO.builder()
         .day(ex.getDay())
         .name(ex.getName())
+        .part(ex.getPart())
         .reps(ex.getReps())
         .weight(ex.getWeight())
         .duration(ex.getDuration())
