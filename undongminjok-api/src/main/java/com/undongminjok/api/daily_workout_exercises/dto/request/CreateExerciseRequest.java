@@ -17,3 +17,4 @@ public class CreateExerciseRequest {
   private Integer orderIndex;
 
 }
+
