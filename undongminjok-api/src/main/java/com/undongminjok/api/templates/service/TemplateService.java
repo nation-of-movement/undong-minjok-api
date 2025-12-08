@@ -6,6 +6,7 @@ import com.undongminjok.api.global.storage.FileStorage;
 import com.undongminjok.api.global.storage.ImageCategory;
 import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.templates.domain.Template;
+import com.undongminjok.api.templates.domain.TemplateSortType;
 import com.undongminjok.api.templates.domain.TemplateStatus; // ⭐ 추가
 import com.undongminjok.api.templates.dto.TemplateCreateRequestDTO;
 import com.undongminjok.api.templates.dto.TemplateDetailDTO;
@@ -228,5 +229,20 @@ public class TemplateService {
       fileStorage.deleteQuietly(template.getTemplateImage());
 
     templateRepository.delete(template);
+  }
+
+  // 정렬 조회 (추천/판매/최신)
+  public List<TemplateListDTO> getSortedTemplates(TemplateSortType sortType) {
+
+    List<Template> templates = switch (sortType) {
+      case RECOMMEND -> templateRepository.findSortedByRec(); // 추천순
+      case SALES     -> templateRepository.findSortedBySale(); // 판매순
+      case LATEST    -> templateRepository.findSortedByNew();  // 최신순
+      default        -> templateRepository.findSortedByNew();  // 기본 최신순
+    };
+
+    return templates.stream()
+        .map(TemplateListDTO::from)
+        .toList();
   }
 }

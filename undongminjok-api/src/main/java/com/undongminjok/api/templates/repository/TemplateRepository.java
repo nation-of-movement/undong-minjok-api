@@ -21,5 +21,12 @@ public interface TemplateRepository extends JpaRepository<Template, Long> {
       """)
   Optional<Template> findDetailById(@Param("id") Long id);
 
+  // 추천 많은 순 정렬
+  List<Template> findSortedByRec();
 
+  // 판매 많은 순 정렬
+  List<Template> findSortedBySale();
+
+  // 최신 등록 순 정렬
+  List<Template> findSortedByNew();
 }

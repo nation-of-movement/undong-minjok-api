@@ -4,6 +4,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.undongminjok.api.global.dto.ApiResponse;
+import com.undongminjok.api.templates.domain.TemplateSortType;
 import com.undongminjok.api.templates.dto.TemplateCreateRequestDTO;
 import com.undongminjok.api.templates.dto.TemplateDetailDTO;
 import com.undongminjok.api.templates.dto.TemplateListDTO;
@@ -81,4 +82,16 @@ public class TemplateController {
     templateService.deleteTemplate(id);
     return ok(ApiResponse.success(null));
   }
+
+  // 정렬 조회 (추천순 / 판매순 / 최신순)
+  // /api/v1/templates/sorted?sort=RECOMMEND
+  @GetMapping("/sorted")
+  public ResponseEntity<ApiResponse<List<TemplateListDTO>>> getSortedTemplates(
+      @RequestParam(name = "sort", defaultValue = "LATEST") String sort
+  ) {
+    TemplateSortType sortType = TemplateSortType.from(sort);
+    List<TemplateListDTO> result = templateService.getSortedTemplates(sortType);
+    return ok(ApiResponse.success(result));
+  }
+
 }
