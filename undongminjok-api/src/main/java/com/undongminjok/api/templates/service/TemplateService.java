@@ -43,7 +43,15 @@ public class TemplateService {
   private final SecurityUtil securityUtil;
   private final FileStorage fileStorage;
 
-  // 1) 템플릿 리스트 조회
+  // 템플릿 전체 목록 조회
+  public List<TemplateListDTO> findAllTemplates() {
+    return templateRepository.findAll()
+        .stream()
+        .map(TemplateListDTO::from)
+        .toList();
+  }
+
+  // 템플릿 이름 검색 조회
   public List<TemplateListDTO> findByTemplateName(String keyword) {
     return templateRepository.findByNameContaining(keyword)
         .stream()
@@ -51,7 +59,7 @@ public class TemplateService {
         .toList();
   }
 
-  // 2) 템플릿 상세조회 (day 그룹핑)
+  // 템플릿 상세조회 (day 그룹핑)
   public TemplateDetailDTO getTemplateDetail(Long templateId) {
 
     Long loginUserId = securityUtil.getLoginUserInfo().getUserId();
@@ -94,7 +102,7 @@ public class TemplateService {
   }
 
 
-  // 3) 템플릿 생성
+  // 템플릿 생성
   @Transactional
   public void createTemplate(
       TemplateCreateRequestDTO req,
@@ -157,7 +165,7 @@ public class TemplateService {
     }
   }
 
-  // 4) 템플릿 수정
+  // 템플릿 수정
   @Transactional
   public void updateTemplate(
       Long templateId,
@@ -192,7 +200,7 @@ public class TemplateService {
     }
   }
 
-  // 5) 템플릿 삭제 (Hard + Soft Delete 적용)
+  // 템플릿 삭제 (Hard + Soft Delete 적용)
   @Transactional
   public void deleteTemplate(Long templateId) {
 
