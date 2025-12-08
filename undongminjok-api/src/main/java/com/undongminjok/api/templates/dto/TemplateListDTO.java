@@ -20,4 +20,5 @@ public class TemplateListDTO {
         .thumbnailImage(t.getThumbnailImage())
         .price(t.getPrice())
         .build();
-  }}
+  }
+}

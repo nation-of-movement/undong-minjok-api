@@ -1,6 +1,6 @@
 package com.undongminjok.api.templates.dto;
 
-import com.undongminjok.api.workoutplan.workoutPlanExercise.WorkoutPlanExerciseDTO;
+import com.undongminjok.api.templates.domain.TemplateStatus;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +16,21 @@ public class TemplateCreateRequestDTO {
   private String name;
   private String content;
   private Long price;
+  private TemplateStatus status;
 
-  private List<WorkoutPlanExerciseDTO> exercises;
+  private List<ExerciseCreateDTO> exercises;
 
+  @Getter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class ExerciseCreateDTO {
+    private Integer day;
+    private String name;
+    private String part;
+    private Integer reps;
+    private Integer weight;
+    private Integer duration;
+    private Integer orderIndex;
+    private Long equipmentId;
+  }
 }

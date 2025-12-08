@@ -104,4 +104,8 @@ public class User extends BaseTimeEntity {
   public void updateNickname(String nickname) {
     this.nickname = nickname;
   }
+
+  public void updateAccount(Integer account) {
+    this.amount = account;
+  }
 }

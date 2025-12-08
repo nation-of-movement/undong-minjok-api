@@ -1,21 +1,18 @@
 package com.undongminjok.api.templates.domain;
 
-import static jakarta.persistence.FetchType.LAZY;
-
 import com.undongminjok.api.global.dto.BaseTimeEntity;
 import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.workoutplan.workoutPlan.WorkoutPlan;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "templates")
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 public class Template extends BaseTimeEntity {
 
   @Id
@@ -23,40 +20,36 @@ public class Template extends BaseTimeEntity {
   @Column(name = "template_id")
   private Long id;
 
-  // 추가된 필드들
   @Column(name = "thumbnail_image")
   private String thumbnailImage;
 
   @Column(name = "template_image")
   private String templateImage;
 
-  // 추천(좋아요) 수 — 기본 0, 증가 로직에서 사용
+  @Enumerated(EnumType.STRING)
+  @Column(name = "template_status")
+  private TemplateStatus status;   // ⭐ 그대로 유지
+
   @Column(name = "recommend_count")
   private Long recommendCount;
 
-  // 판매된 횟수 — 결제/구매 시 증가
   @Column(name = "sales_count")
   private Long salesCount;
 
-  // 템플릿 이름(제목)
   @Column(name = "template_name", length = 50, nullable = false)
   private String name;
 
-  // 템플릿 내용(설명)
   @Column(name = "template_content", length = 255, nullable = false)
   private String content;
 
-  // 판매 가격
   @Column(name = "template_price", nullable = false)
   private Long price;
 
-  // 작성자(회원) ID — FK(회원 테이블과 매핑될 값)
   @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "user_id")
   private User user;
 
-  //  템플릿이 사용하는 운동 계획 저장
-  @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
+  @OneToOne(fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "plan_id")
   private WorkoutPlan workoutPlan;
 
@@ -66,46 +59,30 @@ public class Template extends BaseTimeEntity {
       String name,
       String content,
       Long price,
-      User user) {
+      User user,
+      TemplateStatus status) {
 
-    // this.picture = picture;
-    this.templateImage = templateImage;
     this.thumbnailImage = thumbnailImage;
+    this.templateImage = templateImage;
     this.name = name;
     this.content = content;
     this.price = price;
     this.user = user;
-    // 기본값 자동 설정
+    this.status = (status != null ? status : TemplateStatus.FREE);
+
     this.recommendCount = 0L;
     this.salesCount = 0L;
-
   }
 
-  // 수정 도메인 메서드 (Setter 대신)
-  public void update(String templateImage,
-      String content,
-      Long price) {
+  public void setWorkoutPlan(WorkoutPlan plan) {
+    this.workoutPlan = plan;
+  }
 
-    // this.picture = picture;
-    this.templateImage = templateImage;
+  public void update(String content, Long price) {
     this.content = content;
     this.price = price;
-
   }
 
-    //  추천 증가 로직
-    public void increaseRecommend() {
-      this.recommendCount++;
-    }
-    //  판매 증가 로직
-    public void increaseSales() {
-      this.salesCount++;
-    }
-    public void decreaseRecommend() {
-      this.recommendCount--;
-    }
-
-  // 이미지 업데이트 메서드 2개 추가
   public void updateThumbnail(String path) {
     this.thumbnailImage = path;
   }
@@ -114,13 +91,12 @@ public class Template extends BaseTimeEntity {
     this.templateImage = path;
   }
 
-  //  Getter 메서드 추가 (서비스에서 필요)
-  public String getThumbnailImage() {
-    return this.thumbnailImage;
-  }
+  public void increaseSales() { this.salesCount++; }
+  public void increaseRecommend() { this.recommendCount++; }
+  public void decreaseRecommend() { this.recommendCount--; }
 
-  public String getTemplateImage() {
-    return this.templateImage;
+  //  추가된 soft delete (판매된 템플릿 보호)
+  public void softDelete() {
+    this.status = TemplateStatus.STOPPED;
   }
-  }
-
+}
