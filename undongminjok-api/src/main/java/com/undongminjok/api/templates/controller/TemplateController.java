@@ -1,5 +1,7 @@
 package com.undongminjok.api.templates.controller;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.undongminjok.api.global.dto.ApiResponse;
 import com.undongminjok.api.templates.dto.TemplateCreateRequestDTO;
@@ -21,11 +23,19 @@ public class TemplateController {
 
   private final TemplateService templateService;
 
+  @GetMapping("/all")
+  public ResponseEntity<ApiResponse<List<TemplateListDTO>>> getAllTemplate() {
+
+      return ResponseEntity.ok(
+          ApiResponse.success(templateService.findAllTemplates())
+    );
+  }
+
   @GetMapping
   public ResponseEntity<ApiResponse<List<TemplateListDTO>>> getTemplatesByName(
       @RequestParam String name) {
 
-    return ResponseEntity.ok(
+    return ok(
         ApiResponse.success(templateService.findByTemplateName(name))
     );
   }
@@ -34,7 +44,7 @@ public class TemplateController {
   public ResponseEntity<ApiResponse<TemplateDetailDTO>> getTemplateDetail(
       @PathVariable Long id) {
 
-    return ResponseEntity.ok(
+    return ok(
         ApiResponse.success(templateService.getTemplateDetail(id))
     );
   }
@@ -49,7 +59,7 @@ public class TemplateController {
         new ObjectMapper().readValue(dataJson, TemplateCreateRequestDTO.class);
 
     templateService.createTemplate(req, thumbnail, detailImage);
-    return ResponseEntity.ok(ApiResponse.success(null));
+    return ok(ApiResponse.success(null));
   }
 
   @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -63,12 +73,12 @@ public class TemplateController {
         new ObjectMapper().readValue(dataJson, TemplateUpdateRequestDTO.class);
 
     templateService.updateTemplate(id, req, thumbnail, detailImage);
-    return ResponseEntity.ok(ApiResponse.success(null));
+    return ok(ApiResponse.success(null));
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<ApiResponse<Void>> deleteTemplate(@PathVariable Long id) {
     templateService.deleteTemplate(id);
-    return ResponseEntity.ok(ApiResponse.success(null));
+    return ok(ApiResponse.success(null));
   }
 }
