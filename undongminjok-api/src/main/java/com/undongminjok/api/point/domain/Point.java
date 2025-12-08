@@ -2,6 +2,7 @@ package com.undongminjok.api.point.domain;
 
 
 import com.undongminjok.api.global.dto.BaseTimeEntity;
+import com.undongminjok.api.point.dto.PointHistoryDTO;
 import com.undongminjok.api.templates.domain.Template;
 import com.undongminjok.api.user.domain.User;
 import jakarta.persistence.Column;
@@ -15,7 +16,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,7 +25,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name="point_history")
 @NoArgsConstructor
-@AllArgsConstructor
 public class Point extends BaseTimeEntity {
 
   @Id
@@ -47,10 +48,37 @@ public class Point extends BaseTimeEntity {
   private Integer amount;
 
   @Column(length = 30, name="payment_method")
-  private String method;
+  @Enumerated(EnumType.STRING)
+  private PaymentMethod method;
 
   private String bank;
 
   private String accountNumber;
 
+  @Builder(access = AccessLevel.PRIVATE)
+  public Point(User user, Template template, PointStatus status, Integer amount, PaymentMethod method, String bank, String accountNumber) {
+    this.user = user;
+    this.template = template;
+    this.status = status;
+    this.amount = amount;
+    this.method = method;
+    this.bank = bank;
+    this.accountNumber = accountNumber;
+  }
+
+
+  public static Point createPoint(PointHistoryDTO dto, User user , Template template) {
+    return Point.builder()
+        .user(user)
+        .template(template)
+        .status(dto.getStatus())
+        .amount(dto.getAmount())
+        .method(dto.getMethod())
+        .accountNumber(dto.getAccountNumber())
+        .build();
+
+
+
+
+  }
 }
