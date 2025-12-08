@@ -19,4 +19,6 @@ public interface TemplateRepository extends JpaRepository<Template, Long> {
         where t.id = :id
     """)
   Optional<Template> findDetailById(Long id);
+
+  List<Template> findAllByUserUserId(Long userId);
 }

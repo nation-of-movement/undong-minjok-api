@@ -12,4 +12,8 @@ public interface TemplateStorageRepository extends JpaRepository<TemplateStorage
 
   List<TemplateStorage> findAllByUserUserId(Long userId);
 
+  //숨기지 않은 템플릿 조회
+  List<TemplateStorage> findAllByUserUserIdAndDeletedFalse(Long userId);
+
+  List<TemplateStorage> findAllByTemplateId(Long templateId);
 }
