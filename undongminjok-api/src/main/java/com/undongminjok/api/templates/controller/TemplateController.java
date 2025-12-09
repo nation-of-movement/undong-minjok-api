@@ -4,10 +4,15 @@ import static org.springframework.http.ResponseEntity.ok;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.undongminjok.api.global.dto.ApiResponse;
+import com.undongminjok.api.global.dto.PageRequestDto;
+import com.undongminjok.api.global.dto.PageResponseDto;
+import com.undongminjok.api.global.util.SecurityUtil;
+import com.undongminjok.api.templates.domain.TemplateSortType;
 import com.undongminjok.api.templates.dto.TemplateCreateRequestDTO;
 import com.undongminjok.api.templates.dto.TemplateDetailDTO;
 import com.undongminjok.api.templates.dto.TemplateListDTO;
 import com.undongminjok.api.templates.dto.TemplateUpdateRequestDTO;
+import com.undongminjok.api.templates.dto.TemplateSalesHistoryDTO;
 import com.undongminjok.api.templates.service.TemplateService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
