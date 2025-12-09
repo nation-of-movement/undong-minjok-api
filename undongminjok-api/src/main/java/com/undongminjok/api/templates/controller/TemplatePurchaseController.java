@@ -2,8 +2,11 @@ package com.undongminjok.api.templates.controller;
 
 import com.undongminjok.api.global.dto.ApiResponse;
 import com.undongminjok.api.global.security.CustomUserDetails;
+import com.undongminjok.api.global.util.SecurityUtil;
+import com.undongminjok.api.templates.dto.TemplatePurchaseHistoryDTO;
 import com.undongminjok.api.templates.dto.TemplatePurchaseResponseDTO;
 import com.undongminjok.api.templates.service.TemplatePurchaseService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,13 +19,24 @@ public class TemplatePurchaseController {
 
   private final TemplatePurchaseService templatePurchaseService;
 
+  /* 내 템플릿 구매 목록 */
+  @GetMapping("/purchases/me")
+  public ResponseEntity<ApiResponse<List<TemplatePurchaseHistoryDTO>>> getMyPurchases() {
+
+    Long userId = SecurityUtil.getLoginUserInfo().getUserId();
+
+    List<TemplatePurchaseHistoryDTO> list = templatePurchaseService.getMyPurchases(userId);
+
+    return ResponseEntity.ok(ApiResponse.success(list));
+  }
+
   @PostMapping("/{templateId}/purchase")
   public ResponseEntity<ApiResponse<TemplatePurchaseResponseDTO>> purchase(
       @PathVariable Long templateId,
-      @AuthenticationPrincipal CustomUserDetails userDetails // 너 프로젝트에 맞는 클래스 이름으로 교체
+      @AuthenticationPrincipal CustomUserDetails userDetails
   ) {
 
-    Long userId = userDetails.getUserId(); // 또는 getId()
+    Long userId = userDetails.getUserId();
 
     TemplatePurchaseResponseDTO response =
         templatePurchaseService.purchase(templateId, userId);

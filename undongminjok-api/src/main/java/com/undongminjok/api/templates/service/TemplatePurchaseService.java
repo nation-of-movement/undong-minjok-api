@@ -4,11 +4,13 @@ import com.undongminjok.api.point.repository.PointRepository;
 import com.undongminjok.api.template_storage.domain.TemplateStorage;
 import com.undongminjok.api.template_storage.repository.TemplateStorageRepository;
 import com.undongminjok.api.templates.domain.Template;
+import com.undongminjok.api.templates.dto.TemplatePurchaseHistoryDTO;
 import com.undongminjok.api.templates.dto.TemplatePurchaseResponseDTO;
 import com.undongminjok.api.templates.repository.TemplateRepository;
 import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.user.repository.UserRepository;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +21,13 @@ public class TemplatePurchaseService {
 
   private final TemplateRepository templateRepository;
   private final UserRepository userRepository;
-  private final PointRepository pointRepository;
   private final TemplateStorageRepository templateStorageRepository;
+
+  //내 구매내역조회
+  @Transactional(readOnly = true)
+  public List<TemplatePurchaseHistoryDTO> getMyPurchases(Long userId) {
+    return templateStorageRepository.findPurchaseHistoryByUserId(userId);
+  }
 
   @Transactional
   public TemplatePurchaseResponseDTO purchase(Long templateId, Long userId) {

@@ -11,6 +11,7 @@ import com.undongminjok.api.templates.dto.TemplateCreateRequestDTO;
 import com.undongminjok.api.templates.dto.TemplateDetailDTO;
 import com.undongminjok.api.templates.dto.TemplateDetailDTO.TemplateDayDTO;
 import com.undongminjok.api.templates.dto.TemplateListDTO;
+import com.undongminjok.api.templates.dto.TemplateSalesHistoryDTO;
 import com.undongminjok.api.templates.dto.TemplateUpdateRequestDTO;
 import com.undongminjok.api.templates.repository.TemplateRecommendRepository;
 import com.undongminjok.api.templates.repository.TemplateRepository;
@@ -228,5 +229,11 @@ public class TemplateService {
       fileStorage.deleteQuietly(template.getTemplateImage());
 
     templateRepository.delete(template);
+  }
+
+  // 내 구매내역조회
+  @Transactional(readOnly = true)
+  public List<TemplateSalesHistoryDTO> getMySalesHistory(Long userId) {
+    return templateRepository.findSalesHistoryByUser(userId);
   }
 }
