@@ -84,7 +84,10 @@ public class TemplateController {
   }
 
   // 정렬 조회 (추천순 / 판매순 / 최신순)
-  // /api/v1/templates/sorted?sort=RECOMMEND
+  // api/v1/templates/sorted?sort=RECOMMEND
+  // api/v1/templates/sorted?sort=SALES
+  // api/v1/templates/sorted?sort=LATEST
+  // api/v1/templates/sorted → 기본값 LATEST
   @GetMapping("/sorted")
   public ResponseEntity<ApiResponse<List<TemplateListDTO>>> getSortedTemplates(
       @RequestParam(name = "sort", defaultValue = "LATEST") String sort

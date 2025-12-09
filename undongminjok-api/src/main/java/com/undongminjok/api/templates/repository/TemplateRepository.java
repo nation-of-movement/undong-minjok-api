@@ -1,6 +1,7 @@
 package com.undongminjok.api.templates.repository;
 
 import com.undongminjok.api.templates.domain.Template;
+import com.undongminjok.api.templates.domain.TemplateStatus;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,12 +22,12 @@ public interface TemplateRepository extends JpaRepository<Template, Long> {
       """)
   Optional<Template> findDetailById(@Param("id") Long id);
 
-  // 추천 많은 순 정렬
-  List<Template> findSortedByRec();
+  // STOPPED 제외 전체 조회
+  List<Template> findByStatusNot(TemplateStatus status);
 
-  // 판매 많은 순 정렬
-  List<Template> findSortedBySale();
+  // 추천 , 판매, 최신 순 정렬
+  List<Template> findAllByStatusNotOrderBySalesCountDesc(TemplateStatus status);
+  List<Template> findAllByStatusNotOrderByRecommendCountDesc(TemplateStatus status);
+  List<Template> findAllByStatusNotOrderByCreatedAtDesc(TemplateStatus status);
 
-  // 최신 등록 순 정렬
-  List<Template> findSortedByNew();
 }

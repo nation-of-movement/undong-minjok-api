@@ -46,7 +46,7 @@ public class TemplateService {
 
   // 템플릿 전체 목록 조회
   public List<TemplateListDTO> findAllTemplates() {
-    return templateRepository.findAll()
+    return templateRepository.findByStatusNot(TemplateStatus.STOPPED)
         .stream()
         .map(TemplateListDTO::from)
         .toList();
@@ -235,10 +235,10 @@ public class TemplateService {
   public List<TemplateListDTO> getSortedTemplates(TemplateSortType sortType) {
 
     List<Template> templates = switch (sortType) {
-      case RECOMMEND -> templateRepository.findSortedByRec(); // 추천순
-      case SALES     -> templateRepository.findSortedBySale(); // 판매순
-      case LATEST    -> templateRepository.findSortedByNew();  // 최신순
-      default        -> templateRepository.findSortedByNew();  // 기본 최신순
+      case RECOMMEND -> templateRepository.findAllByStatusNotOrderByRecommendCountDesc(TemplateStatus.STOPPED); // 추천순
+      case SALES     -> templateRepository.findAllByStatusNotOrderBySalesCountDesc(TemplateStatus.STOPPED); //판매순
+      case LATEST    -> templateRepository.findAllByStatusNotOrderByCreatedAtDesc(TemplateStatus.STOPPED);  // 최신순
+      default        -> templateRepository.findAllByStatusNotOrderByCreatedAtDesc(TemplateStatus.STOPPED);  // 기본 최신순
     };
 
     return templates.stream()
