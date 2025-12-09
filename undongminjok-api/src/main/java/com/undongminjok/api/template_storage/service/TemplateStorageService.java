@@ -39,6 +39,7 @@ public class TemplateStorageService {
     TemplateStorage storage = TemplateStorage.builder()
         .user(userRepository.getReferenceById(userId))
         .template(template)
+        .deleted(false)
         .build();
 
     storageRepository.save(storage);
@@ -48,34 +49,79 @@ public class TemplateStorageService {
   @Transactional
   public void deleteTemplateFromStorage(Long templateId) {
     Long userId  = SecurityUtil.getLoginUserInfo().getUserId();
-    storageRepository.deleteByUserUserIdAndTemplateId(userId, templateId);
+
+    //저장된 엔티티 가져오기 (soft delete적용)
+    List<TemplateStorage> storages = storageRepository.findAllByTemplateId(templateId)
+            .stream()
+            .filter(s -> s.getUser().getUserId().equals(userId))
+            .toList();
+
+    if (storages.isEmpty()) return;
+
+    TemplateStorage storage = storages.get(0);
+
+    //soft delete
+    storage.markAsDeleted();
+
+    Template template = storage.getTemplate();
+    //내가만든 템플릿인지 확인
+    boolean isOwner = template.getUser() != null &&
+            template.getUser().getUserId().equals(userId);
+
+    if (!isOwner) return;
+
+    //내가 만든 템플릿인지 판단
+    if (template.getSalesCount() > 0) {
+        // 판매된 적이 있으므로 hard delete 불가 → 예외 발생
+        throw new BusinessException(TemplateErrorCode.TEMPLATE_CANNOT_DELETE_SOLD);
+    }
+    //판매된적 없으면 hard delete
+    templateRepository.delete(template);
   }
 
   //조회
   @Transactional(readOnly = true)
-  public List<TemplateStorageListResponse> getMyTemplateStorageList(){
-
-    //로그인한 유저 가져오기
+  public List<TemplateStorageListResponse> getMyTemplateStorageList() {
     Long userId = SecurityUtil.getLoginUserInfo().getUserId();
 
-    var storages = storageRepository.findAllByUserUserId(userId);
+     /*
+      * 보관함에서 삭제되지 않은 템플릿 가져오기
+      *    → 내가 다운받아서 저장한 템플릿들
+      */
+      var storageTemplates = storageRepository.findAllByUserUserIdAndDeletedFalse(userId)
+              .stream()
+              .map(storage -> storage.getTemplate())
+              .toList();
 
-    return storages.stream()
-        .map(storage -> {
-          var tpl = storage.getTemplate();
+      /*
+       * templates 테이블에서 내가 만든 템플릿 가져오기
+       *    → user_id = 나인 템플릿들
+       */
+      var myOwnTemplates = templateRepository.findAllByUserUserId(userId);
 
-          return TemplateStorageListResponse.builder()
-              .templateId(tpl.getId())
-              .templateName(tpl.getName())
-              .templateContent(tpl.getContent())
-              .imgPath(tpl.getThumbnailImage())
-              .creatorNickname(
-                  tpl.getUser() != null
-                      ? tpl.getUser().getNickname()  // User 엔티티 필드명 맞게 수정
-                      : null
+      /*
+       * 두 리스트 합치기
+       *    보관함 저장 템플릿 + 내가 만든 템플릿
+       */
+      var allTemplates = new java.util.ArrayList<Template>();
+      allTemplates.addAll(storageTemplates);
+      allTemplates.addAll(myOwnTemplates);
+      /*
+       * ✔ 4. Template → Response DTO 로 변환
+       */
+      return allTemplates.stream()
+              .map(tpl -> TemplateStorageListResponse.builder()
+                      .templateId(tpl.getId())
+                      .templateName(tpl.getName())
+                      .templateContent(tpl.getContent())
+                      .imgPath(tpl.getThumbnailImage())
+                      .creatorNickname(
+                              tpl.getUser() != null
+                                      ? tpl.getUser().getNickname()
+                                      : null
+                      )
+                      .build()
               )
-              .build();
-        })
-        .toList();
+              .toList();
   }
 }

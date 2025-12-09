@@ -1,7 +1,8 @@
 package com.undongminjok.api.template_storage.repository;
 
 import com.undongminjok.api.template_storage.domain.TemplateStorage;
-import com.undongminjok.api.templates.dto.TemplatePurchaseHistoryDTO;
+import com.undongminjok.api.templates.domain.Template;
+import com.undongminjok.api.user.domain.User;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -31,4 +32,12 @@ public interface TemplateStorageRepository extends JpaRepository<TemplateStorage
         order by ts.createdAt desc
         """)
   List<TemplatePurchaseHistoryDTO> findPurchaseHistoryByUserId(@Param("userId") Long userId);
+
+  // 템플릿 구매시 이미 보관함에 존재하는지 확인
+  boolean existsByUserAndTemplate(User userId, Template templateId);
+
+  //숨기지 않은 템플릿 조회
+  List<TemplateStorage> findAllByUserUserIdAndDeletedFalse(Long userId);
+
+  List<TemplateStorage> findAllByTemplateId(Long templateId);
 }
