@@ -71,7 +71,7 @@ public class TemplateRecommendService {
     return recommendRepository.findByUserAndTemplate(user, template).isPresent();
   }
 
-  //  ⭐ 유저가 추천한 템플릿 목록 조회
+  //  유저가 추천한 템플릿 목록 조회
   // ================================
   public List<Template> getUserRecommendedTemplates(Long userId) {
 

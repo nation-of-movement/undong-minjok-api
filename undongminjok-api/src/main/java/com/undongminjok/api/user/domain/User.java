@@ -108,4 +108,12 @@ public class User extends BaseTimeEntity {
   public void updateAccount(Integer account) {
     this.amount = account;
   }
+
+  /** 포인트 사용(차감) */
+  public void usePoint(int useAmount) {
+    if (this.amount < useAmount) {
+      throw new IllegalStateException("포인트가 부족합니다.");
+    }
+    this.amount -= useAmount;
+  }
 }
