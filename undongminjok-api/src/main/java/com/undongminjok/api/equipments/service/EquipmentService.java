@@ -15,13 +15,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class EquipmentService {
 
     private final EquipmentRepository equipmentRepository;
     private final PartRepository partRepository;
 
     /*부위 id로 운동기구 목록 조회*/
+    @Transactional(readOnly = true)
     public List<EquipmentResponse> getEquipmentsByPart(Long partId) {
 
         Part part = partRepository.findById(partId)
