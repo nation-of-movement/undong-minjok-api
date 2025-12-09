@@ -4,11 +4,9 @@ import static org.springframework.http.ResponseEntity.ok;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.undongminjok.api.global.dto.ApiResponse;
-import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.templates.dto.TemplateCreateRequestDTO;
 import com.undongminjok.api.templates.dto.TemplateDetailDTO;
 import com.undongminjok.api.templates.dto.TemplateListDTO;
-import com.undongminjok.api.templates.dto.TemplateSalesHistoryDTO;
 import com.undongminjok.api.templates.dto.TemplateUpdateRequestDTO;
 import com.undongminjok.api.templates.service.TemplateService;
 import java.util.List;
@@ -33,7 +31,7 @@ public class TemplateController {
     );
   }
 
-  @GetMapping
+  @GetMapping("/search")
   public ResponseEntity<ApiResponse<List<TemplateListDTO>>> getTemplatesByName(
       @RequestParam String name) {
 
@@ -95,4 +93,33 @@ public class TemplateController {
 
     return ResponseEntity.ok(ApiResponse.success(list));
   }
+
+  // 정렬 조회 (추천순 / 판매순 / 최신순)
+  // api/v1/templates/sorted?sort=RECOMMEND
+  // api/v1/templates/sorted?sort=SALES
+  // api/v1/templates/sorted?sort=LATEST
+  // api/v1/templates/sorted → 기본값 LATEST
+  @GetMapping("/sorted")
+  public ResponseEntity<ApiResponse<List<TemplateListDTO>>> getSortedTemplates(
+      @RequestParam(name = "sort", defaultValue = "LATEST") String sort
+  ) {
+    TemplateSortType sortType = TemplateSortType.from(sort);
+    List<TemplateListDTO> result = templateService.getSortedTemplates(sortType);
+    return ok(ApiResponse.success(result));
+  }
+
+  @GetMapping("/paged")
+  public ResponseEntity<ApiResponse<PageResponseDto<TemplateListDTO>>> getTemplates(
+      PageRequestDto pageRequestDto,
+      @RequestParam(required = false) String name,
+      @RequestParam(defaultValue = "LATEST") String sort
+  ) {
+    TemplateSortType sortType = TemplateSortType.from(sort);
+
+    PageResponseDto<TemplateListDTO> result =
+        templateService.getTemplatePage(pageRequestDto, name, sortType);
+
+    return ResponseEntity.ok(ApiResponse.success(result));
+  }
+
 }
