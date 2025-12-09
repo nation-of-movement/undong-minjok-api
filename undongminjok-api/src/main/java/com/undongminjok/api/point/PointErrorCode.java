@@ -4,7 +4,8 @@ import com.undongminjok.api.global.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public enum PointErrorCode implements ErrorCode {
-  POINT_HISTORY_NOT_FOUND("POINT_001", "해당 포인트 이력을 찾을 수 없습니다.", HttpStatus.NOT_FOUND) ;
+  POINT_HISTORY_NOT_FOUND("POINT_001", "해당 포인트 이력을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+  POINT_NOT_ENOUGH("POINT_002", "포인트가 충분하지 않습니다.", HttpStatus.BAD_REQUEST),;
 
   private final String errorCode;
   private final String message;

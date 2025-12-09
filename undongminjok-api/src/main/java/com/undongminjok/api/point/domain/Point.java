@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name="point_history")
+@Table(name = "point_history")
 @NoArgsConstructor
 public class Point extends BaseTimeEntity {
 
@@ -33,21 +33,21 @@ public class Point extends BaseTimeEntity {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="user_id")
+  @JoinColumn(name = "user_id")
   private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="template_id")
+  @JoinColumn(name = "template_id")
   private Template template;
 
-  @Column(nullable = false, name="point_status")
+  @Column(nullable = false, name = "point_status")
   @Enumerated(EnumType.STRING)
   private PointStatus status;
 
-  @Column(nullable = false, name="point_amount")
+  @Column(nullable = false, name = "point_amount")
   private Integer amount;
 
-  @Column(length = 30, name="payment_method")
+  @Column(length = 30, name = "payment_method")
   @Enumerated(EnumType.STRING)
   private PaymentMethod method;
 
@@ -56,7 +56,8 @@ public class Point extends BaseTimeEntity {
   private String accountNumber;
 
   @Builder(access = AccessLevel.PRIVATE)
-  public Point(User user, Template template, PointStatus status, Integer amount, PaymentMethod method, String bank, String accountNumber) {
+  public Point(User user, Template template, PointStatus status, Integer amount,
+      PaymentMethod method, String bank, String accountNumber) {
     this.user = user;
     this.template = template;
     this.status = status;
@@ -67,18 +68,16 @@ public class Point extends BaseTimeEntity {
   }
 
 
-  public static Point createPoint(PointHistoryDTO dto, User user , Template template) {
+  public static Point createPoint(PointHistoryDTO dto, User user, Template template) {
     return Point.builder()
-        .user(user)
-        .template(template)
-        .status(dto.getStatus())
-        .amount(dto.getAmount())
-        .method(dto.getMethod())
-        .accountNumber(dto.getAccountNumber())
-        .build();
-
-
-
+                .user(user)
+                .template(template)
+                .status(dto.getStatus())
+                .amount(dto.getAmount())
+                .method(dto.getMethod())
+                .accountNumber(dto.getAccountNumber())
+                .bank(dto.getBank())
+                .build();
 
   }
 }

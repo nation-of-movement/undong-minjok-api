@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,6 +47,7 @@ public class User extends BaseTimeEntity {
   @Column(nullable = false)
   private UserStatus status;
 
+  @Min(0)
   @Column(nullable = false)
   private Integer amount;
 
@@ -105,8 +107,8 @@ public class User extends BaseTimeEntity {
     this.nickname = nickname;
   }
 
-  public void updateAccount(Integer account) {
-    this.amount = account;
+  public void updateAmount(Integer amount) {
+    this.amount = this.amount + amount;
   }
 
   /** 포인트 사용(차감) */
