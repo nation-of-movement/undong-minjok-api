@@ -25,7 +25,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
         )
     FROM Point p
     JOIN p.user u
-    JOIN p.template t
+    LEFT JOIN p.template t
     WHERE u.userId = :userId
     ORDER BY p.createdAt DESC
 """)
@@ -44,7 +44,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
         )
     FROM Point p
     JOIN p.user u
-    JOIN p.template t
+    LEFT JOIN p.template t
     WHERE u.userId = :userId
       AND (:pointStatus IS NULL OR p.status = :pointStatus)
     ORDER BY p.createdAt DESC
@@ -69,7 +69,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
         )
     FROM Point p
     JOIN p.user u
-    JOIN p.template t
+    LEFT JOIN p.template t
     WHERE u.userId = :userId
       AND p.id = :pointId
 """)
@@ -83,7 +83,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
           SUM(p.amount) as totalPoint
     FROM Point p
     JOIN p.user u
-    JOIN p.template t
+    LEFT JOIN p.template t
     WHERE u.userId = :userId
 """)
   Integer findTotalMyPoint(

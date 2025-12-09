@@ -1,9 +1,10 @@
 package com.undongminjok.api.point.service.provider;
 
 import com.undongminjok.api.point.dto.PointHistoryDTO;
+import com.undongminjok.api.user.domain.User;
 
 public interface PointProviderService {
 
-  Integer createPointHistory(PointHistoryDTO pointHistoryDTO);
-
+  void createPointHistory(PointHistoryDTO pointHistoryDTO);
+  void createPointHistory(User user, PointHistoryDTO dto);
 }
