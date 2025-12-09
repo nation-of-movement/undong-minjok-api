@@ -4,6 +4,8 @@ import static org.springframework.http.ResponseEntity.ok;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.undongminjok.api.global.dto.ApiResponse;
+import com.undongminjok.api.global.dto.PageRequestDto;
+import com.undongminjok.api.global.dto.PageResponseDto;
 import com.undongminjok.api.templates.domain.TemplateSortType;
 import com.undongminjok.api.templates.dto.TemplateCreateRequestDTO;
 import com.undongminjok.api.templates.dto.TemplateDetailDTO;
@@ -32,7 +34,7 @@ public class TemplateController {
     );
   }
 
-  @GetMapping
+  @GetMapping("/search")
   public ResponseEntity<ApiResponse<List<TemplateListDTO>>> getTemplatesByName(
       @RequestParam String name) {
 
@@ -95,6 +97,20 @@ public class TemplateController {
     TemplateSortType sortType = TemplateSortType.from(sort);
     List<TemplateListDTO> result = templateService.getSortedTemplates(sortType);
     return ok(ApiResponse.success(result));
+  }
+
+  @GetMapping("/paged")
+  public ResponseEntity<ApiResponse<PageResponseDto<TemplateListDTO>>> getTemplates(
+      PageRequestDto pageRequestDto,
+      @RequestParam(required = false) String name,
+      @RequestParam(defaultValue = "LATEST") String sort
+  ) {
+    TemplateSortType sortType = TemplateSortType.from(sort);
+
+    PageResponseDto<TemplateListDTO> result =
+        templateService.getTemplatePage(pageRequestDto, name, sortType);
+
+    return ResponseEntity.ok(ApiResponse.success(result));
   }
 
 }

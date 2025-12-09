@@ -2,24 +2,29 @@ package com.undongminjok.api.templates.domain;
 
 public enum TemplateSortType {
 
-  // 추천 많은 순
-  RECOMMEND,
+  RECOMMEND,  // 추천 많은 순
+  SALES,  // 판매 많은 순
+  LATEST;  // 최신 등록 순
 
-  // 판매 많은 순
-  SALES,
-
-  // 최신 등록 순
-  LATEST;
-
-  // 문자열 파라미터 → Enum 매핑용 (잘못 들어오면 기본 LATEST)
+  // 문자열 파라미터 → Enum 매핑 (잘못된 값은 예외 던짐)
   public static TemplateSortType from(String value) {
-    if (value == null) {
+
+    if (value == null || value.isBlank()) {
       return LATEST;
     }
-    try {
-      return TemplateSortType.valueOf(value.toUpperCase());
-    } catch (IllegalArgumentException e) {
-      return LATEST;
+
+    switch (value.toUpperCase()) {
+      case "LATEST":
+        return LATEST;
+      case "SALES":
+        return SALES;
+      case "RECOMMEND":
+        return RECOMMEND;
+
+      default:
+        throw new IllegalArgumentException(
+            "정렬(sort) 값이 잘못되었습니다. 사용 가능한 값: RECOMMEND, SALES, LATEST"
+        );
     }
   }
 }
