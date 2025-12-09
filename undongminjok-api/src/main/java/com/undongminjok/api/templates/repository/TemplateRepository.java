@@ -22,7 +22,11 @@ public interface TemplateRepository extends JpaRepository<Template, Long> {
       left join fetch wp.exercises ex
       where t.id = :id
       """)
+
   Optional<Template> findDetailById(@Param("id") Long id);
+
+  List<Template> findAllByUserUserId(Long userId);
+
 
   // STOPPED 제외 전체 조회
   Page<Template> findByStatusNot(TemplateStatus status, Pageable pageable);

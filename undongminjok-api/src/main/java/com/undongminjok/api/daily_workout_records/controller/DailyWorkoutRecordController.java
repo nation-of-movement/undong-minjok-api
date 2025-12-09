@@ -1,6 +1,7 @@
 package com.undongminjok.api.daily_workout_records.controller;
 
 import com.undongminjok.api.daily_workout_records.dto.request.CreateDailyRecordRequest;
+import com.undongminjok.api.daily_workout_records.dto.response.DailyPhotoResponse;
 import com.undongminjok.api.daily_workout_records.dto.response.DailyRecordResponse;
 import com.undongminjok.api.daily_workout_records.dto.response.InitRecordResponse;
 import com.undongminjok.api.daily_workout_records.service.DailyWorkoutRecordService;
@@ -8,6 +9,8 @@ import com.undongminjok.api.global.dto.ApiResponse;
 import com.undongminjok.api.global.storage.FileStorage;
 import com.undongminjok.api.global.storage.ImageCategory;
 import java.time.LocalDate;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -65,4 +68,15 @@ public class DailyWorkoutRecordController {
   ) {
     return dailyWorkoutRecordService.getWorkoutByDate(date);
   }
+
+  //월별 사진 가져오기
+  @GetMapping("/photos")
+  @PreAuthorize("isAuthenticated()")
+  public List<DailyPhotoResponse> getMonthlyPhotos(
+          @RequestParam int year,
+          @RequestParam int month
+  ) {
+      return dailyWorkoutRecordService.getMonthlyPhotos(year, month);
+  }
+
 }

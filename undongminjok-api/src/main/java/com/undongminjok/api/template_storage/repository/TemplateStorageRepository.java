@@ -16,4 +16,8 @@ public interface TemplateStorageRepository extends JpaRepository<TemplateStorage
 
 // 템플릿 구매시 이미 보관함에 존재하는지 확인
   boolean existsByUserAndTemplate(User userId, Template templateId);
+  //숨기지 않은 템플릿 조회
+  List<TemplateStorage> findAllByUserUserIdAndDeletedFalse(Long userId);
+
+  List<TemplateStorage> findAllByTemplateId(Long templateId);
 }
