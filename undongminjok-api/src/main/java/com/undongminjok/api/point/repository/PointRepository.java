@@ -103,4 +103,5 @@ public interface PointRepository extends JpaRepository<Point, Long> {
   Integer findTotalSellingPoint(
       @Param("userId") Long userId
   );
+
 }
