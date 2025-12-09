@@ -6,6 +6,7 @@ import com.undongminjok.api.daily_workout_exercises.repository.DailyWorkoutExerc
 import com.undongminjok.api.daily_workout_records.DailyRecordErrorCode;
 import com.undongminjok.api.daily_workout_records.domain.DailyWorkoutRecord;
 import com.undongminjok.api.daily_workout_records.dto.request.CreateDailyRecordRequest;
+import com.undongminjok.api.daily_workout_records.dto.response.DailyPhotoResponse;
 import com.undongminjok.api.daily_workout_records.dto.response.DailyRecordResponse;
 import com.undongminjok.api.daily_workout_records.dto.response.InitRecordResponse;
 import com.undongminjok.api.daily_workout_records.repository.DailyWorkoutRecordRepository;
@@ -203,4 +204,24 @@ public class  DailyWorkoutRecordService {
     //파일 경로 저장
     record.updateImg(newPath);
   }
+
+    public List<DailyPhotoResponse> getMonthlyPhotos(int year, int month) {
+
+        Long userId = SecurityUtil.getLoginUserInfo().getUserId();
+
+        LocalDate start = LocalDate.of(year, month, 1);
+        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+
+        List<DailyWorkoutRecord> records =
+                recordRepository.findAllByUserUserIdAndDateBetween(userId, start, end);
+
+        return records.stream()
+                .filter(r -> r.getImgPath() != null)
+                .map(r -> new DailyPhotoResponse(
+                        r.getDate().getDayOfMonth(),
+                        r.getImgPath()
+                ))
+                .toList();
+    }
+
 }

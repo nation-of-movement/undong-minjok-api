@@ -29,4 +29,10 @@ public class TemplateStorage {
     @JoinColumn(name = "template_id")
     private Template template;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean deleted;
+
+    public void markAsDeleted() {
+        this.deleted = true;
+    }
 }
