@@ -14,6 +14,7 @@ public class UserInfoResponse {
   private String nickname;
   private String email;
   private String profileImagePath;
+  private String bio;
   private Integer amount;
 
   public static UserInfoResponse from(User user) {
@@ -21,7 +22,8 @@ public class UserInfoResponse {
                            .loginId(user.getLoginId())
                            .nickname(user.getNickname())
                            .email(user.getEmail())
-                           .profileImagePath(user.getProfileImagePath()) // 이미 만들었음
+                           .profileImagePath(user.getProfileImagePath())
+                           .bio(user.getBio())
                            .amount(user.getAmount())
                            .build();
   }
