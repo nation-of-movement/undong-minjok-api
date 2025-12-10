@@ -20,9 +20,8 @@ public class TemplateRecommendController {
 
   //  추천 취소
   @DeleteMapping("/{templateId}/recommend")
-  public String cancel(@PathVariable Long templateId,
-      @RequestParam Long userId) {
-    recommendService.cancel(templateId, userId);
+  public String cancel(@PathVariable Long templateId) {
+    recommendService.cancel(templateId);
     return "추천 취소";
   }
 

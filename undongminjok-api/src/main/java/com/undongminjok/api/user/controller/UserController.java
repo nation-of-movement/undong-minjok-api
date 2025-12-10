@@ -31,7 +31,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
   private final UserService userService;
-  private final FileStorage fileStorage;
+
+  @GetMapping("/id")
+  public ResponseEntity<ApiResponse<String>> findId(@RequestParam String token) {
+    String id = userService.findLoginId(token);
+    return ResponseEntity.ok(ApiResponse.success(id));
+  }
 
   @PostMapping
   public ResponseEntity<ApiResponse<Void>> registerUser(

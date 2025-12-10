@@ -155,4 +155,15 @@ public class UserService {
   public boolean isNicknameExists(String nickname) {
     return userRepository.existsByNickname(nickname);
   }
+
+  public String findLoginId(String token) {
+
+    String email = authRedisService.getEmailByResetToken(token);
+
+    User user = userRepository.findByEmail(email)
+                              .orElseThrow(
+                                  () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+
+    return user.getLoginId();
+  }
 }
