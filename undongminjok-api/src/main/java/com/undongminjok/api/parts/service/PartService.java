@@ -10,11 +10,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PartService {
 
     private final PartRepository partRepository;
 
-    @Transactional(readOnly = true)
     public List<PartResponse> getAllParts() {
         return partRepository.findAll()
                 .stream()
