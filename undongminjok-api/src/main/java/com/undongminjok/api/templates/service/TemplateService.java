@@ -10,12 +10,12 @@ import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.templates.domain.Template;
 import com.undongminjok.api.templates.domain.TemplateSortType;
 import com.undongminjok.api.templates.domain.TemplateStatus; // ⭐ 추가
-import com.undongminjok.api.templates.dto.TemplateCreateRequestDTO;
-import com.undongminjok.api.templates.dto.TemplateDetailDTO;
-import com.undongminjok.api.templates.dto.TemplateDetailDTO.TemplateDayDTO;
-import com.undongminjok.api.templates.dto.TemplateListDTO;
+import com.undongminjok.api.templates.dto.request.TemplateCreateRequestDTO;
+import com.undongminjok.api.templates.dto.response.TemplateDetailResponseDTO;
+import com.undongminjok.api.templates.dto.response.TemplateDetailResponseDTO.TemplateDayDTO;
+import com.undongminjok.api.templates.dto.response.TemplateListResponseDTO;
 import com.undongminjok.api.templates.dto.TemplateSalesHistoryDTO;
-import com.undongminjok.api.templates.dto.TemplateUpdateRequestDTO;
+import com.undongminjok.api.templates.dto.request.TemplateUpdateRequestDTO;
 import com.undongminjok.api.templates.repository.TemplateRecommendRepository;
 import com.undongminjok.api.templates.repository.TemplateRepository;
 import com.undongminjok.api.user.domain.User;
@@ -51,35 +51,78 @@ public class TemplateService {
   private final SecurityUtil securityUtil;
   private final FileStorage fileStorage;
 
-  // 템플릿 전체 목록 조회
-  public List<TemplateListDTO> findAllTemplates() {
-    Pageable pageable = PageRequest.of(
-        0,                      // 첫 페이지
-        1000,                   // 충분히 큰 size (또는 원하는 값)
-        Sort.by(Sort.Order.desc("createdAt"))  // 기본 정렬: 최신순
-    );
+    //================================== 목록 조회 ===================================
+  /*
+  * 템플릿 전체 목록 조회
+  * */
+  public List<TemplateListResponseDTO> findAllTemplates() {
+      //페이징 없앴습니다. 밑에 paged 메소드가 따로 있어서
+      //페이징 원하시면 프론트에서 충분히 가능합니다!
 
-    Page<Template> page = templateRepository.findByStatusNot(
-        TemplateStatus.STOPPED,
-        pageable
-    );
+      //status가 STOPPED가 아닌 것만 가져옴
+      List<Template> templates =
+              templateRepository.findAllByStatusNotOrderByCreatedAtDesc(TemplateStatus.STOPPED);
 
-    return page.getContent()
-        .stream()
-        .map(TemplateListDTO::from)
-        .toList();
+      return templates.stream()
+              .map(TemplateListResponseDTO::from)
+              .toList();
   }
 
-  // 템플릿 이름 검색 조회
-  public List<TemplateListDTO> findByTemplateName(String keyword) {
-    return templateRepository.findByNameContaining(keyword)
-        .stream()
-        .map(TemplateListDTO::from)
-        .toList();
-  }
+    /*
+     * 템플릿 전체 목록 페이징 조회
+     * */
+    public PageResponseDto<TemplateListResponseDTO> getTemplatePage(
+            PageRequestDto req,
+            String name,
+            TemplateSortType sortType
+    ) {
 
+        Pageable pageable = createSortPageable(req, sortType);
+
+        Page<Template> page;
+
+        // 검색이 있는 경우
+        if (name != null && !name.isBlank()) {
+            page = templateRepository.findByNameContainingAndStatusNot(
+                    name,
+                    TemplateStatus.STOPPED,
+                    pageable
+            );
+        } else {
+            page = templateRepository.findByStatusNot(
+                    TemplateStatus.STOPPED,
+                    pageable
+            );
+        }
+
+        Page<TemplateListResponseDTO> dtoPage = page.map(TemplateListResponseDTO::from);
+
+        return PageResponseDto.from(dtoPage);
+    }
+
+    //정렬기준 생성 메서드
+    private Pageable createSortPageable(PageRequestDto req, TemplateSortType sortType) {
+
+        Sort sort = switch (sortType) {
+            case SALES -> Sort.by(
+                    Sort.Order.desc("salesCount"),
+                    Sort.Order.desc("createdAt")      // 동점자: 최신순
+            );
+            case RECOMMEND -> Sort.by(
+                    Sort.Order.desc("recommendCount"),
+                    Sort.Order.desc("createdAt")      // 동점자: 최신순
+            );
+            default -> Sort.by(
+                    Sort.Order.desc("createdAt")      // 기본: 최신순
+            );
+        };
+
+        return PageRequest.of(req.getPage(), req.getSize(), sort);
+    }
+
+    //================================== 상세 조회 ===================================
   // 템플릿 상세조회 (day 그룹핑)
-  public TemplateDetailDTO getTemplateDetail(Long templateId) {
+  public TemplateDetailResponseDTO getTemplateDetail(Long templateId) {
 
     Long loginUserId = securityUtil.getLoginUserInfo().getUserId();
 
@@ -117,7 +160,7 @@ public class TemplateService {
             .build())
         .toList();
 
-    return TemplateDetailDTO.of(template, recommended, days);
+    return TemplateDetailResponseDTO.of(template, recommended, days);
   }
 
 
@@ -253,73 +296,6 @@ public class TemplateService {
   @Transactional(readOnly = true)
   public List<TemplateSalesHistoryDTO> getMySalesHistory(Long userId) {
     return templateRepository.findSalesHistoryByUser(userId);
-  }
-
-  // 정렬 조회 (추천/판매/최신)
-  public List<TemplateListDTO> getSortedTemplates(TemplateSortType sortType) {
-
-    List<Template> templates = switch (sortType) {
-      case RECOMMEND -> templateRepository.findAllByStatusNotOrderByRecommendCountDesc(TemplateStatus.STOPPED); // 추천순
-      case SALES     -> templateRepository.findAllByStatusNotOrderBySalesCountDesc(TemplateStatus.STOPPED); //판매순
-      case LATEST    -> templateRepository.findAllByStatusNotOrderByCreatedAtDesc(TemplateStatus.STOPPED);  // 최신순
-      default        -> templateRepository.findAllByStatusNotOrderByCreatedAtDesc(TemplateStatus.STOPPED);  // 기본 최신순
-    };
-
-    return templates.stream()
-        .map(TemplateListDTO::from)
-        .toList();
-  }
-
-  @Transactional(readOnly = true)
-  public PageResponseDto<TemplateListDTO> getTemplatePage(
-      PageRequestDto req,
-      String name,
-      TemplateSortType sortType
-  ) {
-
-    Pageable pageable = createSortPageable(req, sortType);
-
-    Page<Template> page;
-
-    // 검색이 있는 경우
-    if (name != null && !name.isBlank()) {
-      page = templateRepository.findByNameContainingAndStatusNot(
-          name,
-          TemplateStatus.STOPPED,
-          pageable
-      );
-    } else {
-      page = templateRepository.findByStatusNot(
-          TemplateStatus.STOPPED,
-          pageable
-      );
-    }
-
-    Page<TemplateListDTO> dtoPage = page.map(TemplateListDTO::from);
-
-    return PageResponseDto.from(dtoPage);
-  }
-
-  /**
-   * 정렬 기준 생성
-   */
-  private Pageable createSortPageable(PageRequestDto req, TemplateSortType sortType) {
-
-    Sort sort = switch (sortType) {
-      case SALES -> Sort.by(
-          Sort.Order.desc("salesCount"),
-          Sort.Order.desc("createdAt")      // 동점자: 최신순
-      );
-      case RECOMMEND -> Sort.by(
-          Sort.Order.desc("recommendCount"),
-          Sort.Order.desc("createdAt")      // 동점자: 최신순
-      );
-      default -> Sort.by(
-          Sort.Order.desc("createdAt")      // 기본: 최신순
-      );
-    };
-
-    return PageRequest.of(req.getPage(), req.getSize(), sort);
   }
 
 }

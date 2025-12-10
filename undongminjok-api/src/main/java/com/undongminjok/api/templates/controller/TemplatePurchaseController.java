@@ -4,7 +4,6 @@ import com.undongminjok.api.global.dto.ApiResponse;
 import com.undongminjok.api.global.security.CustomUserDetails;
 import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.templates.dto.TemplatePurchaseHistoryDTO;
-import com.undongminjok.api.templates.dto.TemplatePurchaseResponseDTO;
 import com.undongminjok.api.templates.service.TemplatePurchaseService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

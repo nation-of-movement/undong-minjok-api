@@ -1,4 +1,4 @@
-package com.undongminjok.api.templates.dto;
+package com.undongminjok.api.templates.dto.request;
 
 import com.undongminjok.api.templates.domain.TemplateStatus;
 import java.util.List;
