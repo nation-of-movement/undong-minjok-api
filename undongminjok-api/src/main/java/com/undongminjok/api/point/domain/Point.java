@@ -37,7 +37,7 @@ public class Point extends BaseTimeEntity {
   private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="template_id")
+  @JoinColumn(name="template_id", nullable = false)
   private Template template;
 
   @Column(nullable = false, name="point_status")
@@ -48,15 +48,14 @@ public class Point extends BaseTimeEntity {
   private Integer amount;
 
   @Column(length = 30, name="payment_method")
-  @Enumerated(EnumType.STRING)
-  private PaymentMethod method;
+  private String method;
 
   private String bank;
 
   private String accountNumber;
 
   @Builder(access = AccessLevel.PRIVATE)
-  public Point(User user, Template template, PointStatus status, Integer amount, PaymentMethod method, String bank, String accountNumber) {
+  public Point(User user, Template template, PointStatus status, Integer amount, String method, String bank, String accountNumber) {
     this.user = user;
     this.template = template;
     this.status = status;
@@ -76,9 +75,6 @@ public class Point extends BaseTimeEntity {
         .method(dto.getMethod())
         .accountNumber(dto.getAccountNumber())
         .build();
-
-
-
 
   }
 }

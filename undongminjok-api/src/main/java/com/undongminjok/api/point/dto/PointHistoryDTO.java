@@ -1,6 +1,5 @@
 package com.undongminjok.api.point.dto;
 
-import com.undongminjok.api.point.domain.PaymentMethod;
 import com.undongminjok.api.point.domain.PointStatus;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -14,8 +13,13 @@ public class PointHistoryDTO {
   private Long templateId;
   private PointStatus status;
   private Integer amount;
-  private PaymentMethod method;
+  private String method;
   private String bank;
   private String accountNumber;
   private LocalDateTime createdAt;
+
+
+
+
+
 }

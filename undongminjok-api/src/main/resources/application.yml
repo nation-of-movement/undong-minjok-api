@@ -60,3 +60,8 @@ server:
 
 file:
   root-dir: ./uploads
+
+#tosspayments:
+#  secret-key: dGVzdF9za196WExrS0V5cE5BcldtbzUwblgzbG1lYXhZRzVSOg==
+tosspayments:
+  secret-key: test_sk_zXLkKEypNArWmo50nX3lmeaxYG5R

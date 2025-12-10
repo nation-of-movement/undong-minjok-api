@@ -26,7 +26,11 @@ public class PointProviderServiceImpl implements PointProviderService{
 
     // user, template 조회
     User user = userProviderService.getUser(pointHistoryDTO.getUserId());
-    Template template = templateProviderService.getTemplate(pointHistoryDTO.getTemplateId());
+    Template template = null;
+    if(pointHistoryDTO.getMethod() != null) {
+      template = templateProviderService.getTemplate(pointHistoryDTO.getTemplateId());
+    }
+
 
     // PointHistoryDto -> Point entity
     Point point = Point.createPoint(pointHistoryDTO, user, template);
