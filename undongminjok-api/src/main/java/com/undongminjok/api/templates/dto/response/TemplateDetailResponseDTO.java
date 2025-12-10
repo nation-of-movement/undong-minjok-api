@@ -1,4 +1,4 @@
-package com.undongminjok.api.templates.dto;
+package com.undongminjok.api.templates.dto.response;
 
 import com.undongminjok.api.templates.domain.Template;
 import com.undongminjok.api.workoutplan.workoutPlanExercise.WorkoutPlanExerciseDTO;
@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class TemplateDetailDTO {
+public class TemplateDetailResponseDTO {
 
   private Long id;
   private String name;
@@ -36,11 +36,11 @@ public class TemplateDetailDTO {
     private List<WorkoutPlanExerciseDTO> exercises;
   }
 
-  public static TemplateDetailDTO of(Template t,
-      boolean recommended,
-      List<TemplateDayDTO> days) {
+  public static TemplateDetailResponseDTO of(Template t,
+                                             boolean recommended,
+                                             List<TemplateDayDTO> days) {
 
-    return TemplateDetailDTO.builder()
+    return TemplateDetailResponseDTO.builder()
         .id(t.getId())
         .name(t.getName())
         .content(t.getContent())
