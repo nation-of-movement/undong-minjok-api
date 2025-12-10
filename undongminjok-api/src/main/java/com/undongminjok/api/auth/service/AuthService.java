@@ -120,7 +120,7 @@ public class AuthService {
     switch (request.getPurpose()) {
       case SIGNUP -> validateForSignup(request.getEmail());
 
-      case PASSWORD_SEARCH -> validateForPasswordSearch(request.getEmail());
+      case ID_SEARCH, PASSWORD_SEARCH -> validateForSearch(request.getEmail());
 
       case PASSWORD_RESET -> validateForPasswordReset(request.getEmail());
     }
@@ -159,7 +159,7 @@ public class AuthService {
                                              .build();
       }
 
-      case PASSWORD_RESET, PASSWORD_SEARCH -> {
+      case ID_SEARCH, PASSWORD_RESET, PASSWORD_SEARCH -> {
         String resetToken = authRedisService.createAndSaveResetToken(request.getEmail());
         yield VerificationCodeResponse.builder()
                                       .success(true)
@@ -180,7 +180,7 @@ public class AuthService {
     }
   }
 
-  private void validateForPasswordSearch(String email) {
+  private void validateForSearch(String email) {
     userRepository.findByEmail(email)
                   .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
   }
