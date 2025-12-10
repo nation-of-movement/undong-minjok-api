@@ -6,11 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.undongminjok.api.global.dto.ApiResponse;
 import com.undongminjok.api.global.dto.PageRequestDto;
 import com.undongminjok.api.global.dto.PageResponseDto;
+import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.templates.domain.TemplateSortType;
 import com.undongminjok.api.templates.dto.TemplateCreateRequestDTO;
 import com.undongminjok.api.templates.dto.TemplateDetailDTO;
 import com.undongminjok.api.templates.dto.TemplateListDTO;
 import com.undongminjok.api.templates.dto.TemplateUpdateRequestDTO;
+import com.undongminjok.api.templates.dto.TemplateSalesHistoryDTO;
 import com.undongminjok.api.templates.service.TemplateService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -83,6 +85,18 @@ public class TemplateController {
   public ResponseEntity<ApiResponse<Void>> deleteTemplate(@PathVariable Long id) {
     templateService.deleteTemplate(id);
     return ok(ApiResponse.success(null));
+  }
+
+  /** 내 템플릿 판매 내역 */
+  @GetMapping("/sales/me")
+  public ResponseEntity<ApiResponse<List<TemplateSalesHistoryDTO>>> getMySalesHistory() {
+
+    Long userId = SecurityUtil.getLoginUserInfo().getUserId();
+
+    List<TemplateSalesHistoryDTO> list =
+        templateService.getMySalesHistory(userId);
+
+    return ResponseEntity.ok(ApiResponse.success(list));
   }
 
   // 정렬 조회 (추천순 / 판매순 / 최신순)
