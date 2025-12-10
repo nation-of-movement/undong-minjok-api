@@ -11,7 +11,12 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "daily_workout_records")
+@Table(
+        name = "daily_workout_records",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"user_id", "workout_date"})
+        }
+)
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
