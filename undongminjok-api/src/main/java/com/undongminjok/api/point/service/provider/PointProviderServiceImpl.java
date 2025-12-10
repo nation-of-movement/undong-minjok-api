@@ -28,11 +28,7 @@ public class PointProviderServiceImpl implements PointProviderService {
     User user = userProviderService.findByIdForUpdate(pointHistoryDTO.getUserId());
     user.updateAmount(pointHistoryDTO.getAmount());
 
-    Template template = null;
-    if(pointHistoryDTO.getMethod() != null) {
-      template = templateProviderService.getTemplate(pointHistoryDTO.getTemplateId());
-    }
-
+     Template template = templateProviderService.getTemplate(pointHistoryDTO.getTemplateId());
 
     // PointHistoryDto -> Point entity
     Point point = Point.createPoint(pointHistoryDTO, user, template);

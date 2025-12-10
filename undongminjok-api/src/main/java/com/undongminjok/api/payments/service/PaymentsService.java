@@ -15,6 +15,7 @@ import com.undongminjok.api.point.domain.PointStatus;
 import com.undongminjok.api.point.dto.PointHistoryDTO;
 import com.undongminjok.api.point.service.provider.PointProviderService;
 import com.undongminjok.api.user.UserErrorCode;
+import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.user.service.provider.UserProviderService;
 import java.io.IOException;
 import java.net.URI;
@@ -105,16 +106,9 @@ public class PaymentsService {
         .accountNumber(null)
         .build();
 
-    Integer createHistory = pointProviderService.createPointHistory(history);
-    if(createHistory <= 0) {
-      throw new BusinessException(PaymentsErrorCode.PAYMENTS_ERROR_CODE);
-    }
-
-    // 유저 포인트 추가
-    Integer modifyAmount = userProviderService.modifyUserAccount(userId, request.getAmount());
-    if(modifyAmount <= 0) {
-      throw new BusinessException(PaymentsErrorCode.PAYMENTS_ERROR_CODE);
-    }
+    // 히스토리 추가, user amount 수정
+    User user = userProviderService.getUser(userId);
+    pointProviderService.createPointHistory(user, history);
 
     // Redis 제거
     // paymentsRedisService.deletePayments(param);
