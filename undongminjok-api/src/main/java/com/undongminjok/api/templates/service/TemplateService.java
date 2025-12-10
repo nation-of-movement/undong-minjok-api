@@ -194,8 +194,10 @@ public class TemplateService {
                 .toList();
     }
 
-
-    // 템플릿 생성
+    //================================== 템플릿 만들기 ===================================
+    /*
+     * 템플릿 생성
+     * */
     @Transactional
     public void createTemplate(
             TemplateCreateRequestDTO req,
@@ -203,62 +205,85 @@ public class TemplateService {
             MultipartFile detailImage
     ) {
 
-        Long userId = securityUtil.getLoginUserInfo().getUserId();
+        Long userId = SecurityUtil.getLoginUserInfo().getUserId();
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
+                .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
-        //  상태값 적용 (FREE / PAID / STOPPED)
-        Template template = Template.builder()
+        //템플릿 엔티티 생성
+        Template template = createTemplateEntity(req, user);
+
+        //WorkoutPlan 생성
+        WorkoutPlan plan = createWorkoutPlan(template);
+
+        //Exercise 생성
+        createExercises(req, plan);
+
+        //이미지 업로드
+        uploadImages(template, thumbnail, detailImage);
+
+        templateRepository.save(template);
+
+    }
+
+    private Template createTemplateEntity(TemplateCreateRequestDTO req, User user) {
+        return Template.builder()
                 .name(req.getName())
                 .content(req.getContent())
                 .price(req.getPrice())
+                .status(req.getStatus())
                 .user(user)
-                .status(req.getStatus())   //  추가됨
                 .build();
+    }
 
+    private WorkoutPlan createWorkoutPlan(Template template) {
         WorkoutPlan plan = new WorkoutPlan();
         plan.setTemplate(template);
         template.setWorkoutPlan(plan);
+        return plan;
+    }
 
-        templateRepository.save(template);
+    private void createExercises(TemplateCreateRequestDTO req, WorkoutPlan plan) {
 
-        // Exercise 생성
-        if (req.getExercises() != null) {
-            for (TemplateCreateRequestDTO.ExerciseCreateDTO exDto : req.getExercises()) {
+        if (req.getExercises() == null) return;
 
-                Equipment eq = null;
-                if (exDto.getEquipmentId() != null) {
-                    eq = equipmentRepository.getReferenceById(exDto.getEquipmentId());
-                }
+        req.getExercises().forEach(exDto -> {
+            Equipment eq = exDto.getEquipmentId() != null
+                    ? equipmentRepository.getReferenceById(exDto.getEquipmentId())
+                    : null;
 
-                WorkoutPlanExercise ex = WorkoutPlanExercise.builder()
-                        .day(exDto.getDay())
-                        .name(exDto.getName())
-                        .part(exDto.getPart())
-                        .reps(exDto.getReps())
-                        .weight(exDto.getWeight())
-                        .duration(exDto.getDuration())
-                        .orderIndex(exDto.getOrderIndex())
-                        .equipment(eq)
-                        .build();
+            WorkoutPlanExercise ex = WorkoutPlanExercise.builder()
+                    .day(exDto.getDay())
+                    .name(exDto.getName())
+                    .part(exDto.getPart())
+                    .reps(exDto.getReps())
+                    .weight(exDto.getWeight())
+                    .duration(exDto.getDuration())
+                    .orderIndex(exDto.getOrderIndex())
+                    .equipment(eq)
+                    .build();
 
-                plan.addExercise(ex);
-            }
-        }
+            plan.addExercise(ex);
+        });
+    }
 
-        templateRepository.save(template);
+    private void uploadImages(Template template, MultipartFile thumbnail, MultipartFile detailImage) {
 
         if (thumbnail != null && !thumbnail.isEmpty()) {
-            template.updateThumbnail(fileStorage.store(thumbnail, ImageCategory.THUMBNAIL));
+            String path = fileStorage.store(thumbnail, ImageCategory.THUMBNAIL);
+            template.updateThumbnail(path);
         }
 
         if (detailImage != null && !detailImage.isEmpty()) {
-            template.updateTemplateImage(fileStorage.store(detailImage, ImageCategory.DETAIL));
+            String path = fileStorage.store(detailImage, ImageCategory.DETAIL);
+            template.updateTemplateImage(path);
         }
     }
 
-    // 템플릿 수정
+
+    /*
+     * 템플릿 수정
+     * */
     @Transactional
     public void updateTemplate(
             Long templateId,
@@ -267,24 +292,30 @@ public class TemplateService {
             MultipartFile detailImage
     ) {
 
-        Long loginUserId = securityUtil.getLoginUserInfo().getUserId();
+        Long loginUserId = SecurityUtil.getLoginUserInfo().getUserId();
 
+        //템플릿 확인
         Template template = templateRepository.findById(templateId)
-                .orElseThrow(() -> new IllegalArgumentException("템플릿 없음"));
+                .orElseThrow(() -> new BusinessException(TemplateErrorCode.TEMPLATE_NOT_FOUND));
 
+        //템플릿을 수정할 권한이 있는지 확인
         if (!template.getUser().getUserId().equals(loginUserId)) {
-            throw new IllegalArgumentException("템플릿 수정 권한 없음");
+            throw new BusinessException(TemplateErrorCode.TEMPLATE_UPDATE_FORBIDDEN);
         }
 
+        //템플릿 기본정보 수정
         template.update(req.getContent(), req.getPrice());
 
+        //썸네일 수정
         if (thumbnail != null && !thumbnail.isEmpty()) {
+            //기존파일 삭제
             if (template.getThumbnailImage() != null) {
                 fileStorage.deleteQuietly(template.getThumbnailImage());
             }
             template.updateThumbnail(fileStorage.store(thumbnail, ImageCategory.THUMBNAIL));
         }
 
+        //상세 이미지 수정
         if (detailImage != null && !detailImage.isEmpty()) {
             if (template.getTemplateImage() != null) {
                 fileStorage.deleteQuietly(template.getTemplateImage());
@@ -297,7 +328,7 @@ public class TemplateService {
     @Transactional
     public void deleteTemplate(Long templateId) {
 
-        Long loginUserId = securityUtil.getLoginUserInfo().getUserId();
+        Long loginUserId = SecurityUtil.getLoginUserInfo().getUserId();
 
         Template template = templateRepository.findById(templateId)
                 .orElseThrow(() -> new IllegalArgumentException("삭제할 템플릿 없음"));
@@ -323,7 +354,7 @@ public class TemplateService {
         templateRepository.delete(template);
     }
 
-    // 내 구매내역조회
+    // 내 판매내역 조회
     @Transactional(readOnly = true)
     public List<TemplateSalesHistoryDTO> getMySalesHistory(Long userId) {
         return templateRepository.findSalesHistoryByUser(userId);

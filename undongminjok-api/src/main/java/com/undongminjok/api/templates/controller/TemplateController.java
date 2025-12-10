@@ -61,6 +61,9 @@ public class TemplateController {
     }
 
     //================================== 상세 조회 ===================================
+    /*
+     * 템플릿 상세 조회
+     * */
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TemplateDetailResponseDTO>> getTemplateDetail(
             @PathVariable Long id) {
@@ -70,7 +73,12 @@ public class TemplateController {
         );
     }
 
+    //================================== 템플릿 만들기 ===================================
+    /*
+     * 템플릿 생성
+     * */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<Void>> createTemplate(
             @RequestPart("data") String dataJson,
             @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail,
@@ -83,7 +91,11 @@ public class TemplateController {
         return ok(ApiResponse.success(null));
     }
 
+    /*
+     * 템플릿 수정
+     * */
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<Void>> updateTemplate(
             @PathVariable Long id,
             @RequestPart("data") String dataJson,
@@ -98,6 +110,7 @@ public class TemplateController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<Void>> deleteTemplate(@PathVariable Long id) {
         templateService.deleteTemplate(id);
         return ok(ApiResponse.success(null));
