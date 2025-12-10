@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class PointProviderServiceImpl implements PointProviderService{
+public class PointProviderServiceImpl implements PointProviderService {
 
   private final PointRepository pointRepository;
   private final UserProviderService userProviderService;
@@ -22,10 +22,12 @@ public class PointProviderServiceImpl implements PointProviderService{
 
   @Override
   @Transactional
-  public Integer createPointHistory(PointHistoryDTO pointHistoryDTO) {
+  public void createPointHistory(PointHistoryDTO pointHistoryDTO) {
 
     // user, template 조회
-    User user = userProviderService.getUser(pointHistoryDTO.getUserId());
+    User user = userProviderService.findByIdForUpdate(pointHistoryDTO.getUserId());
+    user.updateAmount(pointHistoryDTO.getAmount());
+
     Template template = null;
     if(pointHistoryDTO.getMethod() != null) {
       template = templateProviderService.getTemplate(pointHistoryDTO.getTemplateId());
@@ -37,8 +39,12 @@ public class PointProviderServiceImpl implements PointProviderService{
 
     // history 저장
     pointRepository.save(point);
-    return 1;
+  }
 
+  @Transactional
+  public void createPointHistory(User user, PointHistoryDTO dto) {
+    Point point = Point.createPoint(dto, user, null);
+    pointRepository.save(point);
   }
 
 

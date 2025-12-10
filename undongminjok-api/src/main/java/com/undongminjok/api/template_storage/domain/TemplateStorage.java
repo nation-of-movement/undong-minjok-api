@@ -1,5 +1,6 @@
 package com.undongminjok.api.template_storage.domain;
 
+import com.undongminjok.api.global.dto.BaseTimeEntity;
 import com.undongminjok.api.templates.domain.Template;
 import com.undongminjok.api.user.domain.User;
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TemplateStorage {
+public class TemplateStorage extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +30,10 @@ public class TemplateStorage {
     @JoinColumn(name = "template_id")
     private Template template;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean deleted;
+
+    public void markAsDeleted() {
+        this.deleted = true;
+    }
 }

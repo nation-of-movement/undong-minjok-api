@@ -2,15 +2,19 @@ package com.undongminjok.api.templates.service;
 
 import com.undongminjok.api.equipments.repository.EquipmentRepository;
 import com.undongminjok.api.equipments.domain.Equipment;
+import com.undongminjok.api.global.dto.PageRequestDto;
+import com.undongminjok.api.global.dto.PageResponseDto;
 import com.undongminjok.api.global.storage.FileStorage;
 import com.undongminjok.api.global.storage.ImageCategory;
 import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.templates.domain.Template;
+import com.undongminjok.api.templates.domain.TemplateSortType;
 import com.undongminjok.api.templates.domain.TemplateStatus; // ⭐ 추가
 import com.undongminjok.api.templates.dto.TemplateCreateRequestDTO;
 import com.undongminjok.api.templates.dto.TemplateDetailDTO;
 import com.undongminjok.api.templates.dto.TemplateDetailDTO.TemplateDayDTO;
 import com.undongminjok.api.templates.dto.TemplateListDTO;
+import com.undongminjok.api.templates.dto.TemplateSalesHistoryDTO;
 import com.undongminjok.api.templates.dto.TemplateUpdateRequestDTO;
 import com.undongminjok.api.templates.repository.TemplateRecommendRepository;
 import com.undongminjok.api.templates.repository.TemplateRepository;
@@ -27,6 +31,10 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,7 +53,18 @@ public class TemplateService {
 
   // 템플릿 전체 목록 조회
   public List<TemplateListDTO> findAllTemplates() {
-    return templateRepository.findAll()
+    Pageable pageable = PageRequest.of(
+        0,                      // 첫 페이지
+        1000,                   // 충분히 큰 size (또는 원하는 값)
+        Sort.by(Sort.Order.desc("createdAt"))  // 기본 정렬: 최신순
+    );
+
+    Page<Template> page = templateRepository.findByStatusNot(
+        TemplateStatus.STOPPED,
+        pageable
+    );
+
+    return page.getContent()
         .stream()
         .map(TemplateListDTO::from)
         .toList();
@@ -229,4 +248,78 @@ public class TemplateService {
 
     templateRepository.delete(template);
   }
+
+  // 내 구매내역조회
+  @Transactional(readOnly = true)
+  public List<TemplateSalesHistoryDTO> getMySalesHistory(Long userId) {
+    return templateRepository.findSalesHistoryByUser(userId);
+  }
+
+  // 정렬 조회 (추천/판매/최신)
+  public List<TemplateListDTO> getSortedTemplates(TemplateSortType sortType) {
+
+    List<Template> templates = switch (sortType) {
+      case RECOMMEND -> templateRepository.findAllByStatusNotOrderByRecommendCountDesc(TemplateStatus.STOPPED); // 추천순
+      case SALES     -> templateRepository.findAllByStatusNotOrderBySalesCountDesc(TemplateStatus.STOPPED); //판매순
+      case LATEST    -> templateRepository.findAllByStatusNotOrderByCreatedAtDesc(TemplateStatus.STOPPED);  // 최신순
+      default        -> templateRepository.findAllByStatusNotOrderByCreatedAtDesc(TemplateStatus.STOPPED);  // 기본 최신순
+    };
+
+    return templates.stream()
+        .map(TemplateListDTO::from)
+        .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public PageResponseDto<TemplateListDTO> getTemplatePage(
+      PageRequestDto req,
+      String name,
+      TemplateSortType sortType
+  ) {
+
+    Pageable pageable = createSortPageable(req, sortType);
+
+    Page<Template> page;
+
+    // 검색이 있는 경우
+    if (name != null && !name.isBlank()) {
+      page = templateRepository.findByNameContainingAndStatusNot(
+          name,
+          TemplateStatus.STOPPED,
+          pageable
+      );
+    } else {
+      page = templateRepository.findByStatusNot(
+          TemplateStatus.STOPPED,
+          pageable
+      );
+    }
+
+    Page<TemplateListDTO> dtoPage = page.map(TemplateListDTO::from);
+
+    return PageResponseDto.from(dtoPage);
+  }
+
+  /**
+   * 정렬 기준 생성
+   */
+  private Pageable createSortPageable(PageRequestDto req, TemplateSortType sortType) {
+
+    Sort sort = switch (sortType) {
+      case SALES -> Sort.by(
+          Sort.Order.desc("salesCount"),
+          Sort.Order.desc("createdAt")      // 동점자: 최신순
+      );
+      case RECOMMEND -> Sort.by(
+          Sort.Order.desc("recommendCount"),
+          Sort.Order.desc("createdAt")      // 동점자: 최신순
+      );
+      default -> Sort.by(
+          Sort.Order.desc("createdAt")      // 기본: 최신순
+      );
+    };
+
+    return PageRequest.of(req.getPage(), req.getSize(), sort);
+  }
+
 }

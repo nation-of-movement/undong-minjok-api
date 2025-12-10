@@ -6,7 +6,11 @@ import org.springframework.http.HttpStatus;
 
 public enum TemplateErrorCode implements ErrorCode{
   TEMPLATE_NOT_FOUND("TEMPLATE_001", "해당 템플릿을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-  TEMPLATE_HAS_NO_EXERCISES("TEMPLATE_002", "해당 템플릿에 운동 내용이 없습니다", HttpStatus.NOT_FOUND);
+  TEMPLATE_HAS_NO_EXERCISES("TEMPLATE_002", "해당 템플릿에 운동 내용이 없습니다", HttpStatus.NOT_FOUND),
+  TEMPLATE_CANNOT_DELETE_SOLD("TEMPLATE_003","해당 템플릿의 주인이 아님으로 삭제할 수 없습니다", HttpStatus.BAD_REQUEST),
+  TEMPLATE_ALREADY_PURCHASED("TEMPLATE_004", "이미 구매한 템플릿입니다.", HttpStatus.BAD_REQUEST),
+  TEMPLATE_SELF_PURCHASE_NOT_ALLOWED("TEMPLATE_005", "본인이 만든 템플릿은 구매할 수 없습니다.", HttpStatus.BAD_REQUEST);
+
 
   private final String errorCode;
   private final String message;

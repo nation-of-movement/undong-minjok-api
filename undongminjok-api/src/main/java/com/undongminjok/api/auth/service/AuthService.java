@@ -75,9 +75,7 @@ public class AuthService {
       throw new BusinessException(AuthErrorCode.INVALID_VERIFICATION_TOKEN);
     }
 
-    String refreshToken = authRedisService.findKeyByLoginId(user.getLoginId());
-
-    long remainingTime = jwtTokenProvider.getRemainingTime(refreshToken);
+    long remainingTime = jwtTokenProvider.getRemainingTime(accessToken);
 
     authRedisService.deleteRefreshTokenByLoginId(user.getLoginId());
 

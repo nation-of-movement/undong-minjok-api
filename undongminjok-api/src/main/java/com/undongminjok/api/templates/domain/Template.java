@@ -68,7 +68,7 @@ public class Template extends BaseTimeEntity {
     this.content = content;
     this.price = price;
     this.user = user;
-    this.status = (status != null ? status : TemplateStatus.FREE);
+    this.status = (status != null ? status : (price > 0 ? TemplateStatus.PAID : TemplateStatus.FREE));
 
     this.recommendCount = 0L;
     this.salesCount = 0L;

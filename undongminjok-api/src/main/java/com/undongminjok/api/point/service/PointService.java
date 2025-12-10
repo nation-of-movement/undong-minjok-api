@@ -3,18 +3,24 @@ package com.undongminjok.api.point.service;
 import com.undongminjok.api.global.exception.BusinessException;
 import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.point.PointErrorCode;
+import com.undongminjok.api.point.domain.PageType;
+import com.undongminjok.api.point.domain.PaymentMethod;
 import com.undongminjok.api.point.domain.PointStatus;
 import com.undongminjok.api.point.dto.PointDTO;
 import com.undongminjok.api.point.dto.PointDetailDTO;
+import com.undongminjok.api.point.dto.PointHistoryDTO;
 import com.undongminjok.api.point.dto.PointStatusDTO;
+import com.undongminjok.api.point.dto.request.PointRefundRequest;
 import com.undongminjok.api.point.dto.response.PointDetailResponse;
 import com.undongminjok.api.point.dto.response.PointResponse;
 import com.undongminjok.api.point.repository.PointRepository;
+import com.undongminjok.api.point.service.provider.PointProviderService;
 import com.undongminjok.api.user.UserErrorCode;
 import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.user.service.provider.UserProviderService;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +31,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PointService {
 
   private final PointRepository pointRepository;
+  private final PointProviderService pointProviderService;
   private final UserProviderService userProviderService;
 
   /**
@@ -35,7 +43,6 @@ public class PointService {
    * @param pointStatus
    * @return
    */
-  @Transactional
   public PointResponse getPointResponse (PointStatus pointStatus) {
 
     // userId
@@ -110,5 +117,32 @@ public class PointService {
   private Integer getSellingPoints (Long userId) {
 
     return pointRepository.findTotalSellingPoint(userId);
+  }
+
+  /**
+  * 포인트 환불
+  */
+  @Transactional
+  public void refundPoint(PointRefundRequest request) {
+    Long userId = Optional.ofNullable(SecurityUtil.getLoginUserInfo().getUserId())
+                          .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+
+    User user = userProviderService.findByIdForUpdate(userId);
+
+    if (user.getAmount() < request.getPoint()) {
+      throw new BusinessException(PointErrorCode.POINT_NOT_ENOUGH);
+    }
+
+    user.updateAmount(-request.getPoint());
+
+    PointHistoryDTO pointHistoryDTO = PointHistoryDTO.builder()
+                                                     .userId(userId)
+                                                     .status(PointStatus.WITHDRAW)
+                                                     .amount(-request.getPoint())
+                                                     .bank(request.getBank())
+                                                     .accountNumber(request.getAccountNumber())
+                                                     .build();
+
+    pointProviderService.createPointHistory(user, pointHistoryDTO);
   }
 }

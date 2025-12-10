@@ -10,7 +10,6 @@ public interface UserProviderService {
   // user 정보 조회
   User getUser(Long userId);
 
-  // user amount 수정
-  Integer modifyUserAccount(Long userId, Integer account);
-
+  // user 락 조회
+  User findByIdForUpdate(Long userId);
 }
