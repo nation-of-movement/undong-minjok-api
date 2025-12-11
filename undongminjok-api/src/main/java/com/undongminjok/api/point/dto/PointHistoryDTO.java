@@ -17,4 +17,9 @@ public class PointHistoryDTO {
   private String bank;
   private String accountNumber;
   private LocalDateTime createdAt;
+
+
+
+
+
 }
