@@ -30,4 +30,11 @@ public class EquipmentController {
                 equipmentService.getEquipmentsByPart(partId)
         );
     }
+
+  @GetMapping("/all")
+  public ApiResponse<List<EquipmentResponse>> getAllEquipments() {
+    return ApiResponse.success(
+        equipmentService.getAllEquipments()
+    );
+  }
 }
