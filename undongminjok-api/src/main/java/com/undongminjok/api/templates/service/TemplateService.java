@@ -8,6 +8,8 @@ import com.undongminjok.api.global.exception.BusinessException;
 import com.undongminjok.api.global.storage.FileStorage;
 import com.undongminjok.api.global.storage.ImageCategory;
 import com.undongminjok.api.global.util.SecurityUtil;
+import com.undongminjok.api.template_storage.domain.TemplateStorage;
+import com.undongminjok.api.template_storage.repository.TemplateStorageRepository;
 import com.undongminjok.api.templates.TemplateErrorCode;
 import com.undongminjok.api.templates.domain.Template;
 import com.undongminjok.api.templates.domain.TemplateSortType;
@@ -49,6 +51,7 @@ public class TemplateService {
 
     private final TemplateRepository templateRepository;
     private final TemplateRecommendRepository recommendRepository;
+    private final TemplateStorageRepository templateStorageRepository;
     private final UserRepository userRepository;
     private final EquipmentRepository equipmentRepository;
     private final SecurityUtil securityUtil;
@@ -138,8 +141,15 @@ public class TemplateService {
         // 템플릿에 연결된 운동들을 day기준으로 그룹핑
         List<TemplateDetailResponseDTO.TemplateDayDTO> days = buildTemplateDays(template);
 
+      Long loginUserId = securityUtil.getCurrentUserIdOrNull();
+
+      boolean isMine = false;
+      if (loginUserId != null) {
+        isMine = template.getUser().getUserId().equals(loginUserId);
+      }
+
         //최종 응답 DTO로 변환
-        return TemplateDetailResponseDTO.of(template, recommended, days);
+        return TemplateDetailResponseDTO.of(template, recommended, days, isMine);
     }
 
     private Template findTemplateOrThrow(Long templateId) {
@@ -223,6 +233,14 @@ public class TemplateService {
         uploadImages(template, thumbnail, detailImage);
 
         templateRepository.save(template);
+      TemplateStorage storage = TemplateStorage.builder()
+          .user(user)
+          .template(template)
+          .deleted(false)
+          .build();
+
+      templateStorageRepository.save(storage);
+
 
     }
 
