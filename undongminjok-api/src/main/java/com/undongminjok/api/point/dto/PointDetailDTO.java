@@ -18,7 +18,7 @@ public class PointDetailDTO {
   private PointStatus pointStatus;
   private Long price;
   private Integer amount;
-  private PaymentMethod paymentMethod;
+  private String paymentMethod;
   private String bank;
   private String accountNumber;
 
