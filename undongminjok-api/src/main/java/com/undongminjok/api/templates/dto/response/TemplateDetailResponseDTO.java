@@ -1,5 +1,6 @@
 package com.undongminjok.api.templates.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.undongminjok.api.templates.domain.Template;
 import com.undongminjok.api.workoutplan.workoutPlanExercise.WorkoutPlanExerciseDTO;
 import java.util.List;
@@ -28,6 +29,9 @@ public class TemplateDetailResponseDTO {
 
   private List<TemplateDayDTO> days;
 
+  @JsonProperty("isMine")
+  private boolean isMine;
+
   @Getter
   @Builder
   @AllArgsConstructor
@@ -38,7 +42,8 @@ public class TemplateDetailResponseDTO {
 
   public static TemplateDetailResponseDTO of(Template t,
                                              boolean recommended,
-                                             List<TemplateDayDTO> days) {
+                                             List<TemplateDayDTO> days,
+                                             boolean isMine ) {
 
     return TemplateDetailResponseDTO.builder()
         .id(t.getId())
@@ -52,6 +57,7 @@ public class TemplateDetailResponseDTO {
         .writerNickname(t.getUser().getNickname())
         .recommended(recommended)
         .days(days)
+        .isMine(isMine)
         .build();
   }
 }

@@ -91,7 +91,7 @@ public class Template extends BaseTimeEntity {
     this.templateImage = path;
   }
 
-  public void increaseSales() { this.salesCount++; }
+  public void increaseSalesCount() { this.salesCount++; }
   public void increaseRecommend() { this.recommendCount++; }
   public void decreaseRecommend() { this.recommendCount--; }
 
