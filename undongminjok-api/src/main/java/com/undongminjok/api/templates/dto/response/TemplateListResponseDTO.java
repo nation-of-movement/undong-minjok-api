@@ -1,6 +1,7 @@
 package com.undongminjok.api.templates.dto.response;
 
 import com.undongminjok.api.templates.domain.Template;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,6 +13,9 @@ public class TemplateListResponseDTO {
   private String name;
   private String thumbnailImage;
   private Long price;
+  private LocalDateTime createdAt;
+  private Long recommendCount;
+  private Long salesCount;
 
   public static TemplateListResponseDTO from(Template t) {
     return TemplateListResponseDTO.builder()
@@ -19,6 +23,9 @@ public class TemplateListResponseDTO {
         .name(t.getName())
         .thumbnailImage(t.getThumbnailImage())
         .price(t.getPrice())
+        .createdAt(t.getCreatedAt())
+        .recommendCount(t.getRecommendCount())
+        .salesCount(t.getSalesCount())
         .build();
   }
 }
