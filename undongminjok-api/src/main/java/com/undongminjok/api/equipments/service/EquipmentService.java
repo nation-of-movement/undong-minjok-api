@@ -32,4 +32,11 @@ public class EquipmentService {
                 .map(EquipmentResponse::from)
                 .toList();
     }
+
+  public List<EquipmentResponse> getAllEquipments() {
+    return equipmentRepository.findAll()
+        .stream()
+        .map(EquipmentResponse::from)
+        .toList();
+  }
 }
