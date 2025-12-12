@@ -60,3 +60,11 @@ server:
 
 file:
   root-dir: ./uploads
+
+toss:
+  payments:
+    secret-key: "test_sk_ma60RZblrqN55LdnBBjZ8wzYWBn1"
+    client-key: "test_ck_LlDJaYngroa7b9vy92zm3ezGdRpX"
+    base-url: "https://api.tosspayments.com"
+    success-url: "http://localhost:8888/payments/success"
+    fail-url: "http://localhost:8888/payments/fail"
