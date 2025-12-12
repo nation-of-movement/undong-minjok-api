@@ -1,7 +1,9 @@
+---
+
 # 🏋️ 운동의 민족 (Undong Minjok)
 
 <div align="center">
-<img width="1848" height="440" alt="스크린샷 2025-12-12 161423" src="https://github.com/user-attachments/assets/46f9c16d-4992-4be2-91e6-69b2aba0c65b" />
+	<img width="1632" height="666" alt="스크린샷 2025-12-12 161837" src="https://github.com/user-attachments/assets/58620b31-31a0-47e2-89dc-3f52817f9750" />
 </div>
 
 
