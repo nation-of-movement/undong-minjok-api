@@ -48,16 +48,20 @@ public class Point extends BaseTimeEntity {
   private Integer amount;
 
   @Column(length = 30, name = "payment_method")
-  @Enumerated(EnumType.STRING)
-  private PaymentMethod method;
+  private String method;
 
+  @Column(nullable = false)
   private String bank;
 
+  @Column(nullable = false)
   private String accountNumber;
+
+  @Column(nullable = false)
+  private String orderId;
 
   @Builder(access = AccessLevel.PRIVATE)
   public Point(User user, Template template, PointStatus status, Integer amount,
-      PaymentMethod method, String bank, String accountNumber) {
+      String method, String bank, String accountNumber, String orderId) {
     this.user = user;
     this.template = template;
     this.status = status;
@@ -65,6 +69,7 @@ public class Point extends BaseTimeEntity {
     this.method = method;
     this.bank = bank;
     this.accountNumber = accountNumber;
+    this.orderId = orderId;
   }
 
 
@@ -77,6 +82,7 @@ public class Point extends BaseTimeEntity {
                 .method(dto.getMethod())
                 .accountNumber(dto.getAccountNumber())
                 .bank(dto.getBank())
+                .orderId(dto.getOrderId())
                 .build();
 
   }
