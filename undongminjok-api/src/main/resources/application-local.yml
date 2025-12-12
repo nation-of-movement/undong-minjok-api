@@ -55,3 +55,11 @@ server:
 
 file:
   root-dir: ./uploads
+
+toss:
+  payments:
+    secret-key: ${TOSS-SECRET-KEY}
+    client-key: ${TOSS-CLIENT-KEY}
+    base-url: ${TOSS-BASE-KEY}
+    success-url: ${TOSS-SUCCESS-KEY}
+    fail-url: ${TOSS-FAIL-KEY}
