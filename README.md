@@ -1,10 +1,9 @@
+---
+
 # 🏋️ 운동의 민족 (Undong Minjok)
 
-> **운동 루틴을 사고, 계획하고, 기록하는 운동 템플릿 기반 플랫폼**
 <div align="center">
-<img width="400" height="400" alt="content" src="https://github.com/user-attachments/assets/8586212c-d56a-4d0e-9d9e-90d23d0fc1a7" />
-
-
+	<img width="1632" height="666" alt="스크린샷 2025-12-12 161837" src="https://github.com/user-attachments/assets/58620b31-31a0-47e2-89dc-3f52817f9750" />
 </div>
 
 
@@ -25,6 +24,12 @@
 
 ## 👩‍👧‍👦 1. 멤버 소개
 
+<div align="center">
+
+| 성현제 | 이민욱 | 유한세 | 이상도 | 정혜인 |
+|--------|--------|--------|--------|--------|
+|<img width="150" height="150" src = "https://github.com/user-attachments/assets/212aea25-7874-4cd3-b83f-e28c5341e451">| <img width="150" height="150" src="https://github.com/user-attachments/assets/065dbb9f-6071-4c22-a057-18b18b9439e4" />| <img width="150" height="150" src="https://github.com/user-attachments/assets/8797628c-5089-4809-bfc5-7cd60d8bea7d" />|<img width="150" height="150" src="https://github.com/user-attachments/assets/31ae06b1-b948-4a01-bee5-8ea56cde07c2" /> | <img width="150" height="150" alt="KakaoTalk_20251105_144003874" src="https://github.com/user-attachments/assets/31ec91f2-c66c-4b37-ad28-2d4075091f24" />|
+</div>
 
 ---
 ## ⚒️ 2. 서비스 소개
@@ -151,40 +156,78 @@
 ## 🚀 3. 기술 스택
 
 ### 🚀 Stacks
-<p>
-  <img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=spring&logoColor=white"/>
-  <img src="https://img.shields.io/badge/OAuth2-000000?style=for-the-badge&logo=oauth&logoColor=white"/>
-  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Thymeleaf-003300?style=for-the-badge&logo=thymeleaf&logoColor=white"/>
-  <img src="https://img.shields.io/badge/MyBatis-9B1D20?style=for-the-badge&logo=mybatis&logoColor=white"/>
+🔹 Frontend
+<div align=center>
+	<img src="https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=vuedotjs&logoColor=white"/>
+<img src="https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E"/>
+<img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white"/>
+<img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white"/>
+<img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white"/>
+<img src="https://img.shields.io/badge/Pinia-FFD700?style=for-the-badge&logo=pinia&logoColor=black"/>
+<img src="https://img.shields.io/badge/Vue_Router-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white"/>
+<img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white"/>
+   <br>
+</div>
+
+🔹 Backend
+<div align=center>
+	<img src="https://img.shields.io/badge/Java_17-007396?style=for-the-badge&logo=java&logoColor=white"/>
+<img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
+<img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"/>
+<img src="https://img.shields.io/badge/JPA(Hibernate)-59666C?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/QueryDSL-4479A1?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white"/>
+   <br>
+</div>
+
+🔹DataBase
+<div align=center>
   <img src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white"/>
   <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
+ <br>
+</div>
+<br>
+🔹Infra/DevOps
+<div align=center>
   <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
-</p>
-
+<img src="https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white"/>
+<img src="https://img.shields.io/badge/Argo_CD-FE4C1C?style=for-the-badge&logo=argo&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Linux(Ubuntu)-E95420?style=for-the-badge&logo=ubuntu&logoColor=white"/>
+<br>
+</div>
+<br>
+<br>
 
 ### ⚒️ Tools
-<p>
-<img src="https://img.shields.io/badge/HeidiSQL-b0fb0c?style=for-the-badge&logo=heidisql&logoColor=white"/>
-<img src="https://img.shields.io/badge/ERDCloud-72099f?style=for-the-badge&logo=erdcloud&logoColor=white"/>
-<img src="https://img.shields.io/badge/Canva-00C4CC?style=for-the-badge&logo=canva&logoColor=white"/>
-<img src="https://img.shields.io/badge/DBeaver-382923?style=for-the-badge&logo=dbeaver&logoColor=white"/>
-<img src="https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=intellij-idea&logoColor=white"/>
-<img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/>
-</p>
+<div align=center>
+  <img src="https://img.shields.io/badge/HeidiSQL-2C3E50?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/ERD_Cloud-2ECC71?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=intellijidea&logoColor=white"/>
+  <img src="https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white"/>
+  <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Docker_Desktop-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
+<br>
+</div>
+<br>
+<br>
 
 ### 👥  Collaboration      
+<div align=center>
+   <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Git-181717?style=for-the-badge&logo=git&logoColor=white"/>
+  <img src="https://img.shields.io/badge/GitHub_Pull_Request-2088FF?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white"/>
+<br>
+</div>
 
-<p>
-<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"/>
-<img src="https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white"/>
-<img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white"/>
-</p>
 ---
 
-## 🗂️ 4. 프로젝트 산출물
+## 🗂️ 4. 설계 문서
 
 - ### 🕖 WBS 및 Task tracker **(Work Breakdown Structure)**
 
@@ -219,7 +262,7 @@
 - ### 📋 API 명세서 
 
   
-- ### 🔁 기능 수행 테스트 결과
+- ### ▶️ 기능 수행 테스트 결과
   <details> <summary>로그인, 회원가입 </summary>
   </details>
 
@@ -235,10 +278,18 @@
   <details> <summary>결제 </summary>
   </details>
 
+---
 
-- ### 🎁 MSA 구조도
+## 🔁 5. 배포 문서
+- ### 아키텍처 구조
+- ### Dockerfile
+- ### Kubernetes manifest
+- ### CI/CD 테스트 결과 화면
 
 ---
-## ⚠️ 5. Trouble Shooting
+## 🎅🏻 6. 회고
+
+---
+## ⚠️ 7. Trouble Shooting
 
 ---

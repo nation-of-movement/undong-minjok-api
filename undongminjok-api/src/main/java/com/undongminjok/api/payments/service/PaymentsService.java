@@ -39,7 +39,6 @@ public class PaymentsService {
    * @param request
    */
   public void prepare(PaymentsRequest request) {
-    log.info("[ PaymentsService / prepare] :  redis에 orderId, amount 저장");
     // userId 확인
     Long userId = Optional.ofNullable(SecurityUtil.getLoginUserInfo().getUserId())
         .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
