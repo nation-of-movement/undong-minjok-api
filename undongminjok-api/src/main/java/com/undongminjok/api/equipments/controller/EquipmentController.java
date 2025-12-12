@@ -21,7 +21,7 @@ public class EquipmentController {
     private final EquipmentService equipmentService;
 
     //부위에 따른 운동기구 조회
-    @GetMapping
+    @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
     public ApiResponse<List<EquipmentResponse>> getEquipment(
             @RequestParam("part") Long partId

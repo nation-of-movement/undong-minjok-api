@@ -33,7 +33,7 @@ public class Point extends BaseTimeEntity {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -47,16 +47,11 @@ public class Point extends BaseTimeEntity {
   @Column(nullable = false, name = "point_amount")
   private Integer amount;
 
-  @Column(length = 30, name = "payment_method")
+  @Column(length = 30, name = "payment_method", nullable = false)
   private String method;
 
-  @Column(nullable = false)
   private String bank;
-
-  @Column(nullable = false)
   private String accountNumber;
-
-  @Column(nullable = false)
   private String orderId;
 
   @Builder(access = AccessLevel.PRIVATE)
