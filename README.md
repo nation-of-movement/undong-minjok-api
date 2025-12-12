@@ -25,6 +25,12 @@
 
 ## 👩‍👧‍👦 1. 멤버 소개
 
+<div align="center">
+
+| 성현제 | 이민욱 | 유한세 | 이상도 | 정혜인 |
+|--------|--------|--------|--------|--------|
+|<img width="150" height="150" src = "https://github.com/user-attachments/assets/212aea25-7874-4cd3-b83f-e28c5341e451">| <img width="150" height="150" src="https://github.com/user-attachments/assets/065dbb9f-6071-4c22-a057-18b18b9439e4" />| <img width="150" height="150" src="https://github.com/user-attachments/assets/8797628c-5089-4809-bfc5-7cd60d8bea7d" />|<img width="150" height="150" src="https://github.com/user-attachments/assets/31ae06b1-b948-4a01-bee5-8ea56cde07c2" /> | <img width="150" height="150" alt="KakaoTalk_20251105_144003874" src="https://github.com/user-attachments/assets/31ec91f2-c66c-4b37-ad28-2d4075091f24" />|
+</div>
 
 ---
 ## ⚒️ 2. 서비스 소개
@@ -182,9 +188,10 @@
 <img src="https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white"/>
 <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white"/>
 </p>
+
 ---
 
-## 🗂️ 4. 프로젝트 산출물
+## 🗂️ 4. 설계 문서
 
 - ### 🕖 WBS 및 Task tracker **(Work Breakdown Structure)**
 
@@ -219,7 +226,7 @@
 - ### 📋 API 명세서 
 
   
-- ### 🔁 기능 수행 테스트 결과
+- ### ▶️ 기능 수행 테스트 결과
   <details> <summary>로그인, 회원가입 </summary>
   </details>
 
@@ -235,10 +242,17 @@
   <details> <summary>결제 </summary>
   </details>
 
+---
 
-- ### 🎁 MSA 구조도
+## 🔁 5. 배포 문서
+- ### Dockerfile
+- ### Kubernetes manifest
+- ### CI/CD 테스트 결과 화면
 
 ---
-## ⚠️ 5. Trouble Shooting
+## 🎅🏻 6. 회고
+
+---
+## ⚠️ 7. Trouble Shooting
 
 ---
