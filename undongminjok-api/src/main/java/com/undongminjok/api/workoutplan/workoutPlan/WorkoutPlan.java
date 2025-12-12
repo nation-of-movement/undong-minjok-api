@@ -17,6 +17,7 @@ public class WorkoutPlan {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "plan_id")
   private Long id;
 
   @OneToOne(mappedBy = "workoutPlan", fetch = FetchType.LAZY)
