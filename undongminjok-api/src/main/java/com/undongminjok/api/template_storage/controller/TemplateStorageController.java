@@ -3,6 +3,7 @@ package com.undongminjok.api.template_storage.controller;
 import com.undongminjok.api.template_storage.dto.response.TemplateStorageListResponse;
 import com.undongminjok.api.template_storage.service.TemplateApplyService;
 import com.undongminjok.api.template_storage.service.TemplateStorageService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(
+    name = "Template Storage",
+    description = "템플릿 보관함 및 템플릿 적용 API"
+)
 @RestController
 @RequestMapping("/api/v1/templates/storage")
 @RequiredArgsConstructor

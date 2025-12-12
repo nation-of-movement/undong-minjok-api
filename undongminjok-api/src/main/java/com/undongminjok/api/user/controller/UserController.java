@@ -10,6 +10,7 @@ import com.undongminjok.api.user.dto.UserCreateRequest;
 import com.undongminjok.api.user.dto.UserInfoResponse;
 import com.undongminjok.api.user.dto.UserProfileResponse;
 import com.undongminjok.api.user.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Tag(
+    name = "User",
+    description = "회원 가입, 프로필 조회 및 회원 정보 관리 API"
+)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")

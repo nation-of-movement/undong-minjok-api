@@ -15,6 +15,7 @@ import com.undongminjok.api.templates.dto.request.TemplateUpdateRequestDTO;
 import com.undongminjok.api.templates.dto.TemplateSalesHistoryDTO;
 import com.undongminjok.api.templates.service.TemplateService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@Tag(
+    name = "Template",
+    description = "운동 템플릿 조회, 생성, 수정, 삭제 및 판매 관리 API"
+)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/templates")
