@@ -10,6 +10,7 @@ import com.undongminjok.api.auth.service.AuthService;
 import com.undongminjok.api.global.dto.ApiResponse;
 import com.undongminjok.api.auth.dto.LoginRequest;
 import com.undongminjok.api.global.security.jwt.JwtTokenProvider;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +23,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(
+    name = "Auth",
+    description = "로그인, 로그아웃, 토큰 재발급 및 이메일 인증 API"
+)
 @Slf4j
 @RestController
 @RequiredArgsConstructor

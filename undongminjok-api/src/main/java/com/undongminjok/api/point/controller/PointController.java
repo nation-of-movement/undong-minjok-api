@@ -7,6 +7,7 @@ import com.undongminjok.api.point.dto.request.PointRefundRequest;
 import com.undongminjok.api.point.dto.response.PointDetailResponse;
 import com.undongminjok.api.point.dto.response.PointResponse;
 import com.undongminjok.api.point.service.PointService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(
+    name = "Point",
+    description = "사용자 포인트 조회 및 출금 API"
+)
 @RestController
 @RequiredArgsConstructor
 @Slf4j
