@@ -15,16 +15,22 @@ public class WorkoutPlanExercise {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "plan_exercise_id")
   private Long id;
-
+    @Column(name = "plan_exercise_day")
   private Integer day;
+    @Column(name = "plan_exercise_name")
   private String name;
-  private String part;
-
+    @Column(name = "plan_exercise_part")
+    private String part;
+    @Column(name = "plan_exercise_reps")
   private Integer reps;
-  private Integer weight;
-  private Integer duration;
-  private Integer orderIndex;
+    @Column(name = "plan_exercise_weight")
+    private Integer weight;
+    @Column(name = "plan_exercise_duration")
+    private Integer duration;
+    @Column(name = "plan_exercise_orderIndex")
+    private Integer orderIndex;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "equipment_id")
