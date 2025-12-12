@@ -2,7 +2,7 @@
 
 > **운동 루틴을 사고, 계획하고, 기록하는 운동 템플릿 기반 플랫폼**
 <div align="center">
-<img width="600" height="600" alt="content" src="https://github.com/user-attachments/assets/8586212c-d56a-4d0e-9d9e-90d23d0fc1a7" />
+<img width="400" height="400" alt="content" src="https://github.com/user-attachments/assets/8586212c-d56a-4d0e-9d9e-90d23d0fc1a7" />
 
 
 </div>
@@ -186,30 +186,54 @@
 
 ## 🗂️ 4. 프로젝트 산출물
 
-- ### 🕖 WBS **(Work Breakdown Structure)**
+- ### 🕖 WBS 및 Task tracker **(Work Breakdown Structure)**
 
-  WBS를 자세히 보려면 [여기](https://www.notion.so/28cedf2444d2802cb0e4dd3d5c2223a4?v=28cedf2444d28012915d000c570f6a05&source=copy_link)를 클릭하세요
+  WBS를 자세히 보려면 [여기](https://www.notion.so/2bc0b8a09a7680d1a3b4e7640ba15cb9?v=2bc0b8a09a7681fcb1b6000c720c82db&source=copy_link)를 클릭하세요 <br>
+  작업 트래커를 자세히 보려면 [여기](https://www.notion.so/2be0b8a09a768094b73fdc7cf4d0c3e9?source=copy_link)를 클릭하세요
 
-  <details> <summary> WBS 이미지</summary>
+  <details> <summary> WBS</summary>
   <img width="1310" height="785" alt="Image" src="https://github.com/user-attachments/assets/e5bde1ad-5158-4867-93b5-dc5919ff4b2e" />
   </details>
-  
-
+  <details> <summary> Task Tracker</summary>
+  <img width="1310" height="785" alt="Image" src="https://github.com/user-attachments/assets/e5bde1ad-5158-4867-93b5-dc5919ff4b2e" />
+  </details>
 
 
 - ### 📚 요구사항 명세서
-  
-  
-- ### 🖼️ DDD **(Domain Driven Design)**
+  요구사항 명세서를 자세히 보려면 [여기](https://www.notion.so/2bc0b8a09a7680d1a3b4e7640ba15cb9?v=2bc0b8a09a7681fcb1b6000c720c82db&source=copy_link)를 클릭하세요 <br>
 
+  <details> <summary> 요구사항 명세서 </summary>
+  <img width="1510" height="1162" alt="요구사항명세서" src="https://github.com/user-attachments/assets/4708dd78-8183-4f53-ad45-f1c968664cd4" />
+  </details>
 
 - ### 🗺️ ERD **(Entity Relationship Diagram)**
+  ERD를 자세히 보려면 [여기](https://www.notion.so/2bc0b8a09a7680d1a3b4e7640ba15cb9?v=2bc0b8a09a7681fcb1b6000c720c82db&source=copy_link)를 클릭하세요 <br>
 
+  <details> <summary> ERD </summary>
+    <img width="2780" height="1152" alt="erd" src="https://github.com/user-attachments/assets/915f26b6-16fe-44a4-a1be-43f4934057fc" />
+  </details>
+  
+- ### 🖼️ 화면 설계서
+  화면설계서를 자세히 보려면 [여기](https://www.figma.com/design/ExKGJzHttaJ62kyQO2CyOB/%EC%9A%B4%EB%8F%99%EC%9D%98-%EB%AF%BC%EC%A1%B1?node-id=0-1&t=g6XKFEi7a5AejhTH-1)를 클릭하세요 <br>
 
 - ### 📋 API 명세서 
 
   
-- ### 🔁 유닛테스트 시나리오 및 코드
+- ### 🔁 기능 수행 테스트 결과
+  <details> <summary>로그인, 회원가입 </summary>
+  </details>
+
+  <details> <summary>마이페이지 </summary>
+  </details>
+
+  <details> <summary>템플릿 </summary>
+  </details>
+
+  <details> <summary>운동 기록장 </summary>
+  </details>
+
+  <details> <summary>결제 </summary>
+  </details>
 
 
 - ### 🎁 MSA 구조도
