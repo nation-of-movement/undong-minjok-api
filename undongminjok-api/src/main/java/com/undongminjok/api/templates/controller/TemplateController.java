@@ -68,7 +68,7 @@ public class TemplateController {
     public ResponseEntity<ApiResponse<TemplateDetailResponseDTO>> getTemplateDetail(
             @PathVariable Long id) {
 
-        return ok(
+        return ResponseEntity.ok(
                 ApiResponse.success(templateService.getTemplateDetail(id))
         );
     }
@@ -91,23 +91,15 @@ public class TemplateController {
         return ok(ApiResponse.success(null));
     }
 
-    /*
-     * 템플릿 수정
-     * */
-    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> updateTemplate(
-            @PathVariable Long id,
-            @RequestPart("data") String dataJson,
-            @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail,
-            @RequestPart(value = "detailImage", required = false) MultipartFile detailImage) throws Exception {
-
-        TemplateUpdateRequestDTO req =
-                new ObjectMapper().readValue(dataJson, TemplateUpdateRequestDTO.class);
-
-        templateService.updateTemplate(id, req, thumbnail, detailImage);
-        return ok(ApiResponse.success(null));
-    }
+  @PatchMapping("/{id}")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<ApiResponse<Void>> updateTemplate(
+      @PathVariable Long id,
+      @RequestBody TemplateUpdateRequestDTO req
+  ) {
+    templateService.updateTemplate(id, req);
+    return ok(ApiResponse.success(null));
+  }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")

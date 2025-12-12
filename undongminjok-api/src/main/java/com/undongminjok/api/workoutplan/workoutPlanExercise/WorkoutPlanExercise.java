@@ -43,4 +43,25 @@ public class WorkoutPlanExercise {
   public void setWorkoutPlan(WorkoutPlan plan) {
     this.workoutPlan = plan;
   }
+
+  public void update(
+      Integer day,
+      String name,
+      String part,
+      Integer reps,
+      Integer weight,
+      Integer duration,
+      Integer orderIndex,
+      Equipment equipment
+  ) {
+    this.day = day;
+    this.name = name;
+    this.part = part;
+    this.reps = reps;
+    this.weight = weight;
+    this.duration = duration;
+    this.orderIndex = orderIndex;
+    this.equipment = equipment;
+  }
+
 }
