@@ -16,7 +16,7 @@ public class PointDTO {
   private Long pointId;
   private String templateName;
   private PointStatus pointStatus;
-  private Long price;
+  private Integer amount;
 
   @DateTimeFormat(pattern ="yyyy-MM-dd HH:mm:ss")
   private LocalDateTime createdDt;
