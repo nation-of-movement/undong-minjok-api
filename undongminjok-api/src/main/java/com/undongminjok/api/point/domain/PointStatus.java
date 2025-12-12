@@ -12,7 +12,8 @@ public enum PointStatus {
   ,PURCHASE("PURCHASE" ,  "구매완료")
 
   ,EARN("EARN" , "적립 완료")
-  ,WITHDRAW_WAIT("WITHDRAW_WAIT" ,  "출금 대기중")
+/*  ,WITHDRAW_WAIT("WITHDRAW_WAIT" ,  "출금 대기중")
+  ,WITHDRAW_FAIL("WITHDRAW_FAIL" ,  "출금 취소")*/
   ,WITHDRAW("WITHDRAW" ,  "출금 완료")
   ;
 

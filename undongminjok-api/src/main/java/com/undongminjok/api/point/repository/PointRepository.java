@@ -20,7 +20,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
           p.id as pointId,
            t.name as templateName,
            p.status as pointStatus,
-           t.price,
+           p.amount,
            p.createdAt as createdDt
         )
     FROM Point p
@@ -39,7 +39,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
           p.id as pointId,
            t.name as templateName,
            p.status as pointStatus,
-           t.price,
+           p.amount,
            p.createdAt as createdDt
         )
     FROM Point p
