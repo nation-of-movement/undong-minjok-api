@@ -1,10 +1,7 @@
 # 🏋️ 운동의 민족 (Undong Minjok)
 
-> **운동 루틴을 사고, 계획하고, 기록하는 운동 템플릿 기반 플랫폼**
 <div align="center">
-<img width="400" height="400" alt="content" src="https://github.com/user-attachments/assets/8586212c-d56a-4d0e-9d9e-90d23d0fc1a7" />
-
-
+<img width="1848" height="440" alt="스크린샷 2025-12-12 161423" src="https://github.com/user-attachments/assets/46f9c16d-4992-4be2-91e6-69b2aba0c65b" />
 </div>
 
 
@@ -225,6 +222,7 @@
   <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white"/>
 <br>
 </div>
+
 ---
 
 ## 🗂️ 4. 설계 문서
