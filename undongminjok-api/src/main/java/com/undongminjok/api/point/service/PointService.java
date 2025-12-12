@@ -139,6 +139,7 @@ public class PointService {
                                .method(PaymentMethod.BANK_TRANSFER.toString())
                                .amount(-request.getPoint())
                                .bank(request.getBank())
+                               .orderId(null)
                                .accountNumber(request.getAccountNumber())
                                .build();
 

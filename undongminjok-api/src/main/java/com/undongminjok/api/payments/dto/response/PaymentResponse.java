@@ -1,6 +1,8 @@
 package com.undongminjok.api.payments.dto.response;
 
+import com.undongminjok.api.point.domain.PointStatus;
 import com.undongminjok.api.user.domain.User;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,20 +14,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PaymentResponse {
 
-  private String version;
-  private String paymentKey;
-  private String orderId;
-  private Long amount;
-  private String currency;
-  private String method;
-  private String status;
-
-  private OffsetDateTime requestedAt;
-  private OffsetDateTime approvedAt;
-
-  private String orderName;
-
-  // 결제자 정보
-  private User user;
+   private PointStatus status; // 상태
+   private String method; // 결제 method
+   private Integer amount; // 포인트 결제 금액
+   private String createdDt; // 결제시간
 
 }

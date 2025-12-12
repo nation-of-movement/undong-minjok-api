@@ -1,34 +1,25 @@
 package com.undongminjok.api.payments.service;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.undongminjok.api.global.exception.BusinessException;
 import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.payments.PaymentsErrorCode;
-import com.undongminjok.api.payments.dto.PaymentInfoDTO;
+import com.undongminjok.api.payments.client.TossPaymentClient;
 import com.undongminjok.api.payments.dto.PaymentsRedisDTO;
-import com.undongminjok.api.payments.dto.request.PaymentsRequest;
+import com.undongminjok.api.payments.dto.TossConfirmRequest;
 import com.undongminjok.api.payments.dto.response.PaymentResponse;
-import com.undongminjok.api.payments.dto.response.PaymentsConfirmResponse;
+import com.undongminjok.api.payments.dto.response.TossConfirmResponse;
+import com.undongminjok.api.payments.dto.request.PaymentsRequest;
+import com.undongminjok.api.point.domain.PaymentMethod;
 import com.undongminjok.api.point.domain.PointStatus;
 import com.undongminjok.api.point.dto.PointHistoryDTO;
 import com.undongminjok.api.point.service.provider.PointProviderService;
 import com.undongminjok.api.user.UserErrorCode;
 import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.user.service.provider.UserProviderService;
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,14 +28,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PaymentsService {
 
+  private final TossPaymentClient tossPaymentClient;
   private final PaymentsRedisService paymentsRedisService;
   private final PointProviderService  pointProviderService;
   private final UserProviderService userProviderService;
   private final ObjectMapper objectMapper;
-
-  @Value("${tosspayments.secret-key}")
-  private String secretKey;
-
 
   /**
    * redis에 orderId, amount 저장
@@ -70,75 +58,56 @@ public class PaymentsService {
   }
 
   /**
-   * 결제 승인
-   * @param
+   * 토스 결제 승인
+   * @param request
+   * @return
    */
   @Transactional
-  public PaymentsConfirmResponse confirm(PaymentsRequest request) throws IOException, InterruptedException {
+  public PaymentResponse confirmPayment(TossConfirmRequest request) {
+
+    // userId 확인
     Long userId = Optional.ofNullable(SecurityUtil.getLoginUserInfo().getUserId())
         .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
+    // toss 서버에 결제 승인 요청
+    TossConfirmResponse response = tossPaymentClient.confirmPayment(request);
+
+    // 레스디스에 정보 확인
     PaymentsRedisDTO param = PaymentsRedisDTO.builder()
         .userId(userId)
-        .orderId(request.getOrderId())
-        .amount(request.getAmount())
-        .paymentKey(request.getPaymentKey())
+        .orderId(response.getOrderId())
+        .amount(Math.toIntExact(response.getTotalAmount()))
+        .paymentKey(response.getPaymentKey())
         .build();
 
-    // Redis 조회
     Boolean exist = paymentsRedisService.findPayments(param);
     if(Boolean.FALSE.equals(exist)) {
       throw new BusinessException(PaymentsErrorCode.PAYMENTS_ERROR_CODE);
     }
 
-    // 토스 결제 승인
-    HttpResponse approvedPayment = requestConfirm(request);
-    log.info("결제 승인 완료: approvedPayment={}", approvedPayment);
-
-    // 포인트 히스토리 등록
+    // 포인트 히스토리 추가
     PointHistoryDTO history = PointHistoryDTO.builder()
         .userId(userId)
         .templateId(null)
         .status(PointStatus.RECHARGE)
-        .amount(request.getAmount())
-        .method(null)
+        .amount(Math.toIntExact(response.getTotalAmount()))
+        .method(response.getMethod())
         .bank(null)
+        .orderId(response.getOrderId())
         .accountNumber(null)
         .build();
 
-    // 히스토리 추가, user amount 수정
     User user = userProviderService.getUser(userId);
     pointProviderService.createPointHistory(user, history);
 
-    // Redis 제거
-    // paymentsRedisService.deletePayments(param);
-
-    return PaymentsConfirmResponse.builder()
-        .paymentInfo(null)
-        .build();
-  }
-
-
-  public HttpResponse  requestConfirm(PaymentsRequest param) throws IOException, InterruptedException {
-    String basicAuth = Base64.getEncoder()
-    .encodeToString((secretKey + ":").getBytes(StandardCharsets.UTF_8));
-    log.info("결제 승인 : basicAuth= {}", basicAuth);
-
-    JsonNode requestObj = objectMapper.createObjectNode()
-        .put("orderId", param.getOrderId())
-        .put("amount", param.getAmount())
-        .put("paymentKey", param.getPaymentKey());
-
-    String requestBody = objectMapper.writeValueAsString(requestObj);
-    log.info("결제 승인 : requestBody= {}", requestBody);
-    HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create("https://api.tosspayments.com/v1/payments/confirm"))
-        .header("Authorization", "Basic " + basicAuth)
-        .header("Content-Type", "application/json")
-        .method("POST", HttpRequest.BodyPublishers.ofString(requestBody))
-        .build();
-     return HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-
+    // 레디스 제거
+    paymentsRedisService.deletePayments(param);
+    return PaymentResponse.builder()
+       .amount(Math.toIntExact(response.getTotalAmount()))
+       .createdDt(response.getApprovedAt())
+       .status(PointStatus.RECHARGE)
+       .method(response.getMethod())
+       .build();
   }
 
 

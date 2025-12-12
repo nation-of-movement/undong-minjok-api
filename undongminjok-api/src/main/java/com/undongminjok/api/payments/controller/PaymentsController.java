@@ -1,10 +1,11 @@
 package com.undongminjok.api.payments.controller;
 
 import com.undongminjok.api.global.dto.ApiResponse;
+import com.undongminjok.api.payments.dto.TossConfirmRequest;
+import com.undongminjok.api.payments.dto.response.PaymentResponse;
+import com.undongminjok.api.payments.dto.response.TossConfirmResponse;
 import com.undongminjok.api.payments.dto.request.PaymentsRequest;
-import com.undongminjok.api.payments.dto.response.PaymentsConfirmResponse;
 import com.undongminjok.api.payments.service.PaymentsService;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,19 +34,24 @@ public class PaymentsController {
     return ResponseEntity.ok(ApiResponse.success(null));
   }
 
-  /**
+/*  *//**
    * 결제 승인
    * @param request
    * @return
    */
   @PostMapping("/confirm")
-  ResponseEntity<ApiResponse<PaymentsConfirmResponse>> chargePoint(
-      @RequestBody PaymentsRequest request) throws IOException, InterruptedException {
+  ResponseEntity<ApiResponse<PaymentResponse>> chargePoint(
+      @RequestBody TossConfirmRequest request) {
 
-    PaymentsConfirmResponse response = paymentsService.confirm(request);
+    PaymentResponse response = paymentsService.confirmPayment(request);
 
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
 
+
+
+
 }
+
+
