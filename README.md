@@ -260,7 +260,9 @@
   화면설계서를 자세히 보려면 [여기](https://www.figma.com/design/ExKGJzHttaJ62kyQO2CyOB/%EC%9A%B4%EB%8F%99%EC%9D%98-%EB%AF%BC%EC%A1%B1?node-id=0-1&t=g6XKFEi7a5AejhTH-1)를 클릭하세요 <br>
 
 - ### 📋 API 명세서 
-
+  <details> <summary> API 명세서 </summary>
+    <img width="1612" height="3909" alt="screencapture-localhost-8888-swagger-ui-index-html-2025-12-12-17_59_47" src="https://github.com/user-attachments/assets/0964287e-bf36-4ac7-925d-61f405fbc3d6" />
+  </details>
   
 - ### ▶️ 기능 수행 테스트 결과
   <details> <summary>로그인, 회원가입 </summary>
