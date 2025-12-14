@@ -280,8 +280,14 @@
   <details> <summary>운동 기록장 </summary>
   </details>
 
-  <details> <summary>결제 </summary>
-  </details>
+	<details>
+	<summary>결제</summary>
+	
+	<strong>포인트 충전</strong>
+	
+	![결제 GIF](https://github.com/user-attachments/assets/3f51fe13-a727-46fd-a84c-e894b89ce912)
+	
+	</details>
 
 ---
 
