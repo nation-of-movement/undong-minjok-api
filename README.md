@@ -576,10 +576,12 @@ pipeline {
 - ### CI/CD 테스트 결과 화면
 
 🚀 CI (Continuous Integration) – GitHub 코드 변경을 트리거로 Jenkins 파이프라인이 실행되어 Docker 이미지를 생성하고 Docker Hub에 업로드합니다.
-![Image](https://github.com/user-attachments/assets/40588e91-54b8-4306-9bdc-f97e90653db8)
+
+![Image](https://github.com/user-attachments/assets/dc2876b7-dd45-48f1-b9dd-cb3a0d120fea)
 
 🚢 CD (Continuous Deployment) – Docker Image 버전 변경을 Argo CD가 감지하여 Kubernetes 클러스터에 자동 배포합니다.
-![Image](https://github.com/user-attachments/assets/dc2876b7-dd45-48f1-b9dd-cb3a0d120fea)
+
+![Image](https://github.com/user-attachments/assets/40588e91-54b8-4306-9bdc-f97e90653db8)
 
 ---
 ## 🎅🏻 6. 회고
