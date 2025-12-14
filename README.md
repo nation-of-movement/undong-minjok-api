@@ -284,6 +284,8 @@
 
 ## 🔁 5. 배포 문서
 - ### 아키텍처 구조
+<img width="2481" height="2338" alt="Image" src="https://github.com/user-attachments/assets/3e5a352b-f62b-45e9-a6d2-2e680d7555c6" />
+
 - ### Dockerfile
 - ### Kubernetes manifest
 - ### CI/CD 테스트 결과 화면
