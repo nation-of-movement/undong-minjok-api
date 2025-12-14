@@ -39,6 +39,7 @@ public class PointProviderServiceImpl implements PointProviderService {
 
   @Transactional
   public void createPointHistory(User user, PointHistoryDTO dto) {
+    user.updateAmount(dto.getAmount());
     Point point = Point.createPoint(dto, user, null);
     pointRepository.save(point);
   }
