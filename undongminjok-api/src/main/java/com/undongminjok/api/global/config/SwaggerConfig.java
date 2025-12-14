@@ -21,3 +21,5 @@ public class SwaggerConfig {
         );
   }
 }
+
+// swagger 버전입니다.
