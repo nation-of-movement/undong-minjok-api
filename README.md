@@ -289,9 +289,297 @@
 - ### 아키텍처 구조
 <img width="2481" height="2338" alt="Image" src="https://github.com/user-attachments/assets/3e5a352b-f62b-45e9-a6d2-2e680d7555c6" />
 
-- ### Dockerfile
-- ### Kubernetes manifest
+<h2>Dockerfile</h2>
+<details> 
+
+  <summary><strong>Backend Dockerfile (Spring Boot)</strong></summary>
+
+
+``` YML
+
+FROM eclipse-temurin:21-jdk-alpine
+
+WORKDIR /app
+
+ARG JAR_FILE=build/libs/*.jar
+COPY ${JAR_FILE} app.jar
+
+EXPOSE 8888
+
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
+```
+</details> <details> <summary><strong>Frontend Dockerfile (Nginx)</strong></summary>
+	
+``` YML
+
+FROM nginx:alpine
+COPY dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+```
+
+</details>
+<br>
+
+<h2>Jenkins Pipeline Script</h2>
+<details>
+<summary><strong> Backend Pipeline Script </strong></summary>
+
+```groovy
+
+pipeline {
+    agent any
+
+    tools {
+        gradle 'gradle'
+        jdk 'openJDK21'
+    }
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('DOCKERHUB_PASSWORD')
+        GITHUB_URL = 'https://github.com/nation-of-movement/undong-minjok-api.git'
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Preparation') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'docker --version'
+                    } else {
+                        bat 'docker --version'
+                    }
+                }
+            }
+        }
+        stage('Source Build') {
+            steps {
+                git branch: 'develop', url: "${env.GITHUB_URL}"
+                dir('undongminjok-api') {
+                    script {
+                        if (isUnix()) {
+                            sh "chmod +x ./gradlew"
+                            sh "./gradlew clean build"
+                        } else {
+                            bat "gradlew.bat clean build"
+                        }
+                    }
+                }
+            }
+        }
+        stage('Container Build and Push') {
+            steps {
+                dir('undongminjok-api') {
+                    script {
+                        withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                            if (isUnix()) {
+                                sh "docker build -t ${DOCKER_USER}/undong-minjok-api:${IMAGE_TAG} ."
+                                sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
+                                sh "docker push ${DOCKER_USER}/undong-minjok-api:${IMAGE_TAG}"
+                            } else {
+                                bat "docker build -t ${DOCKER_USER}/undong-minjok-api:${IMAGE_TAG} ."
+                                bat "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
+                                bat "docker push ${DOCKER_USER}/undong-minjok-api:${IMAGE_TAG}"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                if (isUnix()) {
+                    sh 'docker logout'
+                } else {
+                    bat 'docker logout'
+                }
+            }
+        }
+        success {
+            withCredentials([string(credentialsId: 'discord', variable: 'DISCORD')]) {
+                discordSend(
+                    description: """
+                    **빌드 성공!** :tada:
+                    
+                    **제목**: ${currentBuild.displayName}
+                    **결과**: :white_check_mark: ${currentBuild.currentResult}
+                    **실행 시간**: ${currentBuild.duration / 1000}s
+                    **링크**: [빌드 결과 보기](${env.BUILD_URL})
+                    """,
+                    title: "${env.JOB_NAME} 빌드 성공!", 
+                    webhookURL: "$DISCORD"
+                )
+            }
+        }
+        failure {
+            withCredentials([string(credentialsId: 'discord', variable: 'DISCORD')]) {
+                discordSend(
+                    description: """
+                    **빌드 실패!** :x:
+                    
+                    **제목**: ${currentBuild.displayName}
+                    **결과**: :x: ${currentBuild.currentResult}
+                    **실행 시간**: ${currentBuild.duration / 1000}s
+                    **링크**: [빌드 결과 보기](${env.BUILD_URL})
+                    """,
+                    title: "${env.JOB_NAME} 빌드 실패!", 
+                    webhookURL: "$DISCORD"
+                )
+            }
+        }
+    }
+}
+
+```
+
+</details> <details> <summary><strong>Frontend Pipeline Script </strong></summary>
+
+```groovy
+
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'node24'
+    }
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('DOCKERHUB_PASSWORD')
+        GITHUB_URL = 'https://github.com/nation-of-movement/undong-minjok-client.git'
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
+    }
+
+    stages {
+
+        stage('Preparation') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'docker --version'
+                        sh 'node -v'
+                        sh 'npm -v'
+                    } else {
+                        bat 'docker --version'
+                        bat 'node -v'
+                        bat 'npm -v'
+                    }
+                }
+            }
+        }
+
+        stage('Source Build') {
+            steps {
+                git branch: 'develop', url: "${env.GITHUB_URL}"
+
+                dir('undong-minjok-client') {
+                    script {
+                        if (isUnix()) {
+                            sh 'npm install'
+                            sh 'npm run build:dev'
+                        } else {
+                            bat 'npm install'
+                            bat 'npm run build:dev'
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Container Build and Push') {
+            steps {
+                dir('undong-minjok-client') {
+                    script {
+                        withCredentials([usernamePassword(
+                            credentialsId: 'DOCKERHUB_PASSWORD',
+                            usernameVariable: 'DOCKER_USER',
+                            passwordVariable: 'DOCKER_PASS'
+                        )]) {
+                            if (isUnix()) {
+                                sh "docker build -t ${DOCKER_USER}/undong-minjok-client:${IMAGE_TAG} ."
+                                sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                                sh "docker push ${DOCKER_USER}/undong-minjok-client:${IMAGE_TAG}"
+                            } else {
+                                bat "docker build -t ${DOCKER_USER}/undong-minjok-client:${IMAGE_TAG} ."
+                                bat "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
+                                bat "docker push ${DOCKER_USER}/undong-minjok-client:${IMAGE_TAG}"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                if (isUnix()) {
+                    sh 'docker logout || true'
+                } else {
+                    bat 'docker logout || true'
+                }
+            }
+        }
+
+        success {
+            withCredentials([string(credentialsId: 'discord-client', variable: 'DISCORD')]) {
+                discordSend(
+                    description: """
+                    **프론트 빌드 성공!** 🎉
+
+                    **빌드 번호**: ${env.BUILD_NUMBER}
+                    **결과**: ${currentBuild.currentResult}
+                    **시간**: ${currentBuild.duration / 1000}s
+                    **링크**: [Jenkins Build](${env.BUILD_URL})
+                    """,
+                    title: "🎉 Fronend Build Success!",
+                    webhookURL: "$DISCORD"
+                )
+            }
+        }
+
+        failure {
+            withCredentials([string(credentialsId: 'discord-client', variable: 'DISCORD')]) {
+                discordSend(
+                    description: """
+                    **프론트 빌드 실패!** ❌
+
+                    **빌드 번호**: ${env.BUILD_NUMBER}
+                    **결과**: ${currentBuild.currentResult}
+                    **시간**: ${currentBuild.duration / 1000}s
+                    **링크**: [Jenkins Build](${env.BUILD_URL})
+                    """,
+                    title: "❌ Frontend Build Failed!",
+                    webhookURL: "$DISCORD"
+                )
+            }
+        }
+    }
+}
+
+```
+
+</details>
+
+<br>
+
+
+---
 - ### CI/CD 테스트 결과 화면
+
+🚀 CI (Continuous Integration) – GitHub 코드 변경을 트리거로 Jenkins 파이프라인이 실행되어 Docker 이미지를 생성하고 Docker Hub에 업로드합니다.
+![Image](https://github.com/user-attachments/assets/40588e91-54b8-4306-9bdc-f97e90653db8)
+
+🚢 CD (Continuous Deployment) – Docker Image 버전 변경을 Argo CD가 감지하여 Kubernetes 클러스터에 자동 배포합니다.
+![Image](https://github.com/user-attachments/assets/dc2876b7-dd45-48f1-b9dd-cb3a0d120fea)
 
 ---
 ## 🎅🏻 6. 회고
