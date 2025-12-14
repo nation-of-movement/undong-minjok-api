@@ -20,6 +20,6 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
     String jsonResponse =
         "{\"error\": \"Forbidden\", \"message\": \"" + accessDeniedException.getMessage() + "\"}";
     response.getWriter()
-            .write(jsonResponse);
+        .write(jsonResponse);
   }
 }

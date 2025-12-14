@@ -1,13 +1,11 @@
 package com.undongminjok.api.global.security;
 
 import com.undongminjok.api.global.exception.BusinessException;
-import com.undongminjok.api.global.exception.ErrorCode;
 import com.undongminjok.api.user.UserErrorCode;
 import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -24,8 +22,8 @@ public class CustomUserDetailsService implements UserDetailsService {
   @Override
   public CustomUserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
     User user = userRepository.findByLoginId(loginId)
-                              .orElseThrow(
-                                  () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+        .orElseThrow(
+            () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
     return new CustomUserDetails(
         user.getUserId()

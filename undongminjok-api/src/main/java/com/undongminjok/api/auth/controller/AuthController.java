@@ -2,13 +2,12 @@ package com.undongminjok.api.auth.controller;
 
 import com.undongminjok.api.auth.dto.AccessTokenResponse;
 import com.undongminjok.api.auth.dto.EmailRequest;
-import com.undongminjok.api.auth.dto.ResetPasswordRequest;
+import com.undongminjok.api.auth.dto.LoginRequest;
 import com.undongminjok.api.auth.dto.TokenResponse;
 import com.undongminjok.api.auth.dto.VerificationCodeRequest;
 import com.undongminjok.api.auth.dto.VerificationCodeResponse;
 import com.undongminjok.api.auth.service.AuthService;
 import com.undongminjok.api.global.dto.ApiResponse;
-import com.undongminjok.api.auth.dto.LoginRequest;
 import com.undongminjok.api.global.security.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -44,21 +43,21 @@ public class AuthController {
     TokenResponse response = authService.login(request);
     log.info("TEST LOGBACK");
     ResponseCookie refreshCookie = ResponseCookie.from(COOKIE_NAME, response.getRefreshToken())
-                                                 .httpOnly(true)
-                                                 .secure(false)   // 개발 환경에서는 false, 운영에서는 true
-                                                 .path("/")
-                                                 .maxAge(
-                                                     jwtTokenProvider.getRefreshExpiration() / 1000)
-                                                 .sameSite("Lax")
-                                                 .build();
+        .httpOnly(true)
+        .secure(false)   // 개발 환경에서는 false, 운영에서는 true
+        .path("/")
+        .maxAge(
+            jwtTokenProvider.getRefreshExpiration() / 1000)
+        .sameSite("Lax")
+        .build();
 
     AccessTokenResponse accessTokenResponse = AccessTokenResponse.builder()
-                                                                 .accessToken(
-                                                                     response.getAccessToken())
-                                                                 .build();
+        .accessToken(
+            response.getAccessToken())
+        .build();
     return ResponseEntity.ok()
-                         .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                         .body(ApiResponse.success(accessTokenResponse));
+        .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+        .body(ApiResponse.success(accessTokenResponse));
   }
 
   @PostMapping("/logout")
@@ -68,16 +67,16 @@ public class AuthController {
     authService.logout(authorizationHeader);
 
     ResponseCookie deleteCookie = ResponseCookie.from(COOKIE_NAME, "")
-                                                .httpOnly(true)
-                                                .secure(false)
-                                                .path("/")
-                                                .maxAge(0)     // 즉시 만료
-                                                .sameSite("Lax")
-                                                .build();
+        .httpOnly(true)
+        .secure(false)
+        .path("/")
+        .maxAge(0)     // 즉시 만료
+        .sameSite("Lax")
+        .build();
 
     return ResponseEntity.ok()
-                         .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
-                         .body(ApiResponse.success(null));
+        .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+        .body(ApiResponse.success(null));
   }
 
   @PostMapping("/token-reissue")
@@ -90,21 +89,22 @@ public class AuthController {
     );
 
     ResponseCookie refreshCookie = ResponseCookie.from(COOKIE_NAME, refreshToken)
-                                                 .httpOnly(true)
-                                                 .secure(false)
-                                                 .path("/")
-                                                 .maxAge(
-                                                     jwtTokenProvider.getRefreshExpiration() / 1000)
-                                                 .sameSite("Lax")
-                                                 .build();
+        .httpOnly(true)
+        .secure(false)
+        .path("/")
+        .maxAge(
+            jwtTokenProvider.getRefreshExpiration() / 1000)
+        .sameSite("Lax")
+        .build();
 
     return ResponseEntity.ok()
-                         .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                         .body(ApiResponse.success(newAccessToken));
+        .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+        .body(ApiResponse.success(newAccessToken));
   }
 
   /**
    * 본인인증 - 이메일로 인증번호 보내기
+   *
    * @param request
    * @return
    */
@@ -117,6 +117,7 @@ public class AuthController {
 
   /**
    * 인증번호가 같은지 확인
+   *
    * @param request
    * @return
    */

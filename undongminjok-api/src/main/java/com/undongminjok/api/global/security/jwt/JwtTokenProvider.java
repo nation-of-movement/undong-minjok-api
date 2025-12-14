@@ -8,7 +8,6 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
@@ -33,11 +32,12 @@ public class JwtTokenProvider {
   public void init() {
     // 시크릿 키 초기화
     secretKey = Keys.hmacShaKeyFor(jwtProperties.getSecretKey()
-                                                .getBytes());
+        .getBytes());
   }
 
   /**
    * access token 생성
+   *
    * @param loginId
    * @param role
    * @return
@@ -46,16 +46,17 @@ public class JwtTokenProvider {
     Date now = new Date();
     Date expriyDate = new Date(now.getTime() + jwtProperties.getExpiration());
     return Jwts.builder()
-               .subject(loginId)
-               .claim("role", UserRole.valueOf(role.name()))
-               .issuedAt(now)
-               .expiration(expriyDate)
-               .signWith(secretKey, Jwts.SIG.HS512)
-               .compact();
+        .subject(loginId)
+        .claim("role", UserRole.valueOf(role.name()))
+        .issuedAt(now)
+        .expiration(expriyDate)
+        .signWith(secretKey, Jwts.SIG.HS512)
+        .compact();
   }
 
   /**
    * refresh token 생성
+   *
    * @param loginId
    * @param role
    * @return
@@ -65,16 +66,17 @@ public class JwtTokenProvider {
     // 토큰 발급 시점 (현재 시간 기준)
     Date expriyDate = new Date(now.getTime() + jwtProperties.getRefreshExpiration());
     return Jwts.builder()
-               .subject(loginId)
-               .claim("role", UserRole.valueOf(role.name()))
-               .issuedAt(now)
-               .expiration(expriyDate)
-               .signWith(secretKey, Jwts.SIG.HS512)
-               .compact();
+        .subject(loginId)
+        .claim("role", UserRole.valueOf(role.name()))
+        .issuedAt(now)
+        .expiration(expriyDate)
+        .signWith(secretKey, Jwts.SIG.HS512)
+        .compact();
   }
 
   /**
    * 토큰 검증
+   *
    * @param token
    * @return
    */
@@ -98,10 +100,10 @@ public class JwtTokenProvider {
 
   public String getLoginIdFromJWT(String token) {
     Claims claims = Jwts.parser()
-                        .verifyWith(secretKey)
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload();
+        .verifyWith(secretKey)
+        .build()
+        .parseSignedClaims(token)
+        .getPayload();
 
     return claims.getSubject();
   }
@@ -112,10 +114,10 @@ public class JwtTokenProvider {
 
   public long getRemainingTime(String token) {
     Claims claims = Jwts.parser()
-                        .verifyWith(secretKey) //문자열 key 반환
-                        .build()
-                        .parseClaimsJws(token)
-                        .getBody();
+        .verifyWith(secretKey) //문자열 key 반환
+        .build()
+        .parseClaimsJws(token)
+        .getBody();
 
     Date expiration = claims.getExpiration();
     long now = System.currentTimeMillis();
@@ -131,10 +133,10 @@ public class JwtTokenProvider {
 
   public UserRole getUserRoleFromJWT(String token) {
     Claims claims = Jwts.parser()
-                        .verifyWith(secretKey)
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload();
+        .verifyWith(secretKey)
+        .build()
+        .parseSignedClaims(token)
+        .getPayload();
 
     return UserRole.valueOf(claims.get("role", String.class));
   }

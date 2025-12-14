@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class EmailRequest {
+
   private String email;
   private VerificationPurpose purpose;
 }

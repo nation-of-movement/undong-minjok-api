@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class VerificationCodeResponse {
+
   private Boolean success;
   private String resetToken;
 }

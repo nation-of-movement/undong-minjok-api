@@ -14,9 +14,9 @@ public class SwaggerConfig {
         .info(new Info()
             .title("운동의 민족 API")
             .description("""
-                    운동 템플릿 생성·수정·판매 및
-                    개인 운동 기록 관리를 위한 REST API 명세서
-                    """)
+                운동 템플릿 생성·수정·판매 및
+                개인 운동 기록 관리를 위한 REST API 명세서
+                """)
             .version("v1.0.0")
         );
   }

@@ -7,6 +7,12 @@ public enum ImageCategory {
   DETAIL("templates/detail");
 
   private final String dir;
-  ImageCategory(String dir) { this.dir = dir; }
-  public String getDir() { return dir; }
+
+  ImageCategory(String dir) {
+    this.dir = dir;
+  }
+
+  public String getDir() {
+    return dir;
+  }
 }

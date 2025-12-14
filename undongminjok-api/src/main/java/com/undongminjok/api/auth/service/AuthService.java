@@ -12,9 +12,9 @@ import com.undongminjok.api.global.dto.LoginUserInfo;
 import com.undongminjok.api.global.exception.BusinessException;
 import com.undongminjok.api.global.security.jwt.JwtTokenProvider;
 import com.undongminjok.api.global.util.AuthRedisService;
+import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.global.util.mail.EmailVerificationCode;
 import com.undongminjok.api.global.util.mail.MailService;
-import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.user.UserErrorCode;
 import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.user.domain.UserStatus;
@@ -39,8 +39,8 @@ public class AuthService {
   public TokenResponse login(LoginRequest request) {
 
     User user = userRepository.findByLoginId(request.getLoginId())
-                              .orElseThrow(
-                                  () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+        .orElseThrow(
+            () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
     UserStatus status = user.getStatus();
 
@@ -58,9 +58,9 @@ public class AuthService {
     authRedisService.saveRefreshToken(user.getLoginId(), refreshToken);
 
     return TokenResponse.builder()
-                        .accessToken(accessToken)
-                        .refreshToken(refreshToken)
-                        .build();
+        .accessToken(accessToken)
+        .refreshToken(refreshToken)
+        .build();
   }
 
   @Transactional
@@ -109,8 +109,8 @@ public class AuthService {
 
     // Body에는 AccessToken만 내려줌
     return AccessTokenResponse.builder()
-                              .accessToken(newAccessToken)
-                              .build();
+        .accessToken(newAccessToken)
+        .build();
   }
 
   public void sendVerificationCode(EmailRequest request) {
@@ -154,17 +154,17 @@ public class AuthService {
       case SIGNUP -> {
         authRedisService.markSignupVerified(request.getEmail());
         yield VerificationCodeResponse.builder()
-                                             .success(true)
-                                             .resetToken(null)
-                                             .build();
+            .success(true)
+            .resetToken(null)
+            .build();
       }
 
       case ID_SEARCH, PASSWORD_RESET, PASSWORD_SEARCH -> {
         String resetToken = authRedisService.createAndSaveResetToken(request.getEmail());
         yield VerificationCodeResponse.builder()
-                                      .success(true)
-                                      .resetToken(resetToken)
-                                      .build();
+            .success(true)
+            .resetToken(resetToken)
+            .build();
       }
 
       default -> throw new BusinessException(UserErrorCode.INVALID_PURPOSE);
@@ -182,7 +182,7 @@ public class AuthService {
 
   private void validateForSearch(String email) {
     userRepository.findByEmail(email)
-                  .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+        .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
   }
 
   private void validateForPasswordReset(String email) {
@@ -193,7 +193,7 @@ public class AuthService {
     }
 
     userRepository.findByEmail(email)
-                  .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+        .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
   }
 
 
