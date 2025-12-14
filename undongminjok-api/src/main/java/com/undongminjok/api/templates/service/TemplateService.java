@@ -24,7 +24,9 @@ import com.undongminjok.api.templates.repository.TemplateRecommendRepository;
 import com.undongminjok.api.templates.repository.TemplateRepository;
 import com.undongminjok.api.user.UserErrorCode;
 import com.undongminjok.api.user.domain.User;
+import com.undongminjok.api.user.dto.UserProfileResponse;
 import com.undongminjok.api.user.repository.UserRepository;
+import com.undongminjok.api.user.service.provider.UserProviderService;
 import com.undongminjok.api.workoutplan.workoutPlan.WorkoutPlan;
 import com.undongminjok.api.workoutplan.workoutPlanExercise.WorkoutPlanExercise;
 import com.undongminjok.api.workoutplan.workoutPlanExercise.WorkoutPlanExerciseDTO;
@@ -56,6 +58,7 @@ public class TemplateService {
     private final EquipmentRepository equipmentRepository;
     private final SecurityUtil securityUtil;
     private final FileStorage fileStorage;
+    private final UserProviderService userProviderService;
 
     //================================== 목록 조회 ===================================
     /*
@@ -148,8 +151,10 @@ public class TemplateService {
         isMine = template.getUser().getUserId().equals(loginUserId);
       }
 
+      UserProfileResponse userProfileResponse = userProviderService.getUserProfile(template.getUser().getUserId());
+
         //최종 응답 DTO로 변환
-        return TemplateDetailResponseDTO.of(template, recommended, days, isMine);
+        return TemplateDetailResponseDTO.of(template, recommended, days, isMine, userProfileResponse);
     }
 
     private Template findTemplateOrThrow(Long templateId) {
