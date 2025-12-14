@@ -16,6 +16,7 @@ public class TemplateListResponseDTO {
   private LocalDateTime createdAt;
   private Long recommendCount;
   private Long salesCount;
+  private String writerNickname;
 
   public static TemplateListResponseDTO from(Template t) {
     return TemplateListResponseDTO.builder()
@@ -26,6 +27,7 @@ public class TemplateListResponseDTO {
         .createdAt(t.getCreatedAt())
         .recommendCount(t.getRecommendCount())
         .salesCount(t.getSalesCount())
+        .writerNickname(t.getUser().getNickname())
         .build();
   }
 }
