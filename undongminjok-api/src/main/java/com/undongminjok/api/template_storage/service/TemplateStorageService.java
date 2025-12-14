@@ -97,10 +97,13 @@ public class TemplateStorageService {
       * 보관함에서 삭제되지 않은 템플릿 가져오기
       *    → 내가 다운받아서 저장한 템플릿들
       */
-      var storageTemplates = storageRepository.findAllByUserUserIdAndDeletedFalse(userId)
+      var storageTemplates = storageRepository
+              .findAllByUserUserIdAndDeletedFalse(userId)
               .stream()
-              .map(storage -> storage.getTemplate())
+              .map(TemplateStorage::getTemplate)
+              .filter(tpl -> !tpl.getUser().getUserId().equals(userId)) // ⭐ 핵심
               .toList();
+
 
       /*
        * templates 테이블에서 내가 만든 템플릿 가져오기
