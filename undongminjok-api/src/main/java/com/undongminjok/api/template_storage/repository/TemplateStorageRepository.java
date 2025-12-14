@@ -5,6 +5,7 @@ import com.undongminjok.api.templates.domain.Template;
 import com.undongminjok.api.templates.dto.TemplatePurchaseHistoryDTO;
 import com.undongminjok.api.user.domain.User;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,4 +43,5 @@ public interface TemplateStorageRepository extends JpaRepository<TemplateStorage
   List<TemplateStorage> findAllByUserUserIdAndDeletedFalse(Long userId);
 
   List<TemplateStorage> findAllByTemplateId(Long templateId);
+  Optional<TemplateStorage> findByUserUserIdAndTemplateId(Long userId, Long templateId);
 }

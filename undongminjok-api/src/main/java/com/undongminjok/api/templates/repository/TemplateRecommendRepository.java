@@ -16,5 +16,7 @@ public interface TemplateRecommendRepository extends JpaRepository<TemplateRecom
 
   // ⭐ 유저가 추천한 템플릿 전체 목록 조회용
   List<TemplateRecommend> findAllByUser(User user);
+
+    void deleteAllByTemplateId(Long templateId);
 }
 
