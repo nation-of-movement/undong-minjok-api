@@ -7,6 +7,7 @@ import com.undongminjok.api.template_storage.dto.response.TemplateStorageListRes
 import com.undongminjok.api.template_storage.repository.TemplateStorageRepository;
 import com.undongminjok.api.templates.TemplateErrorCode;
 import com.undongminjok.api.templates.domain.Template;
+import com.undongminjok.api.templates.repository.TemplateRecommendRepository;
 import com.undongminjok.api.templates.repository.TemplateRepository;
 import com.undongminjok.api.user.repository.UserRepository;
 import java.util.List;
@@ -21,8 +22,9 @@ public class TemplateStorageService {
   private final TemplateStorageRepository storageRepository;
   private final TemplateRepository templateRepository;
   private final UserRepository userRepository;
+    private final TemplateRecommendRepository templateRecommendRepository;
 
-  //템플릿 저장
+    //템플릿 저장
   @Transactional
   public void saveTemplateToStorage(Long templateId) {
     //로그인한 유저 가져오기
@@ -48,38 +50,45 @@ public class TemplateStorageService {
   //삭제
   @Transactional
   public void deleteTemplateFromStorage(Long templateId) {
-    Long userId  = SecurityUtil.getLoginUserInfo().getUserId();
+      Long userId = SecurityUtil.getLoginUserInfo().getUserId();
 
-    //저장된 엔티티 가져오기 (soft delete적용)
-    List<TemplateStorage> storages = storageRepository.findAllByTemplateId(templateId)
-            .stream()
-            .filter(s -> s.getUser().getUserId().equals(userId))
-            .toList();
+      // 1. 내 보관함에 있는 TemplateStorage 조회
+      TemplateStorage storage = storageRepository
+              .findByUserUserIdAndTemplateId(userId, templateId)
+              .orElse(null);
 
-    if (storages.isEmpty()) return;
+      if (storage == null) return;
 
-    TemplateStorage storage = storages.get(0);
+      Template template = storage.getTemplate();
 
-    //soft delete
-    storage.markAsDeleted();
+      // 2. 내가 만든 템플릿인지 확인
+      boolean isOwner = template.getUser() != null
+              && template.getUser().getUserId().equals(userId);
 
-    Template template = storage.getTemplate();
-    //내가만든 템플릿인지 확인
-    boolean isOwner = template.getUser() != null &&
-            template.getUser().getUserId().equals(userId);
+      // 3. 내가 만든 템플릿이 아닌 경우 → 보관함에서만 삭제 (soft delete)
+      if (!isOwner) {
+          storage.markAsDeleted();
+          return;
+      }
 
-    if (!isOwner) return;
+      // 4. 내가 만든 템플릿 → hard delete
+      // (판매 이력 있는 템플릿은 삭제 불가)
+      if (template.getSalesCount() > 0) {
+          throw new BusinessException(TemplateErrorCode.TEMPLATE_CANNOT_DELETE_SOLD);
+      }
 
-    //내가 만든 템플릿인지 판단
-    if (template.getSalesCount() > 0) {
-        // 판매된 적이 있으므로 hard delete 불가 → 예외 발생
-        throw new BusinessException(TemplateErrorCode.TEMPLATE_CANNOT_DELETE_SOLD);
-    }
-    //판매된적 없으면 hard delete
-    templateRepository.delete(template);
+      // 1. recommend 먼저 삭제
+      templateRecommendRepository.deleteAllByTemplateId(template.getId());
+
+// 2. template_storage hard delete
+      storageRepository.delete(storage);
+
+// 3. template hard delete
+      templateRepository.delete(template);
   }
 
-  //조회
+
+    //조회
   @Transactional(readOnly = true)
   public List<TemplateStorageListResponse> getMyTemplateStorageList() {
     Long userId = SecurityUtil.getLoginUserInfo().getUserId();
