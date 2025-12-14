@@ -37,12 +37,8 @@ public class TemplatePurchaseController {
   /* 템플릿 구매 */
   @PostMapping("/{templateId}/purchase")
   public ResponseEntity<ApiResponse<Void>> purchase(
-      @PathVariable Long templateId,
-      @AuthenticationPrincipal CustomUserDetails userDetails
+      @PathVariable Long templateId
   ) {
-    Long userId = userDetails.getUserId(); // 필요하면 로깅용으로만 사용
-
-    // 서비스 메서드 이름/파라미터에 맞게 호출
     templatePurchaseService.purchaseTemplate(templateId);
 
     return ResponseEntity.ok(ApiResponse.success(null));
