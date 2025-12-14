@@ -1,6 +1,7 @@
 package com.undongminjok.api.user.service.provider;
 
 import com.undongminjok.api.user.domain.User;
+import com.undongminjok.api.user.dto.UserProfileResponse;
 
 public interface UserProviderService {
 
@@ -12,4 +13,6 @@ public interface UserProviderService {
 
   // user 락 조회
   User findByIdForUpdate(Long userId);
+
+  UserProfileResponse getUserProfile(Long userId);
 }
