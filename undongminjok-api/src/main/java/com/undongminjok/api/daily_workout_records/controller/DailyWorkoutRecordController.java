@@ -8,6 +8,7 @@ import com.undongminjok.api.daily_workout_records.service.DailyWorkoutRecordServ
 import com.undongminjok.api.global.dto.ApiResponse;
 import com.undongminjok.api.global.storage.FileStorage;
 import com.undongminjok.api.global.storage.ImageCategory;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,6 +26,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+
+@Tag(
+    name = "Daily Workout Record",
+    description = "일별 운동 기록 관리 API"
+)
 @RestController
 @RequestMapping("/api/v1/records")
 @RequiredArgsConstructor
