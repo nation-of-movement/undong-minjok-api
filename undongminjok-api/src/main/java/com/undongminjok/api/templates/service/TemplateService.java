@@ -334,6 +334,7 @@ public class TemplateService {
 
       // 현재 운동들 Map으로 캐싱 (id -> 엔티티)
       Map<Long, WorkoutPlanExercise> currentMap = plan.getExercises().stream()
+          .filter(e -> e.getId() != null)
           .collect(Collectors.toMap(WorkoutPlanExercise::getId, e -> e));
 
       if (req.getExercises() == null) {
