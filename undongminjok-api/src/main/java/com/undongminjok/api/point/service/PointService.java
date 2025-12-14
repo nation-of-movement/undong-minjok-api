@@ -130,8 +130,6 @@ public class PointService {
       throw new BusinessException(PointErrorCode.POINT_NOT_ENOUGH);
     }
 
-    user.updateAmount(-request.getPoint());
-
     PointHistoryDTO pointHistoryDTO =
                 PointHistoryDTO.builder()
                                .userId(userId)
