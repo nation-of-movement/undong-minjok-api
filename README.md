@@ -272,6 +272,8 @@
   </details>
 
   <details> <summary>템플릿 </summary>
+	  ![Adobe Express - 템플릿 생성 GIF 2](https://github.com/user-attachments/assets/53ff899a-f54a-4784-974f-6b3e6782a574)
+
   </details>
 
   <details> <summary>운동 기록장 </summary>
