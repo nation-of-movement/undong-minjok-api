@@ -272,7 +272,8 @@
   </details>
 
   <details> <summary>템플릿 </summary>
-	  ![Adobe Express - 템플릿 생성 GIF 2](https://github.com/user-attachments/assets/53ff899a-f54a-4784-974f-6b3e6782a574)
+  1.템플릿생성GIF	![Image](https://github.com/user-attachments/assets/15faeae4-c7fa-4e2f-a55f-4e64f89e23bc)
+
 
   </details>
 
