@@ -285,7 +285,21 @@
 	
 	<strong>포인트 충전</strong>
 	
-	![결제 GIF](https://github.com/user-attachments/assets/3f51fe13-a727-46fd-a84c-e894b89ce912)
+	<p>
+	  <img
+	    src="https://github.com/user-attachments/assets/3f51fe13-a727-46fd-a84c-e894b89ce912"
+	    width="800"
+	  />
+	</p>
+	
+	<strong>포인트 출금</strong>
+	
+	<p>
+	  <img
+	    src="https://github.com/user-attachments/assets/623adc7b-6e75-47de-b76b-55b2e1b4f9d0"
+	    width="800"
+	  />
+	</p>
 	
 	</details>
 
