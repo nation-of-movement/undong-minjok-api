@@ -266,6 +266,23 @@
   
 - ### ▶️ 기능 수행 테스트 결과
   <details> <summary>로그인, 회원가입 </summary>
+	  <strong> 로그인 </strong>
+	  <p>
+	  <img
+	    src="https://github.com/user-attachments/assets/6913a652-f879-44fa-8b2d-56843c6297e6"
+	    width="800"
+	  />
+	</p>
+	<strong> 회원가입 </strong>
+	  <p>
+	  <img
+	    src="https://github.com/user-attachments/assets/9a889d4e-a16f-4014-8ba2-049a83baeb62"
+	    width="800"
+	  />
+	</p>
+
+
+	  
   </details>
 
   <details> <summary>마이페이지 </summary>
@@ -278,7 +295,38 @@
   </details>
 
   <details> <summary>운동 기록장 </summary>
-  </details>
+  	<strong> 템플릿 보관함 저장 </strong>
+	<p>
+	  <img
+	    src="https://github.com/user-attachments/assets/15ec2ca7-acb9-479d-8e0f-3da4123aac85"
+	    width="800"
+	  />
+	</p>
+
+	 <strong> 템플릿 적용하기 </strong>
+	<p>
+	  <img
+	    src="https://github.com/user-attachments/assets/6036c564-a45b-48f4-81b2-a69a49d84ec5"
+	    width="800"
+	  />
+	</p>
+
+  <strong> 운동 기록하기 </strong>
+	<p>
+	  <img
+	    src="https://github.com/user-attachments/assets/15157d57-1a6e-4324-b708-c844e7cd0a11"
+	    width="800"
+	  />
+	</p>
+
+  <strong> 템플릿 삭제하기 </strong>
+	<p>
+	  <img
+	    src="https://github.com/user-attachments/assets/c2f5ef05-d8b6-4836-a4b6-bae31159e378"
+	    width="800"
+	  />
+	</p>
+	</details>
 
 	<details>
 	<summary>결제</summary>
@@ -301,7 +349,7 @@
 	  />
 	</p>
 	
-	</details>
+</details>
 
 ---
 
