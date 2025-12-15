@@ -3,8 +3,10 @@ package com.undongminjok.api.templates.service;
 import com.undongminjok.api.global.exception.BusinessException;
 import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.point.PointErrorCode;
+import com.undongminjok.api.point.domain.Point;
 import com.undongminjok.api.point.domain.PointStatus;
 import com.undongminjok.api.point.dto.PointHistoryDTO;
+import com.undongminjok.api.point.repository.PointRepository;
 import com.undongminjok.api.point.service.provider.PointProviderService;
 import com.undongminjok.api.template_storage.domain.TemplateStorage;
 import com.undongminjok.api.template_storage.repository.TemplateStorageRepository;
@@ -19,6 +21,7 @@ import com.undongminjok.api.user.repository.UserRepository;
 import com.undongminjok.api.user.service.provider.UserProviderService;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,27 +33,34 @@ import org.springframework.transaction.annotation.Transactional;
 public class TemplatePurchaseService {
 
   private final TemplateRepository templateRepository;
-  private final UserRepository userRepository;
   private final TemplateStorageRepository templateStorageRepository;
   private final UserProviderService userProviderService;
   private final PointProviderService pointProviderService;
+  private final PointRepository pointRepository;
 
   // 내 구매내역 조회
   @Transactional(readOnly = true)
   public List<TemplatePurchaseHistoryDTO> getMyPurchases(Long userId) {
-    return templateStorageRepository.findPurchaseHistoryByUserId(userId);
+    List<Point> points = pointRepository.findPurchaseHistoryByUserId(userId);
+
+    return points.stream()
+                 .map(Point::toTemplatePurchaseHistoryDTO)
+                 .collect(Collectors.toList());
   }
 
   @Transactional
   public void purchaseTemplate(Long templateId) {
 
-    Long userId = Optional.ofNullable(SecurityUtil.getLoginUserInfo().getUserId())
-        .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+    Long userId = Optional.ofNullable(SecurityUtil.getLoginUserInfo()
+                                                  .getUserId())
+                          .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
     Template template = templateRepository.findById(templateId)
-        .orElseThrow(() -> new BusinessException(TemplateErrorCode.TEMPLATE_NOT_FOUND));
+                                          .orElseThrow(() -> new BusinessException(
+                                              TemplateErrorCode.TEMPLATE_NOT_FOUND));
 
-    Long sellerId = template.getUser().getUserId();
+    Long sellerId = template.getUser()
+                            .getUserId();
 
     // 본인이 만든 템플릿이면 구매 없이 자동 저장 후 종료
     if (sellerId.equals(userId)) {
@@ -78,21 +88,21 @@ public class TemplatePurchaseService {
 
     // 구매자 PURCHASE 이력 (차감)
     PointHistoryDTO historyDTO = PointHistoryDTO.builder()
-        .userId(userId)
-        .templateId(templateId)
-        .status(PointStatus.PURCHASE)
-        .amount((int) -price)
-        .build();
+                                                .userId(userId)
+                                                .templateId(templateId)
+                                                .status(PointStatus.PURCHASE)
+                                                .amount((int) -price)
+                                                .build();
 
     pointProviderService.createPointHistory(historyDTO);
 
     // 판매자 EARN 이력 (적립)
     PointHistoryDTO sellerHistory = PointHistoryDTO.builder()
-        .userId(sellerId)
-        .templateId(templateId)
-        .status(PointStatus.EARN)
-        .amount((int) price)
-        .build();
+                                                   .userId(sellerId)
+                                                   .templateId(templateId)
+                                                   .status(PointStatus.EARN)
+                                                   .amount((int) price)
+                                                   .build();
 
     pointProviderService.createPointHistory(sellerHistory);
 
@@ -103,7 +113,7 @@ public class TemplatePurchaseService {
     template.increaseSalesCount();
 
     log.info("템플릿 구매 완료. buyerId={}, sellerId={}, templateId={}, price={}",
-        userId, sellerId, templateId, price);
+             userId, sellerId, templateId, price);
   }
 
   // 저장 기능을 공통 처리하는 private 메서드
@@ -116,10 +126,10 @@ public class TemplatePurchaseService {
 
     if (!exists) {
       TemplateStorage storage = TemplateStorage.builder()
-          .user(user)
-          .template(template)
-          .deleted(false)
-          .build();
+                                               .user(user)
+                                               .template(template)
+                                               .deleted(false)
+                                               .build();
 
       templateStorageRepository.save(storage);
     }

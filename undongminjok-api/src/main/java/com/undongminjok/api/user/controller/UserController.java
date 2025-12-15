@@ -15,6 +15,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -53,6 +54,7 @@ public class UserController {
         .body(ApiResponse.success(null));
   }
 
+  @PreAuthorize("isAuthenticated()")
   @PostMapping("/profile-image")
   public ApiResponse<?> uploadProfile(
       @RequestParam("file") MultipartFile file
@@ -69,12 +71,14 @@ public class UserController {
     return ResponseEntity.ok(ApiResponse.success(null));
   }
 
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("/me")
   public ApiResponse<UserInfoResponse> getMyInfo() {
     UserInfoResponse response = userService.getMyInfo();
     return ApiResponse.success(response);
   }
 
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("/{loginId}")
   public ApiResponse<UserProfileResponse> getUserProfile(@PathVariable String loginId) {
     UserProfileResponse response = userService.getUserProfile(loginId);
@@ -87,12 +91,14 @@ public class UserController {
     return ResponseEntity.ok(ApiResponse.success(null));
   }
 
+  @PreAuthorize("isAuthenticated()")
   @PatchMapping("/nickname")
   public ApiResponse<Void> updateNickname(@RequestBody UpdateNicknameRequest request) {
     userService.updateNickname(request);
     return ApiResponse.success(null);
   }
 
+  @PreAuthorize("isAuthenticated()")
   @PatchMapping("/bio")
   public ApiResponse<Void> updateBio(@RequestBody UpdateBioRequest request) {
     userService.updateBio(request);

@@ -1,4 +1,4 @@
----
+
 
 # 🏋️ 운동의 민족 (Undong Minjok)
 
@@ -266,6 +266,13 @@
   
 - ### ▶️ 기능 수행 테스트 결과
   <details> <summary>로그인, 회원가입 </summary>
+	  <strong> 회원가입 </strong>
+	  <p>
+	  <img
+	    src="https://github.com/user-attachments/assets/d4c05b8a-a137-4919-a99c-4187a27b7d1d"
+	    width="800"
+	  />
+	</p>
 	  <strong> 로그인 </strong>
 	  <p>
 	  <img
@@ -273,19 +280,25 @@
 	    width="800"
 	  />
 	</p>
-	<strong> 회원가입 </strong>
-	  <p>
-	  <img
-	    src="https://github.com/user-attachments/assets/9a889d4e-a16f-4014-8ba2-049a83baeb62"
-	    width="800"
-	  />
-	</p>
-
-
 	  
   </details>
 
   <details> <summary>마이페이지 </summary>
+	  <strong> 프로필 수정 </strong>
+	<p>
+	  <img
+	    src="https://github.com/user-attachments/assets/4679d199-cae3-4522-91d5-85d2cd224712"
+	    width="800"
+	  />
+	</p>
+	<strong> 마이페이지 조회 </strong>
+	<p>
+	  <img
+	    src="https://github.com/user-attachments/assets/21ff2c71-9ea2-40b6-9e07-db786fd36687"
+	    width="800"
+	  />
+	</p>
+
   </details>
 
   <details> <summary>템플릿 </summary>
@@ -297,13 +310,21 @@
 	  />
 	</p>
 
+	<strong> 템플릿 수정하기 </strong>
+	<p>
+	  <img
+	    src="https://github.com/user-attachments/assets/1f3e50b7-c0dc-47bf-b509-1151b515ec68"
+	    width="800"
+	  />
+	</p>
+
   </details>
 
   <details> <summary>운동 기록장 </summary>
-  	<strong> 템플릿 보관함 저장 </strong>
+  	<strong> 템플릿 보관함 저장</strong>
 	<p>
 	  <img
-	    src="https://github.com/user-attachments/assets/15ec2ca7-acb9-479d-8e0f-3da4123aac85"
+	    src="https://github.com/user-attachments/assets/0a5d34c0-510c-4ce5-a2e1-9f60ab8e699a"
 	    width="800"
 	  />
 	</p>
@@ -311,7 +332,7 @@
 	 <strong> 템플릿 적용하기 </strong>
 	<p>
 	  <img
-	    src="https://github.com/user-attachments/assets/6036c564-a45b-48f4-81b2-a69a49d84ec5"
+	    src="https://github.com/user-attachments/assets/b8c51d29-529e-44d2-a828-c17d9490bcd9"
 	    width="800"
 	  />
 	</p>
@@ -319,7 +340,7 @@
   <strong> 운동 기록하기 </strong>
 	<p>
 	  <img
-	    src="https://github.com/user-attachments/assets/15157d57-1a6e-4324-b708-c844e7cd0a11"
+	    src="https://github.com/user-attachments/assets/8fb1534b-3a46-42ec-84c9-a0476361bb83"
 	    width="800"
 	  />
 	</p>
@@ -327,32 +348,23 @@
   <strong> 템플릿 삭제하기 </strong>
 	<p>
 	  <img
-	    src="https://github.com/user-attachments/assets/c2f5ef05-d8b6-4836-a4b6-bae31159e378"
+	    src="https://github.com/user-attachments/assets/6e33e748-61fe-40dc-acad-de55bb7daaee"
 	    width="800"
 	  />
 	</p>
 	</details>
+
 
 	<details>
 	<summary>결제</summary>
 	
 	<strong>포인트 충전</strong>
 	
-	<p>
-	  <img
-	    src="https://github.com/user-attachments/assets/3f51fe13-a727-46fd-a84c-e894b89ce912"
-	    width="800"
-	  />
-	</p>
+	![Image](https://github.com/user-attachments/assets/ffa30d24-ead7-4465-8bf1-1b47456d3959)
 	
 	<strong>포인트 출금</strong>
 	
-	<p>
-	  <img
-	    src="https://github.com/user-attachments/assets/623adc7b-6e75-47de-b76b-55b2e1b4f9d0"
-	    width="800"
-	  />
-	</p>
+	![Image](https://github.com/user-attachments/assets/f1b44f82-2cdb-4946-91f6-3af161ba24fb)
 	
 </details>
 
@@ -678,5 +690,38 @@ pipeline {
 문제를 해결했습니다.
 
 </details>
+
+<details>
+<summary> 📁파일 관련 트러블 슈팅 </summary>
+
+**백엔드: 파일 업로드와 데이터베이스 트랜잭션 불일치 해결**
+
+운동 기록 등록 과정에서 이미지 파일 업로드와 데이터베이스 저장을 하나의 요청으로 처리하면서,
+트랜잭션 실패 시 데이터는 롤백되지만 이미지 파일이 서버 파일 시스템에 남는 문제가 발생했다.
+이는 데이터베이스 트랜잭션이 파일 시스템과 같은 외부 리소스를 직접 관리하지 못하기 때문에 생긴 구조적 한계였다.
+
+이를 해결하기 위해 백엔드에서는 TransactionSynchronizationManager를 활용한
+보상 트랜잭션 패턴을 적용했다.
+트랜잭션 종료 시점을 감지하여 커밋 성공 시에는 기존 이미지 파일을 정리하고,
+롤백이 발생한 경우에는 새로 업로드된 파일을 삭제하도록 설계했다.
+
+이 방식으로 예외 상황에서도 서버에 불필요한 파일이 남지 않도록 개선했으며,
+데이터베이스와 파일 시스템 간의 상태 불일치를 안정적으로 방지할 수 있었다.
+
+**프론트엔드: 이미지 API 경로 하드코딩 제거 및 환경 분리**
+
+프론트엔드에서는 이미지 조회 시 API 서버 주소를 localhost로 하드코딩하고 있어,
+개발 환경에서는 정상 동작하지만 배포 환경에서는 코드 수정이 필요한 문제가 있었다.
+이로 인해 프론트엔드 빌드 결과가 특정 서버 주소에 종속되는 구조였다.
+
+이를 개선하기 위해 API 서버 주소를 환경 변수로 분리하고,
+환경별(development, production) 설정에 따라 동적으로 이미지 경로를 생성하도록 수정했다.
+이로써 코드 수정 없이도 개발·운영 환경을 구분할 수 있는 구조를 만들었다.
+
+해당 개선을 통해 프론트엔드는 배포 환경 변화에 유연하게 대응할 수 있게 되었고,
+백엔드에서 제공하는 이미지 경로를 안정적으로 활용할 수 있는 구조를 완성했다.
+
+</details>
+
 
 ---

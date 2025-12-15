@@ -4,6 +4,7 @@ package com.undongminjok.api.point.domain;
 import com.undongminjok.api.global.dto.BaseTimeEntity;
 import com.undongminjok.api.point.dto.PointHistoryDTO;
 import com.undongminjok.api.templates.domain.Template;
+import com.undongminjok.api.templates.dto.TemplatePurchaseHistoryDTO;
 import com.undongminjok.api.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -80,5 +81,14 @@ public class Point extends BaseTimeEntity {
                 .orderId(dto.getOrderId())
                 .build();
 
+  }
+
+  public TemplatePurchaseHistoryDTO toTemplatePurchaseHistoryDTO() {
+    return new TemplatePurchaseHistoryDTO(
+        this.template.getId(),
+        this.template.getName(),
+        this.amount.longValue(),
+        this.createdAt
+    );
   }
 }

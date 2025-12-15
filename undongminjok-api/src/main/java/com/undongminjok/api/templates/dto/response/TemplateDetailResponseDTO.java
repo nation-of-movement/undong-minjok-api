@@ -35,6 +35,9 @@ public class TemplateDetailResponseDTO {
   @JsonProperty("isMine")
   private boolean isMine;
 
+  @JsonProperty("isPurchased")
+  private boolean isPurchased;
+
   @Getter
   @Builder
   @AllArgsConstructor
@@ -48,6 +51,7 @@ public class TemplateDetailResponseDTO {
       boolean recommended,
       List<TemplateDayDTO> days,
       boolean isMine,
+      boolean isPurchased,
       UserProfileResponse userProfile) {
 
     return TemplateDetailResponseDTO.builder()
@@ -64,6 +68,7 @@ public class TemplateDetailResponseDTO {
                                     .recommended(recommended)
                                     .days(days)
                                     .isMine(isMine)
+                                    .isPurchased(isPurchased)
                                     .userProfile(userProfile)
                                     .build();
   }
