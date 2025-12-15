@@ -147,17 +147,27 @@ public class TemplateService {
     Long loginUserId = securityUtil.getCurrentUserIdOrNull();
 
     boolean isMine = false;
+    boolean isPurchased = false;
+
     if (loginUserId != null) {
       isMine = template.getUser()
                        .getUserId()
                        .equals(loginUserId);
     }
 
+    if (!isMine) {
+      User loginUser = userRepository.findById(loginUserId)
+          .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+
+      isPurchased = templateStorageRepository
+          .existsByUserAndTemplate(loginUser, template);
+    }
+
     UserProfileResponse userProfileResponse = userProviderService.getUserProfile(template.getUser()
                                                                                          .getUserId());
 
     //최종 응답 DTO로 변환
-    return TemplateDetailResponseDTO.of(template, recommended, days, isMine, userProfileResponse);
+    return TemplateDetailResponseDTO.of(template, recommended, days, isMine, isPurchased, userProfileResponse);
   }
 
   private Template findTemplateOrThrow(Long templateId) {
