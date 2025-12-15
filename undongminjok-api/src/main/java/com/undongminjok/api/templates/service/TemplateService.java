@@ -468,7 +468,6 @@ public class TemplateService {
   }
 
   // 내 판매내역 조회
-  @Transactional(readOnly = true)
   public List<TemplateSalesHistoryDTO> getMySalesHistory(Long userId) {
     return templateRepository.findSalesHistoryByUser(userId);
   }
