@@ -350,12 +350,7 @@
 	
 	<strong>포인트 출금</strong>
 	
-	<p>
-	  <img
-	    src="https://github.com/user-attachments/assets/623adc7b-6e75-47de-b76b-55b2e1b4f9d0"
-	    width="800"
-	  />
-	</p>
+	![Image](https://github.com/user-attachments/assets/f1b44f82-2cdb-4946-91f6-3af161ba24fb)
 	
 </details>
 
