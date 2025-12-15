@@ -6,7 +6,9 @@ import com.undongminjok.api.global.dto.ApiResponse;
 import com.undongminjok.api.global.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -54,6 +56,13 @@ public class GlobalExceptionHandler {
     log.error("[BUSINESS ERROR] code={} message={}", ex.getErrorCode(), ex.getMessage());
     return ResponseEntity.status(ex.getErrorCode().getHttpStatusCode())
         .body(ApiResponse.failure(ex.getErrorCode().getErrorCode(), ex.getMessage()));
+  }
+
+  @ExceptionHandler(AuthorizationDeniedException.class)
+  public ResponseEntity<ApiResponse<?>> handleAuthorizationDenied(AuthorizationDeniedException ex) {
+    log.error("[ACCESS DENIED ERROR] message={}", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)  // 403 Forbidden
+                         .body(ApiResponse.failure("ACCESS_DENIED", "접근 권한이 없습니다."));
   }
 
   @ExceptionHandler(Exception.class)
