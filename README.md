@@ -289,8 +289,13 @@
   </details>
 
   <details> <summary>템플릿 </summary>
-  1.템플릿생성GIF	![Image](https://github.com/user-attachments/assets/15faeae4-c7fa-4e2f-a55f-4e64f89e23bc)
-
+	   <strong> 템플릿 생성하기 </strong>
+	<p>
+	  <img
+	    src="https://github.com/user-attachments/assets/15faeae4-c7fa-4e2f-a55f-4e64f89e23bc"
+	    width="800"
+	  />
+	</p>
 
   </details>
 
