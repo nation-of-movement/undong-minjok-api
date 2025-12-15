@@ -300,7 +300,13 @@
 	    width="800"
 	  />
 	</p>
-
+	<strong> 구매내역 및 판매내역 조회 </strong>
+	<p>
+	  <img
+	    src="https://github.com/user-attachments/assets/ed8a383e-e79e-4995-aadf-9b4c654aa3b9"
+	    width="800"
+	  />
+	</p>
   </details>
 
   <details> <summary>템플릿 </summary>
