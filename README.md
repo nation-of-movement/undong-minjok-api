@@ -1,4 +1,4 @@
----
+![템플릿 수정 GIF](https://github.com/user-attachments/assets/ae4b898a-98ea-4543-9873-9181a0049f41)---
 
 # 🏋️ 운동의 민족 (Undong Minjok)
 
@@ -293,6 +293,14 @@
 	<p>
 	  <img
 	    src="https://github.com/user-attachments/assets/15faeae4-c7fa-4e2f-a55f-4e64f89e23bc"
+	    width="800"
+	  />
+	</p>
+
+	<strong> 템플릿 수정하기 </strong>
+	<p>
+	  <img
+	    src="https://github.com/user-attachments/assets/1f3e50b7-c0dc-47bf-b509-1151b515ec68)"
 	    width="800"
 	  />
 	</p>
