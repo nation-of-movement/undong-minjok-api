@@ -20,22 +20,6 @@
 7. [⚠️ Trouble Shooting](#️-5-trouble-shooting)
 ---
 
-### 🔎 참고 (중요)
-
-* GitHub 앵커는 **특수문자 제거 + 소문자 + 하이픈** 기준이라
-  위 목차는 실제 클릭 시 **정확히 이동**되도록 맞춰놨어.
-* `<details><summary>` 안에 있는 제목도 **앵커로 정상 인식**됨.
-
----
-
-원하면 다음도 바로 만들어줄게 👇
-
-* 각 **주요 기능 ②~⑤ `<details>` 내용 채워주기**
-* Trouble Shooting 항목에 **링크형 요약 추가**
-* README 전체 **마지막 점검 (앵커/레이아웃/가독성)**
-
----
-
 ## 👩‍👧‍👦 1. 멤버 소개
 
 <div align="center">
@@ -395,6 +379,13 @@
 ## 🔁 5. 배포 문서
 <h2> 아키텍처 구조 </h2>
 <img width="2481" height="2338" alt="Image" src="https://github.com/user-attachments/assets/3e5a352b-f62b-45e9-a6d2-2e680d7555c6" />
+
+<h2>도커 매니페스트</h2>
+
+<a href="https://github.com/nation-of-movement/undong-minjok-infra">
+  <img src="https://img.shields.io/badge/Docker-Manifest-blue?style=for-the-badge&logo=github"/>
+</a>
+
 
 <h2>Dockerfile</h2>
 <details> 
