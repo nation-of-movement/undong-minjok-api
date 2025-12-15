@@ -1,4 +1,4 @@
-![템플릿 수정 GIF](https://github.com/user-attachments/assets/ae4b898a-98ea-4543-9873-9181a0049f41)---
+
 
 # 🏋️ 운동의 민족 (Undong Minjok)
 
