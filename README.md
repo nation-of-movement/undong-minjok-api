@@ -300,7 +300,7 @@
 	<strong> 템플릿 수정하기 </strong>
 	<p>
 	  <img
-	    src="https://github.com/user-attachments/assets/1f3e50b7-c0dc-47bf-b509-1151b515ec68)"
+	    src="https://github.com/user-attachments/assets/1f3e50b7-c0dc-47bf-b509-1151b515ec68"
 	    width="800"
 	  />
 	</p>
