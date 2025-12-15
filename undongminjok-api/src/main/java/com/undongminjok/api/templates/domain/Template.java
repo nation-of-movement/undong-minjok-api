@@ -39,7 +39,7 @@ public class Template extends BaseTimeEntity {
   @Column(name = "template_name", length = 50, nullable = false)
   private String name;
 
-  @Column(name = "template_content", length = 255, nullable = false)
+  @Column(name = "template_content", length = 1000, nullable = false)
   private String content;
 
   @Column(name = "template_price", nullable = false)
