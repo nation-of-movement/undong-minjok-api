@@ -1,4 +1,4 @@
-package com.undongminjok.api.templates.dto;
+package com.undongminjok.api.templates.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

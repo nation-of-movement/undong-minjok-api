@@ -12,7 +12,8 @@ public enum FileErrorCode implements ErrorCode {
   FILE_PATH_TRAVERSAL_DETECTED("FILE_005", "file path traversal", HttpStatus.INTERNAL_SERVER_ERROR),
   FILE_DELETE_FAILED("FILE_006", "file delete failed", HttpStatus.INTERNAL_SERVER_ERROR),
   FILE_DELETE_IO_ERROR("FILE_007", "file delete io error", HttpStatus.INTERNAL_SERVER_ERROR),
-  FILE_SAVE_IO_ERROR("FILE_008", "file save io error", HttpStatus.INTERNAL_SERVER_ERROR),;
+  FILE_SAVE_IO_ERROR("FILE_008", "file save io error", HttpStatus.INTERNAL_SERVER_ERROR),
+  ;
 
   private final String errorCode;
   private final String message;

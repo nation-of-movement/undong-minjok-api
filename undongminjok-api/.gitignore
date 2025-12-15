@@ -48,3 +48,5 @@ logs/
 *.log.*
 
 uploads/profiles/
+uploads/templates/
+uploads/workouts/

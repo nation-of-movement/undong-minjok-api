@@ -1,63 +1,137 @@
 package com.undongminjok.api.templates.service;
 
+import com.undongminjok.api.global.exception.BusinessException;
+import com.undongminjok.api.global.util.SecurityUtil;
+import com.undongminjok.api.point.PointErrorCode;
+import com.undongminjok.api.point.domain.Point;
+import com.undongminjok.api.point.domain.PointStatus;
+import com.undongminjok.api.point.dto.PointHistoryDTO;
 import com.undongminjok.api.point.repository.PointRepository;
+import com.undongminjok.api.point.service.provider.PointProviderService;
 import com.undongminjok.api.template_storage.domain.TemplateStorage;
 import com.undongminjok.api.template_storage.repository.TemplateStorageRepository;
+import com.undongminjok.api.templates.TemplateErrorCode;
 import com.undongminjok.api.templates.domain.Template;
-import com.undongminjok.api.templates.dto.TemplatePurchaseResponseDTO;
+import com.undongminjok.api.templates.dto.TemplatePurchaseHistoryDTO;
 import com.undongminjok.api.templates.repository.TemplateRepository;
+import com.undongminjok.api.user.UserErrorCode;
 import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.user.repository.UserRepository;
 
+import com.undongminjok.api.user.service.provider.UserProviderService;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TemplatePurchaseService {
 
   private final TemplateRepository templateRepository;
-  private final UserRepository userRepository;
-  private final PointRepository pointRepository;
   private final TemplateStorageRepository templateStorageRepository;
+  private final UserProviderService userProviderService;
+  private final PointProviderService pointProviderService;
+  private final PointRepository pointRepository;
+
+  // 내 구매내역 조회
+  @Transactional(readOnly = true)
+  public List<TemplatePurchaseHistoryDTO> getMyPurchases(Long userId) {
+    List<Point> points = pointRepository.findPurchaseHistoryByUserId(userId);
+
+    return points.stream()
+                 .map(Point::toTemplatePurchaseHistoryDTO)
+                 .collect(Collectors.toList());
+  }
 
   @Transactional
-  public TemplatePurchaseResponseDTO purchase(Long templateId, Long userId) {
+  public void purchaseTemplate(Long templateId) {
 
-    // 1. 템플릿 / 유저 조회
+    Long userId = Optional.ofNullable(SecurityUtil.getLoginUserInfo()
+                                                  .getUserId())
+                          .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+
     Template template = templateRepository.findById(templateId)
-        .orElseThrow(() -> new IllegalArgumentException("템플릿이 존재하지 않습니다."));
+                                          .orElseThrow(() -> new BusinessException(
+                                              TemplateErrorCode.TEMPLATE_NOT_FOUND));
 
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
+    Long sellerId = template.getUser()
+                            .getUserId();
 
-    // 2. 이미 보관함에 있으면 예외 (ID 기반)
-    if (templateStorageRepository.existsByUserUserIdAndTemplateId(userId, templateId)) {
-      throw new IllegalStateException("이미 구매한 템플릿입니다.");
+    // 본인이 만든 템플릿이면 구매 없이 자동 저장 후 종료
+    if (sellerId.equals(userId)) {
+      User user = userProviderService.getUser(userId);
+      saveToStorage(user, template);
+      log.info("본인 템플릿이므로 구매 없이 자동 저장 완료. userId={}, templateId={}", userId, templateId);
+      return;
     }
 
-    // 3. 포인트 비교
-    long priceLong = template.getPrice();      // Template.price : Long
-    int price = Math.toIntExact(priceLong);   // Integer 로 변환 (범위 벗어나면 예외)
+    // 이미 구매한 템플릿인지 체크
+    boolean alreadyPurchased =
+        templateStorageRepository.existsByUserUserIdAndTemplateId(userId, templateId);
 
-    user.usePoint(price);                    // User.amount 차감 (포인트 부족하면 예외)
+    if (alreadyPurchased) {
+      throw new BusinessException(TemplateErrorCode.TEMPLATE_ALREADY_PURCHASED);
+    }
 
-    // 4. 판매량 증가
-    template.increaseSales();
+    User user = userProviderService.getUser(userId);
+    long price = template.getPrice();
 
-    // 5. 보관함 저장
-    TemplateStorage storage = TemplateStorage.builder()
-        .user(user)
-        .template(template)
-        .build();
-    templateStorageRepository.save(storage);
+    // 포인트 부족
+    if (user.getAmount() < price) {
+      throw new BusinessException(PointErrorCode.POINT_NOT_ENOUGH);
+    }
 
-    // 8. 응답 DTO
-    return new TemplatePurchaseResponseDTO(
-        template.getId(),
-        template.getName(),
-        template.getPrice()
+    // 구매자 PURCHASE 이력 (차감)
+    PointHistoryDTO historyDTO = PointHistoryDTO.builder()
+                                                .userId(userId)
+                                                .templateId(templateId)
+                                                .status(PointStatus.PURCHASE)
+                                                .amount((int) -price)
+                                                .build();
+
+    pointProviderService.createPointHistory(historyDTO);
+
+    // 판매자 EARN 이력 (적립)
+    PointHistoryDTO sellerHistory = PointHistoryDTO.builder()
+                                                   .userId(sellerId)
+                                                   .templateId(templateId)
+                                                   .status(PointStatus.EARN)
+                                                   .amount((int) price)
+                                                   .build();
+
+    pointProviderService.createPointHistory(sellerHistory);
+
+    // 구매한 템플릿 보관함 저장
+    saveToStorage(user, template);
+
+    // 템플릿 구매시 판매량 증가
+    template.increaseSalesCount();
+
+    log.info("템플릿 구매 완료. buyerId={}, sellerId={}, templateId={}, price={}",
+             userId, sellerId, templateId, price);
+  }
+
+  // 저장 기능을 공통 처리하는 private 메서드
+  private void saveToStorage(User user, Template template) {
+
+    boolean exists = templateStorageRepository.existsByUserUserIdAndTemplateId(
+        user.getUserId(),
+        template.getId()
     );
+
+    if (!exists) {
+      TemplateStorage storage = TemplateStorage.builder()
+                                               .user(user)
+                                               .template(template)
+                                               .deleted(false)
+                                               .build();
+
+      templateStorageRepository.save(storage);
+    }
   }
 }

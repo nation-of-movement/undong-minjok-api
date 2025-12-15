@@ -15,16 +15,22 @@ public class WorkoutPlanExercise {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "plan_exercise_id")
   private Long id;
-
+    @Column(name = "plan_exercise_day")
   private Integer day;
+    @Column(name = "plan_exercise_name")
   private String name;
-  private String part;
-
+    @Column(name = "plan_exercise_part")
+    private String part;
+    @Column(name = "plan_exercise_reps")
   private Integer reps;
-  private Integer weight;
-  private Integer duration;
-  private Integer orderIndex;
+    @Column(name = "plan_exercise_weight")
+    private Integer weight;
+    @Column(name = "plan_exercise_duration")
+    private Integer duration;
+    @Column(name = "plan_exercise_orderIndex")
+    private Integer orderIndex;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "equipment_id")
@@ -37,4 +43,25 @@ public class WorkoutPlanExercise {
   public void setWorkoutPlan(WorkoutPlan plan) {
     this.workoutPlan = plan;
   }
+
+  public void update(
+      Integer day,
+      String name,
+      String part,
+      Integer reps,
+      Integer weight,
+      Integer duration,
+      Integer orderIndex,
+      Equipment equipment
+  ) {
+    this.day = day;
+    this.name = name;
+    this.part = part;
+    this.reps = reps;
+    this.weight = weight;
+    this.duration = duration;
+    this.orderIndex = orderIndex;
+    this.equipment = equipment;
+  }
+
 }

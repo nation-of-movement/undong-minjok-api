@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class TemplateRecommendService {
 
   private final TemplateRecommendRepository recommendRepository;
@@ -22,6 +22,7 @@ public class TemplateRecommendService {
   private final UserRepository userRepository;
 
   // 추천 등록
+  @Transactional
   public void recommend(Long templateId) {
     Long userId = SecurityUtil.getLoginUserInfo().getUserId();
 
@@ -45,7 +46,10 @@ public class TemplateRecommendService {
   }
 
   // 추천 취소
-  public void cancel(Long templateId, Long userId) {
+  @Transactional
+  public void cancel(Long templateId) {
+
+    Long userId = SecurityUtil.getLoginUserInfo().getUserId();
 
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));

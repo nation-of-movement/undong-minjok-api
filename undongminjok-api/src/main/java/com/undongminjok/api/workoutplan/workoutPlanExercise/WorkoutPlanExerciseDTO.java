@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 public class WorkoutPlanExerciseDTO {
 
+  private Long exerciseId;
   private Integer day;
   private String name;
   private String part;
@@ -15,8 +16,12 @@ public class WorkoutPlanExerciseDTO {
   private Integer duration;
   private Integer orderIndex;
 
+  private Long equipmentId;
+  private String equipmentName;
+
   public static WorkoutPlanExerciseDTO from(WorkoutPlanExercise ex) {
     return WorkoutPlanExerciseDTO.builder()
+        .exerciseId(ex.getId())
         .day(ex.getDay())
         .name(ex.getName())
         .part(ex.getPart())
@@ -24,6 +29,8 @@ public class WorkoutPlanExerciseDTO {
         .weight(ex.getWeight())
         .duration(ex.getDuration())
         .orderIndex(ex.getOrderIndex())
+        .equipmentId(ex.getEquipment() != null ? ex.getEquipment().getId() : null)
+        .equipmentName(ex.getEquipment() != null ? ex.getEquipment().getName() : null)
         .build();
   }
 }

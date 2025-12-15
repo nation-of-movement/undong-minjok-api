@@ -5,6 +5,7 @@ import com.undongminjok.api.point.domain.PointStatus;
 import com.undongminjok.api.point.dto.PointDTO;
 import com.undongminjok.api.point.dto.PointDetailDTO;
 import com.undongminjok.api.point.dto.response.PointDetailResponse;
+import com.undongminjok.api.templates.dto.TemplatePurchaseHistoryDTO;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +21,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
           p.id as pointId,
            t.name as templateName,
            p.status as pointStatus,
-           t.price,
+           p.amount,
            p.createdAt as createdDt
         )
     FROM Point p
@@ -39,7 +40,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
           p.id as pointId,
            t.name as templateName,
            p.status as pointStatus,
-           t.price,
+           p.amount,
            p.createdAt as createdDt
         )
     FROM Point p
@@ -103,4 +104,12 @@ public interface PointRepository extends JpaRepository<Point, Long> {
   Integer findTotalSellingPoint(
       @Param("userId") Long userId
   );
+
+  @Query("""
+    SELECT p
+    FROM Point p
+    JOIN p.user u
+    WHERE p.status = 'PURCHASE' AND u.userId = :userId
+""")
+  List<Point> findPurchaseHistoryByUserId(Long userId);
 }

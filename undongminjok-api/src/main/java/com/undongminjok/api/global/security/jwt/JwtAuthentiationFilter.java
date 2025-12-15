@@ -49,7 +49,7 @@ public class JwtAuthentiationFilter extends OncePerRequestFilter {
           new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
       SecurityContextHolder.getContext()
-                           .setAuthentication(authenticationToken);
+          .setAuthentication(authenticationToken);
     }
 
     filterChain.doFilter(request, response);
@@ -57,6 +57,7 @@ public class JwtAuthentiationFilter extends OncePerRequestFilter {
 
   /**
    * 헤더에서 JWT 토큰 추출
+   *
    * @param request
    * @return
    */
@@ -66,7 +67,7 @@ public class JwtAuthentiationFilter extends OncePerRequestFilter {
 
     if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
       return bearerToken.substring(7)
-                        .trim();
+          .trim();
 
     }
     return null;

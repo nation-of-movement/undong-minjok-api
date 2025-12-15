@@ -20,6 +20,6 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     String jsonResponse =
         "{\"error\": \"Unauthorized\", \"message\": \"" + authException.getMessage() + "\"}";
     response.getWriter()
-            .write(jsonResponse);
+        .write(jsonResponse);
   }
 }

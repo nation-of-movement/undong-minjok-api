@@ -1,4 +1,4 @@
-package com.undongminjok.api.templates.dto;
+package com.undongminjok.api.templates.dto.request;
 
 import com.undongminjok.api.templates.domain.TemplateStatus;
 import java.util.List;
@@ -11,19 +11,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TemplateCreateRequestDTO {
+public class TemplateUpdateRequestDTO {
 
-  private String name;
-  private String content;
-  private Long price;
-  private TemplateStatus status;
+  private String content;          // 설명
+  private Long price;              // 가격
+  private TemplateStatus status;   // 상태 (null이면 서버에서 자동 계산 or 유지)
 
-  private List<ExerciseCreateDTO> exercises;
+  private List<ExerciseUpdateDTO> exercises;
 
   @Getter
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class ExerciseCreateDTO {
+  public static class ExerciseUpdateDTO {
+
+    private Long exerciseId;   // 기존 운동이면 값 있음, 새로 추가되는 운동이면 null
+
     private Integer day;
     private String name;
     private String part;
@@ -32,5 +34,7 @@ public class TemplateCreateRequestDTO {
     private Integer duration;
     private Integer orderIndex;
     private Long equipmentId;
+
+    private boolean deleted;   // true면 삭제
   }
 }

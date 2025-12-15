@@ -20,14 +20,14 @@ public class Template extends BaseTimeEntity {
   @Column(name = "template_id")
   private Long id;
 
-  @Column(name = "thumbnail_image")
+  @Column(name = "thumbnail_image", nullable = false)
   private String thumbnailImage;
 
-  @Column(name = "template_image")
+  @Column(name = "template_image", nullable = false)
   private String templateImage;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "template_status")
+  @Column(name = "template_status", nullable = false)
   private TemplateStatus status;   // ⭐ 그대로 유지
 
   @Column(name = "recommend_count")
@@ -91,7 +91,7 @@ public class Template extends BaseTimeEntity {
     this.templateImage = path;
   }
 
-  public void increaseSales() { this.salesCount++; }
+  public void increaseSalesCount() { this.salesCount++; }
   public void increaseRecommend() { this.recommendCount++; }
   public void decreaseRecommend() { this.recommendCount--; }
 

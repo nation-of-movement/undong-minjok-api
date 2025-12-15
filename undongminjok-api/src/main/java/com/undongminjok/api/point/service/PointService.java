@@ -3,7 +3,6 @@ package com.undongminjok.api.point.service;
 import com.undongminjok.api.global.exception.BusinessException;
 import com.undongminjok.api.global.util.SecurityUtil;
 import com.undongminjok.api.point.PointErrorCode;
-import com.undongminjok.api.point.domain.PageType;
 import com.undongminjok.api.point.domain.PaymentMethod;
 import com.undongminjok.api.point.domain.PointStatus;
 import com.undongminjok.api.point.dto.PointDTO;
@@ -18,9 +17,7 @@ import com.undongminjok.api.point.service.provider.PointProviderService;
 import com.undongminjok.api.user.UserErrorCode;
 import com.undongminjok.api.user.domain.User;
 import com.undongminjok.api.user.service.provider.UserProviderService;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -133,15 +130,16 @@ public class PointService {
       throw new BusinessException(PointErrorCode.POINT_NOT_ENOUGH);
     }
 
-    user.updateAmount(-request.getPoint());
-
-    PointHistoryDTO pointHistoryDTO = PointHistoryDTO.builder()
-                                                     .userId(userId)
-                                                     .status(PointStatus.WITHDRAW)
-                                                     .amount(-request.getPoint())
-                                                     .bank(request.getBank())
-                                                     .accountNumber(request.getAccountNumber())
-                                                     .build();
+    PointHistoryDTO pointHistoryDTO =
+                PointHistoryDTO.builder()
+                               .userId(userId)
+                               .status(PointStatus.WITHDRAW)
+                               .method(PaymentMethod.BANK_TRANSFER.toString())
+                               .amount(-request.getPoint())
+                               .bank(request.getBank())
+                               .orderId(null)
+                               .accountNumber(request.getAccountNumber())
+                               .build();
 
     pointProviderService.createPointHistory(user, pointHistoryDTO);
   }

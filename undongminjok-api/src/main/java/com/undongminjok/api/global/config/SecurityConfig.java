@@ -1,10 +1,10 @@
 package com.undongminjok.api.global.config;
 
 import com.undongminjok.api.global.security.CustomUserDetailsService;
-import com.undongminjok.api.global.security.jwt.JwtAuthentiationFilter;
-import com.undongminjok.api.global.security.jwt.JwtTokenProvider;
 import com.undongminjok.api.global.security.RestAccessDeniedHandler;
 import com.undongminjok.api.global.security.RestAuthenticationEntryPoint;
+import com.undongminjok.api.global.security.jwt.JwtAuthentiationFilter;
+import com.undongminjok.api.global.security.jwt.JwtTokenProvider;
 import com.undongminjok.api.global.util.AuthRedisService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +55,7 @@ public class SecurityConfig {
 
         // 세션을 사용하지 않는 Stateless 설정
         .sessionManagement(session ->
-                               session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         )
 
         // URL / Method 별 인가 규칙
@@ -94,9 +94,9 @@ public class SecurityConfig {
 
         // 인증 / 인가 실패 처리
         .exceptionHandling(exception ->
-                               exception
-                                   .authenticationEntryPoint(restAuthenticationEntryPoint)
-                                   .accessDeniedHandler(restAccessDeniedHandler)
+            exception
+                .authenticationEntryPoint(restAuthenticationEntryPoint)
+                .accessDeniedHandler(restAccessDeniedHandler)
         );
 
     return http.build();
@@ -112,6 +112,7 @@ public class SecurityConfig {
     CorsConfiguration config = new CorsConfiguration();
 
     config.setAllowedOrigins(List.of("http://localhost:5173"));
+    config.setAllowedOriginPatterns(List.of("https://*.trycloudflare.com"));
     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
     config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
     config.setAllowCredentials(true);

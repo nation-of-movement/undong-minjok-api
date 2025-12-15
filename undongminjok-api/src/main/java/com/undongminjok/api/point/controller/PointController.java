@@ -7,9 +7,11 @@ import com.undongminjok.api.point.dto.request.PointRefundRequest;
 import com.undongminjok.api.point.dto.response.PointDetailResponse;
 import com.undongminjok.api.point.dto.response.PointResponse;
 import com.undongminjok.api.point.service.PointService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(
+    name = "Point",
+    description = "사용자 포인트 조회 및 출금 API"
+)
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -31,6 +37,7 @@ public class PointController {
    * @param pointStatus, pageType
    * @return
    */
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("")
   public ResponseEntity<ApiResponse<PointResponse>> points(
       @RequestParam(required = false) PointStatus pointStatus) {
@@ -44,6 +51,7 @@ public class PointController {
    * @param pointId
    * @return
    */
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("/detail/{pointId}")
   public ResponseEntity<ApiResponse<PointDetailResponse>> points(
       @PathVariable Long pointId) {
@@ -55,6 +63,7 @@ public class PointController {
   /**
    * 포인트 출금
    */
+  @PreAuthorize("isAuthenticated()")
   @PostMapping("/refund")
   public ResponseEntity<ApiResponse<Void>> refundPoints(
       @RequestBody PointRefundRequest request

@@ -8,13 +8,13 @@ import lombok.Getter;
 @Builder
 public class UserProfileResponse {
 
-  private String loginId;
   private String nickname;
   private String profileImagePath;
+  private String bio;
 
   public static UserProfileResponse from(User user) {
     return UserProfileResponse.builder()
-                              .loginId(user.getLoginId())
+                              .bio(user.getBio())
                               .nickname(user.getNickname())
                               .profileImagePath(user.getProfileImagePath()) // 이미 만들었음
                               .build();

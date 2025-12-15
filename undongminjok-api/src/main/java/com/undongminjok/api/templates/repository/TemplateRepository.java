@@ -2,6 +2,7 @@ package com.undongminjok.api.templates.repository;
 
 import com.undongminjok.api.templates.domain.Template;
 import com.undongminjok.api.templates.domain.TemplateStatus;
+import com.undongminjok.api.templates.dto.TemplateSalesHistoryDTO;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,21 @@ public interface TemplateRepository extends JpaRepository<Template, Long> {
 
   List<Template> findAllByUserUserId(Long userId);
 
+
+  // 내 판매내역조회
+  @Query("""
+    SELECT new com.undongminjok.api.templates.dto.TemplateSalesHistoryDTO(
+        t.id,
+        t.name,
+        t.price,
+        t.salesCount,
+        t.createdAt
+    )
+    FROM Template t
+    WHERE t.user.userId = :userId
+    ORDER BY t.createdAt DESC
+""")
+  List<TemplateSalesHistoryDTO> findSalesHistoryByUser(@Param("userId") Long userId);
 
   // STOPPED 제외 전체 조회
   Page<Template> findByStatusNot(TemplateStatus status, Pageable pageable);

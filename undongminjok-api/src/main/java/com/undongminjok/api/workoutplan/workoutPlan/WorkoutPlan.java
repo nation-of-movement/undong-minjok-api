@@ -17,6 +17,7 @@ public class WorkoutPlan {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "plan_id")
   private Long id;
 
   @OneToOne(mappedBy = "workoutPlan", fetch = FetchType.LAZY)
@@ -35,4 +36,11 @@ public class WorkoutPlan {
     exercises.add(ex);
     ex.setWorkoutPlan(this);
   }
+
+  public void removeExercise(WorkoutPlanExercise ex) {
+    exercises.remove(ex);
+    ex.setWorkoutPlan(null);
+  }
+
+
 }
