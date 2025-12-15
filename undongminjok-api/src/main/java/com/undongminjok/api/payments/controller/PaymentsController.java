@@ -9,6 +9,7 @@ import com.undongminjok.api.payments.service.PaymentsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,7 @@ public class PaymentsController {
    * @param request
    * @return
    */
+  @PreAuthorize("isAuthenticated()")
   @PostMapping("/prepare")
   ResponseEntity<ApiResponse<Void>> prepare(
       @RequestBody PaymentsRequest request) {
@@ -44,6 +46,7 @@ public class PaymentsController {
    * @param request
    * @return
    */
+  @PreAuthorize("isAuthenticated()")
   @PostMapping("/confirm")
   ResponseEntity<ApiResponse<PaymentResponse>> chargePoint(
       @RequestBody TossConfirmRequest request) {
@@ -52,9 +55,6 @@ public class PaymentsController {
 
     return ResponseEntity.ok(ApiResponse.success(response));
   }
-
-
-
 
 
 }
