@@ -346,12 +346,7 @@
 	
 	<strong>포인트 충전</strong>
 	
-	<p>
-	  <img
-	    src="https://github.com/user-attachments/assets/3f51fe13-a727-46fd-a84c-e894b89ce912"
-	    width="800"
-	  />
-	</p>
+	![Image](https://github.com/user-attachments/assets/ffa30d24-ead7-4465-8bf1-1b47456d3959)
 	
 	<strong>포인트 출금</strong>
 	
