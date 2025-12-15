@@ -308,43 +308,95 @@ public class TemplateService {
      * 템플릿 수정
      * */
     @Transactional
-    public void updateTemplate(
-            Long templateId,
-            TemplateUpdateRequestDTO req,
-            MultipartFile thumbnail,
-            MultipartFile detailImage
-    ) {
+    public void updateTemplate(Long templateId, TemplateUpdateRequestDTO req) {
+      Long loginUserId = SecurityUtil.getLoginUserInfo().getUserId();
 
-        Long loginUserId = SecurityUtil.getLoginUserInfo().getUserId();
+      // 1. 템플릿 + 플랜 + 운동까지 한 번에 가져오는게 제일 좋음
+      Template template = templateRepository.findDetailById(templateId)
+          .orElseThrow(() -> new BusinessException(TemplateErrorCode.TEMPLATE_NOT_FOUND));
 
-        //템플릿 확인
-        Template template = templateRepository.findById(templateId)
-                .orElseThrow(() -> new BusinessException(TemplateErrorCode.TEMPLATE_NOT_FOUND));
+      // 2. 권한 체크
+      if (!template.getUser().getUserId().equals(loginUserId)) {
+        throw new BusinessException(TemplateErrorCode.TEMPLATE_UPDATE_FORBIDDEN);
+      }
 
-        //템플릿을 수정할 권한이 있는지 확인
-        if (!template.getUser().getUserId().equals(loginUserId)) {
-            throw new BusinessException(TemplateErrorCode.TEMPLATE_UPDATE_FORBIDDEN);
+      // 3. 템플릿 기본 정보 수정 (content, price, status만)
+      template.update(req.getContent(), req.getPrice());
+
+      // 4. 운동 수정 로직
+      WorkoutPlan plan = template.getWorkoutPlan();
+      if (plan == null) {
+        // 혹시라도 null인 경우 방어
+        plan = new WorkoutPlan();
+        plan.setTemplate(template);
+        template.setWorkoutPlan(plan);
+      }
+
+      // 현재 운동들 Map으로 캐싱 (id -> 엔티티)
+      Map<Long, WorkoutPlanExercise> currentMap = plan.getExercises().stream()
+          .filter(e -> e.getId() != null)
+          .collect(Collectors.toMap(WorkoutPlanExercise::getId, e -> e));
+
+      if (req.getExercises() == null) {
+        return; // 운동 수정 안하면 여기서 끝
+      }
+
+      for (TemplateUpdateRequestDTO.ExerciseUpdateDTO eDto : req.getExercises()) {
+
+        // id 없는데 deleted=true → 무시
+        if (eDto.getExerciseId() == null && eDto.isDeleted()) {
+          continue;
         }
 
-        //템플릿 기본정보 수정
-        template.update(req.getContent(), req.getPrice());
+        // 4-1. 새 운동 추가
+        if (eDto.getExerciseId() == null) {
+          Equipment eq = eDto.getEquipmentId() != null
+              ? equipmentRepository.getReferenceById(eDto.getEquipmentId())
+              : null;
 
-        //썸네일 수정
-        if (thumbnail != null && !thumbnail.isEmpty()) {
-            //기존파일 삭제
-            if (template.getThumbnailImage() != null) {
-                fileStorage.deleteQuietly(template.getThumbnailImage());
-            }
-            template.updateThumbnail(fileStorage.store(thumbnail, ImageCategory.THUMBNAIL));
+          WorkoutPlanExercise ex = WorkoutPlanExercise.builder()
+              .day(eDto.getDay())
+              .name(eDto.getName())
+              .part(eDto.getPart())
+              .reps(eDto.getReps())
+              .weight(eDto.getWeight())
+              .duration(eDto.getDuration())
+              .orderIndex(eDto.getOrderIndex())
+              .equipment(eq)
+              .build();
+
+          plan.addExercise(ex);   // 연관관계 편의 메서드
+          continue;
         }
 
-        //상세 이미지 수정
-        if (detailImage != null && !detailImage.isEmpty()) {
-            if (template.getTemplateImage() != null) {
-                fileStorage.deleteQuietly(template.getTemplateImage());
-            }
-            template.updateTemplateImage(fileStorage.store(detailImage, ImageCategory.DETAIL));
+        // 4-2. 기존 운동 찾기
+        WorkoutPlanExercise exist = currentMap.get(eDto.getExerciseId());
+        if (exist == null) {
+          throw new BusinessException(TemplateErrorCode.TEMPLATE_EXERCISE_NOT_FOUND);
         }
+
+        // 4-3. 삭제 플래그 → 제거
+        if (eDto.isDeleted()) {
+          plan.removeExercise(exist); // orphanRemoval = true면 delete까지 자동
+          continue;
+        }
+
+        // 4-4. 값 수정
+        Equipment eq = eDto.getEquipmentId() != null
+            ? equipmentRepository.getReferenceById(eDto.getEquipmentId())
+            : null;
+
+        exist.update(
+            eDto.getDay(),
+            eDto.getName(),
+            eDto.getPart(),
+            eDto.getReps(),
+            eDto.getWeight(),
+            eDto.getDuration(),
+            eDto.getOrderIndex(),
+            eq
+        );
+      }
     }
 
     // 템플릿 삭제 (Hard + Soft Delete 적용)
