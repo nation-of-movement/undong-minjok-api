@@ -34,67 +34,68 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/templates")
 public class TemplateController {
 
-    private final TemplateService templateService;
+  private final TemplateService templateService;
 
-    //================================== 목록 조회 ===================================
-    /*
-     * 템플릿 전체 목록 조회
-     * */
-    @GetMapping("/all")
-    public ResponseEntity<ApiResponse<List<TemplateListResponseDTO>>> getAllTemplate() {
+  //================================== 목록 조회 ===================================
+  /*
+   * 템플릿 전체 목록 조회
+   * */
+  @GetMapping("/all")
+  public ResponseEntity<ApiResponse<List<TemplateListResponseDTO>>> getAllTemplate() {
 
-        return ResponseEntity.ok(
-                ApiResponse.success(templateService.findAllTemplates())
-        );
-    }
+    return ResponseEntity.ok(
+        ApiResponse.success(templateService.findAllTemplates())
+    );
+  }
 
-    /*
-     * 템플릿 전체 목록 페이징 조회
-     * */
-    @GetMapping("/paged")
-    public ResponseEntity<ApiResponse<PageResponseDto<TemplateListResponseDTO>>> getTemplates(
-            PageRequestDto pageRequestDto,
-            @RequestParam(required = false) String name,
-            @RequestParam(defaultValue = "LATEST") String sort
-    ) {
-        TemplateSortType sortType = TemplateSortType.from(sort);
+  /*
+   * 템플릿 전체 목록 페이징 조회
+   * */
+  @GetMapping("/paged")
+  public ResponseEntity<ApiResponse<PageResponseDto<TemplateListResponseDTO>>> getTemplates(
+      PageRequestDto pageRequestDto,
+      @RequestParam(required = false) String name,
+      @RequestParam(defaultValue = "LATEST") String sort
+  ) {
+    TemplateSortType sortType = TemplateSortType.from(sort);
 
-        PageResponseDto<TemplateListResponseDTO> result =
-                templateService.getTemplatePage(pageRequestDto, name, sortType);
+    PageResponseDto<TemplateListResponseDTO> result =
+        templateService.getTemplatePage(pageRequestDto, name, sortType);
 
-        return ResponseEntity.ok(ApiResponse.success(result));
-    }
+    return ResponseEntity.ok(ApiResponse.success(result));
+  }
 
-    //================================== 상세 조회 ===================================
-    /*
-     * 템플릿 상세 조회
-     * */
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<TemplateDetailResponseDTO>> getTemplateDetail(
-            @PathVariable Long id) {
+  //================================== 상세 조회 ===================================
+  /*
+   * 템플릿 상세 조회
+   * */
+  @GetMapping("/{id}")
+  public ResponseEntity<ApiResponse<TemplateDetailResponseDTO>> getTemplateDetail(
+      @PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                ApiResponse.success(templateService.getTemplateDetail(id))
-        );
-    }
+    return ResponseEntity.ok(
+        ApiResponse.success(templateService.getTemplateDetail(id))
+    );
+  }
 
-    //================================== 템플릿 만들기 ===================================
-    /*
-     * 템플릿 생성
-     * */
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> createTemplate(
-            @RequestPart("data") String dataJson,
-            @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail,
-            @RequestPart(value = "detailImage", required = false) MultipartFile detailImage) throws Exception {
+  //================================== 템플릿 만들기 ===================================
+  /*
+   * 템플릿 생성
+   * */
+  @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<ApiResponse<Void>> createTemplate(
+      @RequestPart("data") String dataJson,
+      @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail,
+      @RequestPart(value = "detailImage", required = false) MultipartFile detailImage)
+      throws Exception {
 
-        TemplateCreateRequestDTO req =
-                new ObjectMapper().readValue(dataJson, TemplateCreateRequestDTO.class);
+    TemplateCreateRequestDTO req =
+        new ObjectMapper().readValue(dataJson, TemplateCreateRequestDTO.class);
 
-        templateService.createTemplate(req, thumbnail, detailImage);
-        return ok(ApiResponse.success(null));
-    }
+    templateService.createTemplate(req, thumbnail, detailImage);
+    return ok(ApiResponse.success(null));
+  }
 
   @PatchMapping("/{id}")
   @PreAuthorize("isAuthenticated()")
@@ -106,25 +107,26 @@ public class TemplateController {
     return ok(ApiResponse.success(null));
   }
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> deleteTemplate(@PathVariable Long id) {
-        templateService.deleteTemplate(id);
-        return ok(ApiResponse.success(null));
-    }
+  @DeleteMapping("/{id}")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<ApiResponse<Void>> deleteTemplate(@PathVariable Long id) {
+    templateService.deleteTemplate(id);
+    return ok(ApiResponse.success(null));
+  }
 
-    /**
-     * 내 템플릿 판매 내역
-     */
-    @GetMapping("/sales/me")
-    public ResponseEntity<ApiResponse<List<TemplateSalesHistoryDTO>>> getMySalesHistory() {
+  /**
+   * 내 템플릿 판매 내역
+   */
+  @GetMapping("/sales/me")
+  public ResponseEntity<ApiResponse<List<TemplateSalesHistoryDTO>>> getMySalesHistory() {
 
-        Long userId = SecurityUtil.getLoginUserInfo().getUserId();
+    Long userId = SecurityUtil.getLoginUserInfo()
+                              .getUserId();
 
-        List<TemplateSalesHistoryDTO> list =
-                templateService.getMySalesHistory(userId);
+    List<TemplateSalesHistoryDTO> list =
+        templateService.getMySalesHistory(userId);
 
-        return ResponseEntity.ok(ApiResponse.success(list));
-    }
+    return ResponseEntity.ok(ApiResponse.success(list));
+  }
 
 }

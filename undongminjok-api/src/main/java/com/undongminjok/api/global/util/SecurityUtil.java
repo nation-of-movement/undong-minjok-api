@@ -34,7 +34,7 @@ public class SecurityUtil {
     public Long getCurrentUserIdOrNull() {
         try {
             return getLoginUserInfo().getUserId();
-        } catch (Exception e) {
+        } catch (BusinessException e) {
             return null;
         }
     }

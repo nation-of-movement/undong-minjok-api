@@ -138,26 +138,30 @@ public class TemplateService {
     //템플릿 기본 정보 조회
     Template template = findTemplateOrThrow(templateId);
 
-    //현재 로그인한 유저가 이 템플릿을 추천했는지 여부
-    boolean recommended = isTemplateRecommendedByCurrentUser(template);
-
     // 템플릿에 연결된 운동들을 day기준으로 그룹핑
     List<TemplateDetailResponseDTO.TemplateDayDTO> days = buildTemplateDays(template);
 
-    Long loginUserId = securityUtil.getCurrentUserIdOrNull();
-
     boolean isMine = false;
     boolean isPurchased = false;
+    boolean recommended = false;
 
-    if (loginUserId != null) {
+    Long userId = securityUtil.getCurrentUserIdOrNull();
+
+    if (userId != null) {
       isMine = template.getUser()
                        .getUserId()
-                       .equals(loginUserId);
+                       .equals(userId);
+
+      //현재 로그인한 유저가 이 템플릿을 추천했는지 여부
+      recommended = isTemplateRecommendedByCurrentUser(template, userId);
     }
 
-    if (!isMine) {
-      User loginUser = userRepository.findById(loginUserId)
-          .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+    // isMine >> 등록한 템플릿 >> 템플릿 유저 id == 로그인한 유저 id >> true
+    // isPurchased >> 구매한 템플릿 >> 템플릿 스토리지 - 로그인한 유저 id 기준으로 찾아서 + 템플릿 id >> true
+    if (isMine) {
+      User loginUser = userRepository.findById(userId)
+                                     .orElseThrow(
+                                         () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
       isPurchased = templateStorageRepository
           .existsByUserAndTemplate(loginUser, template);
@@ -167,7 +171,8 @@ public class TemplateService {
                                                                                          .getUserId());
 
     //최종 응답 DTO로 변환
-    return TemplateDetailResponseDTO.of(template, recommended, days, isMine, isPurchased, userProfileResponse);
+    return TemplateDetailResponseDTO.of(template, recommended, days, isMine, isPurchased,
+                                        userProfileResponse);
   }
 
   private Template findTemplateOrThrow(Long templateId) {
@@ -176,14 +181,9 @@ public class TemplateService {
                                  () -> new BusinessException(TemplateErrorCode.TEMPLATE_NOT_FOUND));
   }
 
-  private boolean isTemplateRecommendedByCurrentUser(Template template) {
+  private boolean isTemplateRecommendedByCurrentUser(Template template, Long userId) {
 
-    Long loginUserId = securityUtil.getCurrentUserIdOrNull();
-    if (loginUserId == null) {
-      return false;
-    }
-
-    User loginUser = userRepository.findById(loginUserId)
+    User loginUser = userRepository.findById(userId)
                                    .orElseThrow(
                                        () -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
