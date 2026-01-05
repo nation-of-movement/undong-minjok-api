@@ -27,6 +27,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+/*
+* 회원가입 시 redis에서 인증을 진행한 회원인지 검증하는 것도 추가되어있음
+* */
 @Tag(
     name = "User",
     description = "회원 가입, 프로필 조회 및 회원 정보 관리 API"

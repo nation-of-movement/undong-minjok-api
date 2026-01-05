@@ -22,6 +22,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/*
+* 로그인을 한 경우, AccessToken이 발급 > 유효기간이 짧게 지정
+* 기간이 지난 경우, 자동으로 refreshToken이 발급되도록 앞에서 설정해야함 (단, HTTP ONLY COOKIE 설정으로 보안 강화)
+*
+* 로그아웃을 한 경우, 기존 AccessToken이 접근할 수 없도록 블랙리스트 설정이 되어있음 > JWT 토큰 검증할 때마다 유효성 검사에 걸리도록 처리
+*
+* 이메일 인증을 사용하는데, 인증 확인 시 resetToken 활용
+* > 요청 컨텍스트 증명, brute force, 비정상 플로우 차단을 위해서 도입
+* */
 @Tag(
     name = "Auth",
     description = "로그인, 로그아웃, 토큰 재발급 및 이메일 인증 API"

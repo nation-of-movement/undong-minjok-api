@@ -107,6 +107,9 @@ public class SecurityConfig {
     return new JwtAuthentiationFilter(jwtTokenProvider, userDetailsService, authRedisService);
   }
 
+  /*
+  * 동일한 도메인이 아닐 경우 cors로 막히는 경우, 허용할 내용 설정
+  * */
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();

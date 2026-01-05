@@ -9,6 +9,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+/*
+* UserDetails를 상속 받아서 Custom화한 클래스
+* 기존 UserDetails보다 더 많은 내용을 담기위해 사용
+* */
 @Getter
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {

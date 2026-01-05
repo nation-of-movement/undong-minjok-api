@@ -15,6 +15,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 
+/*
+* JWT 토큰 생성
+* Access Token 생성, Refresh Token 생성, 토큰 검증
+* */
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {

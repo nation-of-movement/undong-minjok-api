@@ -8,6 +8,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
+/*
+* 인증은 됐지만 권한이 없을 경우 사용하는 핸들러 > 로그인을 했지만, 권한이 없을 경우 응답값 설정
+* */
 @Component
 public class RestAccessDeniedHandler implements AccessDeniedHandler {
 

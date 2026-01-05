@@ -11,6 +11,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/*
+* 반환 값이 CustomUserDetails이고 DB를 접근할 때 사용하는 서비스 클래스
+* */
 @Slf4j
 @Service
 @Transactional(readOnly = true)

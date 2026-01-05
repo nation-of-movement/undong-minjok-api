@@ -18,6 +18,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/*
+* 요청이 들어왔을 때 JWT 토큰을 추출해서 토큰 유효성 확인 후,
+* 정보 추출 이후, DB에서 사용자 정보 조회 후 인증 객체를 생성
+* */
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthentiationFilter extends OncePerRequestFilter {
